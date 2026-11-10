@@ -19,7 +19,7 @@ const SEND_DEDUP_WINDOW_MS = 10_000;
 // Current approved orchestration addresses (owner A-NT1 roster); local allowlist.
 const CONFIG_LINES = Object.freeze([
   Object.freeze({ key: "orchestrator", name: "Orchestrator", icon: "◆", target: "local/agent1", defMsg: "[tick] continue orchestration" }),
-  Object.freeze({ key: "opencode", name: "A.C.E.", icon: "♠", target: "t1r", defMsg: "продолжай" }),
+  Object.freeze({ key: "opencode", name: "Opencode", icon: "♠", target: "local/agent2", defMsg: "continue" }),
 ]);
 
 export default class NexusTick extends View {

@@ -48,6 +48,7 @@
 | `nexus-deck-nue/defaults/mods/sysmon/main.js` | `baseUrl` → `https://backend.example.invalid`; `displayName` → "remote" |
 | `nexus-deck-nue/defaults/mods/nexustick/main.js` | внутренние target-адреса → локальные плейсхолдеры |
 | `nexus-deck-nue/crates/nue-host/tests/security.rs` | тестовые пути `C:/Users/<user>/...`, `D:/<repo>/...` → синтетические |
+| `nexus-deck-nue/crates/nue-host/src/farm.rs` | санитизация фикстур: адреса → `machine-A/term-1` и т.п., имена персон → `ROLE-1..6` |
 | `nexus-deck-nue/src/model.rs` | тестовый `C:/Users/can/...` → `C:/Users/user/...` |
 | `tools/nexus_core/presets.json`, `presets.py`, `programs.py`, `test_presets.py` | `D:/nexus` → `<REPO_ROOT>` |
 | `tools/nexus_core/pty_backend.py`, `system_metrics.py` | упоминания `roy1` → `Windows` |
