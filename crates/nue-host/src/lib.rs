@@ -3,7 +3,7 @@
 //! Работает в копии nexus-deck (`nexus-deck-nue`), живой nx-app не трогает.
 //! 1) Раздаёт статический NUE-бандл (`apps/nexus/out/`) на 127.0.0.1:<port>.
 //! 2) Проксирует `/v1/*` на удалённый ai2 host (по умолчанию
-//!    https://example.invalid/v1/* — настраивается флагом `--remote`) — заголовки и метод проходят
+//!    https://backend.example.invalid/v1/*) — заголовки и метод проходят
 //!    без изменений, авторизацию (Bearer / X-API-Key) несёт сам клиент.
 //! 3) Next.js static export: `{path}` → `{path}.html` → `{path}/index.html` → 404.
 //!
@@ -32,7 +32,7 @@ pub mod farm;
 use farm::{FarmApi, FarmError, FarmPool, PoolApi};
 
 pub const DEFAULT_PORT: u16 = 8869;
-pub const DEFAULT_REMOTE: &str = "https://example.invalid/v1";
+pub const DEFAULT_REMOTE: &str = "https://backend.example.invalid/v1";
 const MAX_BODY: usize = 16 * 1024 * 1024; // тело запроса к прокси (16 MiB)
 
 /// Глобальный пул сессий фермы (лениво поднимается первым запросом).
@@ -47,7 +47,13 @@ fn farm_api() -> Arc<PoolApi> {
 }
 
 /// Поток-обработчик соединения. `root` — папка статики, `remote` — base URL прокси.
-pub fn serve(port: u16, root: PathBuf, remote: String) -> io::Result<()> {
+/// При `demo = true` используется синтетический FakeFarm-источник (демо-режим).
+pub fn serve(port: u16, root: PathBuf, remote: String, demo: bool) -> io::Result<()> {
+    if demo {
+        let fake = Arc::new(farm::FakeFarm::demo());
+        fake.start_demo_events();
+        return serve_with(port, root, remote, fake);
+    }
     serve_with(port, root, remote, farm_api())
 }
 
@@ -123,8 +129,12 @@ fn handle_with(
         return proxy(&mut stream, &req, remote);
     }
 
+    // G-6-1: query-строка отбрасывается при разборе пути (как в зеркале —
+    // параметры не читаются, `/api/core/events?types=status` остаётся SSE).
+    let path = req.path.split('?').next().unwrap_or("");
+
     // Ферм-контур (Deck/core): локальная сессия `nx connect` + проекции 1:1.
-    if req.path.starts_with("/api/deck/") || req.path.starts_with("/api/core/") {
+    if path.starts_with("/api/deck/") || path.starts_with("/api/core/") {
         return api_farm_with(&mut stream, &req, api);
     }
 
@@ -276,6 +286,8 @@ fn resolve_path(root: &Path, raw: &str) -> Option<PathBuf> {
             "" | "." => {}
             ".." => return None,
             s if s.contains(':') => return None, // буква диска и NTFS-ADS
+            // W7: скрытые пути не отдаются статикой (dotfiles, .git, node_modules).
+            s if s.starts_with('.') || s == "node_modules" => return None,
             s => parts.push(s.to_string()),
         }
     }
@@ -448,13 +460,14 @@ fn proxy(stream: &mut TcpStream, req: &Request, remote: &str) -> io::Result<()> 
 }
 
 /// Ферм-контур: `/api/deck/*` и `/api/core/*` — локальная сессия `nx connect`
-/// + проекции 1:1 с зеркалом фермы. Все эндпоинты — GET.
+/// + проекции 1:1 с зеркалом на remote-host (:5685). Все эндпоинты — GET.
 /// `/api/deck/events` и `/api/core/events` — SSE-поток (text/event-stream).
 fn api_farm_with(stream: &mut TcpStream, req: &Request, api: &dyn FarmApi) -> io::Result<()> {
     if req.method != "GET" && req.method != "HEAD" {
         return response_plain(stream, 405, "Method Not Allowed");
     }
-    let path = req.path.as_str();
+    // G-6-1: query-строка отбрасывается (не разбирается в логике).
+    let path = req.path.split('?').next().unwrap_or("");
 
     // SSE: долгоживущий поток событий.
     if path.ends_with("/events") {
@@ -657,9 +670,12 @@ mod tests {
         assert_eq!(status, 200);
         let v: serde_json::Value = serde_json::from_slice(&body).unwrap();
         assert_eq!(v["count"], 6);
-        let first = &v["agents"][0];
-        assert_eq!(first["address"], "machine-A/term-1");
-        assert_eq!(first["machine"], "machine-A");
+        // Терминалы отсортированы по address; ищем кейс local-farm/t1q.
+        let first = v["agents"].as_array().unwrap().iter()
+            .find(|a| a["address"] == "local-farm/t1q")
+            .expect("t1q должен быть в списке");
+        assert_eq!(first["address"], "local-farm/t1q");
+        assert_eq!(first["machine"], "local-farm");
         assert_eq!(first["agent_state"], "working");
         assert_eq!(first["turn"], 110);
         assert!(first.get("cwd").is_none());
@@ -673,7 +689,9 @@ mod tests {
         assert_eq!(status, 200);
         let v: serde_json::Value = serde_json::from_slice(&body).unwrap();
         assert_eq!(v["count"], 6);
-        let row = &v["roster"][0];
+        let row = v["roster"].as_array().unwrap().iter()
+            .find(|r| r["agent_id"] == "local-farm/t1q")
+            .expect("t1q должен быть в ростере");
         assert_eq!(row.as_object().unwrap().len(), 8);
         assert_eq!(row["role"], "codex");
         assert_eq!(row["group"], "TEAM");
@@ -729,5 +747,88 @@ mod tests {
             fake(),
         );
         assert_eq!(status, 405);
+    }
+
+    /// Читает только заголовки ответа (для SSE-потоков, которые не закрываются).
+    fn hit_head(req_raw: &str, api: Arc<dyn FarmApi>) -> (u16, String) {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let addr = listener.local_addr().unwrap();
+        let root = PathBuf::from("tests/fixtures/root");
+        let remote = "http://127.0.0.1:9/v1".to_string();
+        let server = std::thread::spawn(move || {
+            if let Ok((s, _)) = listener.accept() {
+                let _ = handle_with(s, &root, &remote, api.as_ref());
+            }
+        });
+        let mut c = TcpStream::connect(addr).unwrap();
+        c.set_read_timeout(Some(Duration::from_millis(400))).unwrap();
+        c.write_all(req_raw.as_bytes()).unwrap();
+        c.flush().unwrap();
+        let mut buf = Vec::new();
+        let _ = c.read_to_end(&mut buf);
+        drop(c);
+        let _ = server.join();
+        let text = String::from_utf8_lossy(&buf);
+        let head = text.split("\r\n\r\n").next().unwrap_or("").to_string();
+        let status = head
+            .lines()
+            .next()
+            .and_then(|l| l.split_whitespace().nth(1))
+            .and_then(|s| s.parse::<u16>().ok())
+            .unwrap_or(0);
+        (status, head)
+    }
+
+    #[test]
+    fn api_query_string_is_stripped() {
+        // G-6-1: /api/deck/roster?x=1 должен отдать тот же JSON, что и без query.
+        let a = hit("GET /api/deck/roster HTTP/1.1\r\nHost: localhost\r\n\r\n", fake());
+        let b = hit("GET /api/deck/roster?x=1 HTTP/1.1\r\nHost: localhost\r\n\r\n", fake());
+        assert_eq!(a.0, 200);
+        assert_eq!(b.0, 200);
+        assert_eq!(a.2, b.2, "query не должен влиять на ответ");
+        // /api/core/events?types=status — всё ещё SSE.
+        let (status, head) = hit_head(
+            "GET /api/core/events?types=status HTTP/1.1\r\nHost: localhost\r\n\r\n",
+            fake(),
+        );
+        assert_eq!(status, 200);
+        assert!(head.contains("text/event-stream"), "head={head}");
+        // /api/core/agents?anything=1 — обычный JSON.
+        let (status, _, body) = hit(
+            "GET /api/core/agents?x=1 HTTP/1.1\r\nHost: localhost\r\n\r\n",
+            fake(),
+        );
+        assert_eq!(status, 200);
+        let v: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert!(v.get("agents").is_some());
+    }
+
+    #[test]
+    fn static_query_string_is_stripped() {
+        // G-6-1: статический файл с query отдаётся (как без query).
+        let (status, _, body) = hit("GET /index.html?v=2 HTTP/1.1\r\nHost: localhost\r\n\r\n", fake());
+        assert_eq!(status, 200);
+        assert!(body.starts_with(b"<!DOCTYPE html>") || body.starts_with(b"404"), "body={:?}", String::from_utf8_lossy(&body));
+    }
+
+    #[test]
+    fn hidden_segments_are_not_resolved() {
+        // W7: скрытые пути не отдаются статикой.
+        for p in ["/.git/config", "/.env", "/node_modules/foo.js", "/deck/../node_modules/x", "/foo/.hidden"] {
+            assert!(resolve_path(Path::new("tests/fixtures/root"), p).is_none(), "{p}");
+        }
+    }
+
+    #[test]
+    fn agents_are_sorted_by_address() {
+        let api = fake();
+        let (status, _, body) = hit("GET /api/deck/agents HTTP/1.1\r\nHost: localhost\r\n\r\n", api);
+        assert_eq!(status, 200);
+        let v: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        let addrs: Vec<&str> = v["agents"].as_array().unwrap().iter().map(|a| a["address"].as_str().unwrap()).collect();
+        let mut sorted = addrs.clone();
+        sorted.sort();
+        assert_eq!(addrs, sorted, "терминалы должны быть отсортированы по address");
     }
 }

@@ -1,5 +1,49 @@
 # nue-host changelog
 
+## [0.1.1] - 2026-11-10
+
+### New
+
+- **Демо-режим `--demo` / `NX_NUE_DEMO=1`**: синтетическая ферма
+  (FakeFarm), без `nx connect` и сетевых вызовов. Те же 11 форм `/api/*`
+  + SSE-потоки с детерминированной последовательностью кадров (~2с);
+  `/api/deck/status` отдаёт `"source":"demo"` (живой режим — `"source":"live"`).
+- **Самодостаточный Cargo.toml**: снято workspace-наследование (edition
+  `2021`, license `Apache-2.0`, `publish = false`, свои version/description),
+  добавлен собственный `Cargo.lock` — крат собирается и тестируется как
+  отдельный корень верхнего уровня (`cargo build && cargo test`).
+- **Farm-контур `/api/deck/*` и `/api/core/*`**: проекции состояния фермы
+  (агенты, терминалы, машины, ростер, события) в формате 1:1 с зеркалом
+  `farm-mirror` на remote-host. Списки сортируются по `address`.
+- **SSE-потоки** `/api/deck/events` и `/api/core/events` с heartbeat 15с;
+  при потере фермы — `{"error":"farm_lost"}`.
+- **Санитайзеры проекций**: whitelist-ключи, `_core_state` (dead/exited/
+  finished → exited, agent_state enum, иначе idle), маска home-путей
+  (`C:\Users\***`), лимит текста 160, удаление контрольных символов.
+- **Паритет-тесты** с эталоном (9 кейсов), `tests/harden2.rs` (8 тестов):
+  405 на не-GET для `/api/*`, 404 на скрытые пути, отсутствие cwd/argv/env
+  во всех ответах, маска home, регресс query.
+- **Тесты демо `tests/harden3.rs`** (6 тестов): 11 эндпоинтов 200, SSE,
+  `"source":"demo"`, roster 8 полей, отсутствие реальных хостов/секретов,
+  паритет ключей живого/демо.
+- **`"source"` в `/api/deck/status`**: `"live"` для живого режима, `"demo"`
+  для демо.
+
+### Fixed
+
+- **Query-строка (G-6-1, HIGH):** `/api/*` и статика с `?params` отдавали
+  404 — путь теперь режется по `?` во всех ветках.
+- **Скрытые пути:** dotfiles (`/.git`, `/.env`, `/.well-known`) и
+  `node_modules` больше не резолвятся статикой → 404.
+- **Не-GET на `/api/*`:** POST/PUT/DELETE/PATCH → 405.
+- **Сортировка терминалов (G-6-2):** по `address`, как в зеркале.
+- **Удалён мёртвый дубликат `src/nue.rs`** (и ссылки на него).
+
+### Notes
+
+- Версия `0.1.1` — волны 6/7 QODER (гейт G-6 + NUE-HOST-HARDEN-2).
+  См. также корневой `CHANGELOG.md` workspace'а (версия пакета `nx-app`).
+
 ## [0.1.0] - 2026-11-10
 
 ### Fixed

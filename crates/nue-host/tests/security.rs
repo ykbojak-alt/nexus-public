@@ -35,7 +35,7 @@ where
     let handle = std::thread::spawn(move || {
         // remote не используется тестами (только статика/OPTIONS/методы);
         // прокси-ветки в тестах не трогаем.
-        let _ = nue_host::serve(port, root2, "http://127.0.0.1:9/v1".to_string());
+        let _ = nue_host::serve(port, root2, "http://127.0.0.1:9/v1".to_string(), false);
     });
     std::thread::sleep(Duration::from_millis(200));
     let srv = Server {
@@ -100,8 +100,8 @@ fn escape_absolute_path_windows_is_404() {
     with_server(|s| {
         for p in [
             "/C:/Windows/win.ini",
-            "/C:/Users/someuser/.config/settings.json",
-            "/D:/repo/placeholder/Cargo.toml",
+            "/C:/Users/BoJaK/.qoder/settings.json",
+            "/D:/nexus/nexus-deck-nue/Cargo.toml",
             "/C:/Windows/System32/drivers/etc/hosts",
         ] {
             let (code, _) = get(s.port, p, "127.0.0.1");

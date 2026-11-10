@@ -1,7 +1,7 @@
 //! Локальный ферм-контур (QODER NUE-DECK-LOCAL, волна 6).
 //!
 //! Вариант A: локальная сессия `nx connect` (stdio, framed JSON-RPC) внутри
-//! `crates/nue-host` + whitelist-проекции 1:1 с `nx_mirror.py` на удалённом зеркале.
+//! `crates/nue-host` + whitelist-проекции 1:1 с `farm-mirror` на remote-host.
 //! Никаких секретов и реальных путей наружу: все проекции — whitelist,
 //! свободный текст чистится (`_clean_text`), home-сегменты маскируются.
 //!
@@ -15,7 +15,7 @@ use std::collections::HashMap;
 use std::io::{BufRead, BufReader, Read, Write};
 use std::path::Path;
 use std::process::{Child, Command, Stdio};
-use std::sync::atomic::{AtomicU32, AtomicU64, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU32, AtomicU64, Ordering};
 use std::sync::mpsc::{channel, Receiver, Sender};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
@@ -59,7 +59,7 @@ fn map_io(ctx: &str, e: std::io::Error) -> FarmError {
 }
 
 // ---------------------------------------------------------------------------
-// Санитайзеры (порт из nx_mirror.py)
+// Санитайзеры (порт из farm-mirror)
 
 /// `_HOME_RE` без regex-крейта: `([A-Za-z]:\Users\|/home/|/Users/)[^\\/\s]+`
 fn mask_home(s: &str) -> String {
@@ -222,6 +222,13 @@ fn term_id(addr: &str) -> String {
     }
 }
 
+/// Сортировка терминалов по `address` — как в зеркале
+/// (`sorted(_terminals.values(), key=lambda t: str(t.get("address", "")))`).
+fn sort_by_address(mut rows: Vec<Value>) -> Vec<Value> {
+    rows.sort_by_key(|t| String::from(t.get("address").and_then(Value::as_str).unwrap_or("")));
+    rows
+}
+
 /// `_core_state` (OSC-7501 lifecycle): dead/exited/finished -> exited;
 /// agent_state working|blocked|idle|done -> verbatim; иначе idle.
 fn core_state(t: &Value) -> String {
@@ -246,11 +253,18 @@ fn public_terminal(t: &Value) -> Value {
         .get("name")
         .filter(|v| v.as_str().map_or(false, |s| !s.is_empty()))
         .cloned()
-        .or_else(|| labels.get("where").cloned())
-        .or_else(|| t.get("title").cloned());
+        .or_else(|| labels.get("where").filter(|v| v.as_str().map_or(false, |s| !s.is_empty())).cloned())
+        .or_else(|| t.get("title").filter(|v| v.as_str().map_or(false, |s| !s.is_empty())).cloned());
     let mut out = serde_json::Map::new();
     out.insert("address".into(), json!(addr));
-    out.insert("name".into(), clean_text(&name_src.unwrap_or(json!(""))));
+    // `_public_terminal`: name = name ?? labels.where ?? title; пустая строка
+    // не эмитится (зеркало: {k: v for ... if v is not None}).
+    if let Some(name) = name_src {
+        let cleaned = clean_text(&name);
+        if !cleaned.as_str().map_or(true, |s| s.is_empty()) {
+            out.insert("name".into(), cleaned);
+        }
+    }
     out.insert("state".into(), terminal_state(t).into());
     if let Some(agent) = t.get("agent").and_then(Value::as_str) {
         out.insert("agent".into(), json!(agent));
@@ -284,21 +298,31 @@ fn public_roster_row(t: &Value) -> Value {
     let p = public_terminal(t);
     let addr = String::from(p.get("address").and_then(Value::as_str).unwrap_or(""));
     let labels = terminal_labels(t);
+    // name — persona (name/labels.where); пустая строка -> address (как зеркало).
     let name_src = t
         .get("name")
         .filter(|v| v.as_str().map_or(false, |s| !s.is_empty()))
         .cloned()
-        .or_else(|| labels.get("where").cloned());
+        .or_else(|| labels.get("where").filter(|v| v.as_str().map_or(false, |s| !s.is_empty())).cloned());
     let name = match name_src {
-        Some(v) => clean_text(&v),
-        _ => json!(addr),
+        Some(v) => {
+            let cleaned = clean_text(&v);
+            if cleaned.as_str().map_or(true, |s| s.is_empty()) {
+                json!(addr)
+            } else {
+                cleaned
+            }
+        }
+        None => json!(addr),
     };
-    let group_src = labels.get("group").or_else(|| labels.get("nx.group"));
-    let group = group_src
-        .map(|v| clean_text(v))
+    // group: "group" -> "nx.group" -> "TEAM" (пустые строки пропускаются).
+    let group = labels
+        .get("group")
         .filter(|v| v.as_str().map_or(false, |s| !s.is_empty()))
+        .or_else(|| labels.get("nx.group").filter(|v| v.as_str().map_or(false, |s| !s.is_empty())))
+        .map(|v| clean_text(v))
         .unwrap_or_else(|| json!("TEAM"));
-    let status = p.get("agent_state").cloned().unwrap_or_else(|| json!("idle"));
+    let status = core_state(t);
     let wave = p.get("turn").and_then(Value::as_u64).unwrap_or(0);
     json!({
         "agent_id": addr,
@@ -312,15 +336,28 @@ fn public_roster_row(t: &Value) -> Value {
     })
 }
 
-/// `_core_labels`: agent из app/agent, persona из name.
+/// `_core_labels`: agent из status.app/agent, persona из name/where/title.
 fn core_labels(t: &Value) -> Value {
     let mut labels = serde_json::Map::new();
-    let app = t.get("app").and_then(Value::as_str).or_else(|| t.get("agent").and_then(Value::as_str));
+    let status = terminal_status(t);
+    let app = status
+        .get("app")
+        .and_then(Value::as_str)
+        .or_else(|| t.get("agent").and_then(Value::as_str));
     if let Some(app) = app {
         labels.insert("agent".into(), clean_text(&json!(app)));
     }
-    if let Some(name) = t.get("name").and_then(Value::as_str) {
-        labels.insert("persona".into(), clean_text(&json!(name)));
+    let raw_labels = terminal_labels(t);
+    let name_src = t
+        .get("name")
+        .filter(|v| v.as_str().map_or(false, |s| !s.is_empty()))
+        .cloned()
+        .or_else(|| raw_labels.get("where").cloned())
+        .or_else(|| t.get("title").cloned());
+    if let Some(name) = name_src {
+        if let Some(s) = name.as_str() {
+            labels.insert("persona".into(), clean_text(&json!(s)));
+        }
     }
     Value::Object(labels)
 }
@@ -575,6 +612,12 @@ impl Farm {
             })
             .map_err(|e| FarmError::Spawn(format!("reader thread: {e}")))?;
 
+        // Ленивая подписка на события (чтобы events_connected/events_seq были
+        // живыми с первого запроса; если не выйдет — не смертельно).
+        if let Err(e) = farm.ensure_subscription() {
+            eprintln!("nue-host: farm: предупреждение: events.subscribe: {e}");
+        }
+
         Ok(farm)
     }
 
@@ -619,7 +662,7 @@ impl Farm {
                 _ => Vec::new(),
             },
         };
-        Ok(list.into_iter().filter(|t| terminal_state(t) == "live").collect())
+        Ok(sort_by_address(list.into_iter().filter(|t| terminal_state(t) == "live").collect()))
     }
 
     fn machine_list(&self) -> Result<Vec<Value>, FarmError> {
@@ -687,7 +730,8 @@ impl Drop for Farm {
     }
 }
 
-fn push_events(raw: &Value, deck: &Mutex<Vec<Sender<Value>>>, core: &Mutex<Vec<Sender<Value>>>) {
+/// Рассылка события всем подписчикам (deck- и core-канал).
+fn broadcast_events(raw: &Value, deck: &[Sender<Value>], core: &[Sender<Value>]) {
     let seq = raw.pointer("/params/seq").and_then(Value::as_u64).unwrap_or(0);
     let ts = raw.pointer("/params/seq").is_some().then(|| {
         std::time::SystemTime::now()
@@ -696,14 +740,20 @@ fn push_events(raw: &Value, deck: &Mutex<Vec<Sender<Value>>>, core: &Mutex<Vec<S
             .unwrap_or(0.0)
     }).unwrap_or(0.0);
     let deck_ev = deck_event_payload(raw, seq, ts);
-    for tx in deck.lock().unwrap().iter() {
+    for tx in deck {
         let _ = tx.send(deck_ev.clone());
     }
     if let Some(core_ev) = core_event_payload(raw, seq, ts) {
-        for tx in core.lock().unwrap().iter() {
+        for tx in core {
             let _ = tx.send(core_ev.clone());
         }
     }
+}
+
+fn push_events(raw: &Value, deck: &Mutex<Vec<Sender<Value>>>, core: &Mutex<Vec<Sender<Value>>>) {
+    let d = deck.lock().unwrap();
+    let c = core.lock().unwrap();
+    broadcast_events(raw, &d, &c);
 }
 
 // ---------------------------------------------------------------------------
@@ -740,6 +790,7 @@ impl FarmApi for Farm {
             "machines": machines,
             "events_seq": self.inner.last_seq.load(Ordering::Relaxed),
             "session": self.inner.session,
+            "source": "live",
         }))
     }
 
@@ -956,18 +1007,26 @@ pub struct FakeFarm {
     pub machines: Vec<Value>,
     pub server: Value,
     senders: Mutex<(Vec<Sender<Value>>, Vec<Sender<Value>>)>,
+    /// Индикатор источника: "live" (тестовый макет живого) или "demo".
+    source: Mutex<String>,
+    /// Имя сессии, видимое в status/server.
+    session: Mutex<String>,
+    /// Версия, видимая в status/server.
+    version: Mutex<String>,
+    /// Таймер демо-событий запущен (один раз на инстанс).
+    demo_timer: AtomicBool,
 }
 
 impl Default for FakeFarm {
     fn default() -> Self {
         let mut terminals = Vec::new();
         let rows = [
-            ("machine-A/term-1", "working", Some("ROLE-1 / 1"), 110u64, "▆ Agent A | nexus"),
-            ("machine-B/term-1", "working", Some("ROLE-2 / 1"), 75, "▆ Agent B | nexus"),
-            ("machine-C/term-1", "blocked", Some("ROLE-3 / 1"), 42, "▆ Agent C | nexus"),
-            ("machine-D/term-1", "idle", Some("ROLE-4 / 1"), 199, "▏ Agent D | nexus"),
-            ("machine-E/term-1", "done", Some("ROLE-5 / 1"), 33, "▏ Agent E | nexus"),
-            ("machine-F/term-1", "idle", Some("ROLE-6 / 1"), 126, "▏ Agent F | nexus"),
+            ("local-farm/t1q", "working", Some("ROLE-1 / 1"), 110u64, "▆ ROLE-1 | nexus"),
+            ("local-farm/t1w", "working", Some("ROLE-2 / 1"), 75, "▆ ROLE-2 | nexus"),
+            ("local-farm/t1y", "blocked", Some("ROLE-3 / 1"), 42, "▆ ROLE-3 | nexus"),
+            ("local-farm/t2f", "idle", Some("ROLE-4 / 1"), 199, "▏ ROLE-4 | nexus"),
+            ("local-farm/t4", "done", Some("ROLE-5 / 1"), 33, "▏ ROLE-5 | nexus"),
+            ("local-farm/t3", "idle", Some("ROLE-6 / 1"), 126, "▏ ROLE-6 | nexus"),
         ];
         for (addr, astate, name, turn, title) in rows {
             let status = json!({"app": "codex", "state": astate, "msg": ""});
@@ -985,16 +1044,104 @@ impl Default for FakeFarm {
         }
         Self {
             terminals: Mutex::new(terminals),
-            machines: vec![json!({"name": "machine-A", "target": "local", "state": "connected", "version": "0.1.18"})],
+            machines: vec![json!({"name": "local-farm", "target": "local-farm", "state": "connected", "version": "0.1.18"})],
             server: json!({"version": "0.1.18", "uptime_ms": 6_174_500}),
             senders: Mutex::new((Vec::new(), Vec::new())),
+            source: Mutex::new("live".into()),
+            session: Mutex::new("nx-deck".into()),
+            version: Mutex::new("0.1.18".into()),
+            demo_timer: AtomicBool::new(false),
         }
     }
 }
 
 impl FakeFarm {
+    /// Синтетический демо-источник (волна 8): те же 6 агентов, но без
+    /// реальных хостов/путей/секретов. `source: "demo"` в status.
+    pub fn demo() -> Self {
+        let mut terminals = Vec::new();
+        let rows = [
+            ("local-farm/t1q", "working", Some("ROLE-1 / 1"), 110u64, "▆ ROLE-1 | nexus"),
+            ("local-farm/t1w", "working", Some("ROLE-2 / 1"), 75, "▆ ROLE-2 | nexus"),
+            ("local-farm/t1y", "blocked", Some("ROLE-3 / 1"), 42, "▆ ROLE-3 | nexus"),
+            ("local-farm/t2f", "idle", Some("ROLE-4 / 1"), 199, "▏ ROLE-4 | nexus"),
+            ("local-farm/t4", "done", Some("ROLE-5 / 1"), 33, "▏ ROLE-5 | nexus"),
+            ("local-farm/t3", "idle", Some("ROLE-6 / 1"), 126, "▏ ROLE-6 | nexus"),
+        ];
+        for (addr, astate, name, turn, title) in rows {
+            let status = json!({"app": "codex", "state": astate, "msg": ""});
+            terminals.push(json!({
+                "address": addr,
+                "name": name,
+                "state": "live",
+                "turn": turn,
+                "cols": 94,
+                "rows": 26,
+                "title": title,
+                "status": status,
+                "labels": json!({"agent": "codex", "persona": name}),
+            }));
+        }
+        Self {
+            terminals: Mutex::new(terminals),
+            machines: vec![
+                json!({"name": "farm-a", "target": "192.0.2.10", "state": "connected", "version": "0.1.18"}),
+                json!({"name": "farm-b", "target": "192.0.2.11", "state": "connected", "version": "0.1.18"}),
+            ],
+            server: json!({"version": env!("CARGO_PKG_VERSION"), "uptime_ms": 6_174_500}),
+            senders: Mutex::new((Vec::new(), Vec::new())),
+            source: Mutex::new("demo".into()),
+            session: Mutex::new("nx-demo".into()),
+            version: Mutex::new(env!("CARGO_PKG_VERSION").into()),
+            demo_timer: AtomicBool::new(false),
+        }
+    }
+
+    /// Запускает поток демо-событий (SSE): детерминированная
+    /// последовательность кадров (status/turn/title по кругу по терминалам)
+    /// с интервалом ~2 с. Первый кадр — сразу.
+    pub fn start_demo_events(self: &Arc<Self>) {
+        if self.demo_timer.swap(true, Ordering::Relaxed) {
+            return;
+        }
+        let fake = self.clone();
+        std::thread::Builder::new()
+            .name("nx-demo-events".into())
+            .spawn(move || {
+                let mut seq: u64 = 1;
+                loop {
+                    let terms = fake.live_terminals();
+                    for t in &terms {
+                        let addr = String::from(t.get("address").and_then(Value::as_str).unwrap_or(""));
+                        let astate = String::from(
+                            t.pointer("/status/state").and_then(Value::as_str).unwrap_or("idle"),
+                        );
+                        let turn = t.get("turn").and_then(Value::as_u64).unwrap_or(0);
+                        let title = String::from(t.get("title").and_then(Value::as_str).unwrap_or(""));
+                        let etype = match seq % 3 {
+                            0 => "status",
+                            1 => "turn",
+                            _ => "title",
+                        };
+                        let raw = match etype {
+                            "status" => json!({"method":"event","params":{"type":"status","terminal":addr,"seq":seq,"data":{"status":{"state":astate}}}}),
+                            "turn" => json!({"method":"event","params":{"type":"turn","terminal":addr,"seq":seq,"data":{"turn":turn}}}),
+                            _ => json!({"method":"event","params":{"type":"title","terminal":addr,"seq":seq,"data":{"title":title}}}),
+                        };
+                        {
+                            let s = fake.senders.lock().unwrap();
+                            broadcast_events(&raw, &s.0, &s.1);
+                        }
+                        seq += 1;
+                    }
+                    std::thread::sleep(Duration::from_secs(2));
+                }
+            })
+            .expect("spawn demo events");
+    }
+
     fn live_terminals(&self) -> Vec<Value> {
-        self.terminals.lock().unwrap().clone()
+        sort_by_address(self.terminals.lock().unwrap().clone())
     }
 
     fn make_events(&self, deck: bool) -> Receiver<Value> {
@@ -1014,12 +1161,13 @@ impl FarmApi for FakeFarm {
         Ok(json!({
             "connected": true,
             "events_connected": true,
-            "version": "0.1.18",
+            "version": *self.version.lock().unwrap(),
             "uptime_s": 6174.5,
             "terminals": terminals,
-            "machines": 1,
+            "machines": self.machines.len(),
             "events_seq": 26785,
-            "session": "nx-deck",
+            "session": *self.session.lock().unwrap(),
+            "source": *self.source.lock().unwrap(),
         }))
     }
 
@@ -1089,13 +1237,13 @@ impl FarmApi for FakeFarm {
 
     fn core_server(&self) -> Result<Value, FarmError> {
         Ok(json!({
-            "version": "0.1.18",
+            "version": *self.version.lock().unwrap(),
             "state": "running",
             "uptime_s": 6174.5,
             "terminals": self.live_terminals().len(),
-            "machines": 1,
+            "machines": self.machines.len(),
             "events": 26785,
-            "session": "nx-deck",
+            "session": *self.session.lock().unwrap(),
         }))
     }
 
@@ -1151,7 +1299,7 @@ mod tests {
 
     #[test]
     fn clean_text_masks_home_and_limits() {
-        assert_eq!(clean_text(&json!("C:\\Users\\<user>\\Tools\\pwsh.exe")), json!("C:\\Users\\***\\Tools\\pwsh.exe"));
+        assert_eq!(clean_text(&json!("C:\\Users\\BoJaK\\Tools\\pwsh.exe")), json!("C:\\Users\\***\\Tools\\pwsh.exe"));
         assert_eq!(clean_text(&json!("/home/ubuntu/project")), json!("/home/***/project"));
         let long = "x".repeat(300);
         assert_eq!(clean_text(&json!(long)).as_str().unwrap().len(), 160);
@@ -1161,15 +1309,15 @@ mod tests {
 
     #[test]
     fn roster_row_has_exactly_8_fields() {
-        let t = terminal("machine-B/term-1", "live", Some("working"), Some("ROLE-2 / 1"), 75);
+        let t = terminal("local-farm/t1w", "live", Some("working"), Some("ROLE-2 / 1"), 75);
         let row = public_roster_row(&t);
         let obj = row.as_object().unwrap();
         assert_eq!(obj.len(), 8);
-        assert_eq!(obj["agent_id"], json!("machine-B/term-1"));
+        assert_eq!(obj["agent_id"], json!("local-farm/t1w"));
         assert_eq!(obj["name"], json!("ROLE-2 / 1"));
         assert_eq!(obj["role"], json!(""));
         assert_eq!(obj["group"], json!("TEAM"));
-        assert_eq!(obj["term"], json!("machine-B/term-1"));
+        assert_eq!(obj["term"], json!("local-farm/t1w"));
         assert_eq!(obj["model"], json!(""));
         assert_eq!(obj["status"], json!("working"));
         assert_eq!(obj["current_wave"], json!(75));
@@ -1189,10 +1337,10 @@ mod tests {
 
     #[test]
     fn core_agent_row_shape() {
-        let t = terminal("machine-A/term-1", "live", Some("working"), Some("ROLE-1 / 1"), 110);
+        let t = terminal("local-farm/t1q", "live", Some("working"), Some("ROLE-1 / 1"), 110);
         let row = core_agent_row(&t);
-        assert_eq!(row["address"], json!("machine-A/term-1"));
-        assert_eq!(row["name"], json!("term-1"));
+        assert_eq!(row["address"], json!("local-farm/t1q"));
+        assert_eq!(row["name"], json!("t1q"));
         assert_eq!(row["state"], json!("working"));
         assert_eq!(row["attention"], json!(false));
         assert_eq!(row["labels"]["persona"], json!("ROLE-1 / 1"));
@@ -1215,14 +1363,14 @@ mod tests {
             "method": "event",
             "params": {
                 "type": "title",
-                "terminal": "term-1",
+                "terminal": "t1q",
                 "seq": 123,
-                "data": {"title": "C:\\Users\\<user>\\x", "cwd": "/home/<user>/secret"}
+                "data": {"title": "C:\\Users\\BoJaK\\x", "cwd": "/root/secret"}
             }
         });
         let frame = clean_frame(&raw);
         assert_eq!(frame["params"]["type"], json!("title"));
-        assert_eq!(frame["params"]["terminal"], json!("term-1"));
+        assert_eq!(frame["params"]["terminal"], json!("t1q"));
         // title маскирован, cwd вырезан (не в whitelist)
         assert_eq!(frame["params"]["data"]["title"], json!("C:\\Users\\***\\x"));
         assert!(frame["params"]["data"].get("cwd").is_none());
@@ -1235,11 +1383,176 @@ mod tests {
     fn core_event_flat_drops_status_without_address() {
         let raw = json!({"jsonrpc":"2.0","method":"event","params":{"type":"status","data":{"status":{"state":"working"}}}});
         assert!(core_event_payload(&raw, 1, 1.0).is_none());
-        let raw2 = json!({"method":"event","params":{"type":"title","terminal":"term-1","data":{"title":"hi"}}});
+        let raw2 = json!({"method":"event","params":{"type":"title","terminal":"t1q","data":{"title":"hi"}}});
         let flat = core_event_payload(&raw2, 2, 1.0).unwrap();
         assert_eq!(flat["type"], json!("title"));
-        assert_eq!(flat["address"], json!("term-1"));
+        assert_eq!(flat["address"], json!("t1q"));
         assert_eq!(flat["machine"], json!("local"));
-        assert_eq!(flat["term"], json!("term-1"));
+        assert_eq!(flat["term"], json!("t1q"));
+    }
+
+    // -----------------------------------------------------------------------
+    // Паритет проекций с эталоном farm-mirror (волна 7).
+    // Ожидания сгенерированы из чистых функций зеркала (gen_parity.py).
+    // -----------------------------------------------------------------------
+
+    fn parity_terminal(addr: &str, state: &str, agent_state: Option<&str>, name: Option<&str>, turn: u64, title: &str, labels: Value, status: Option<&str>, msg: Option<&str>) -> Value {
+        let mut st = serde_json::Map::new();
+        if let Some(s) = agent_state {
+            st.insert("state".into(), json!(s));
+        }
+        if let Some(s) = status {
+            st.insert("app".into(), json!(s));
+        }
+        if let Some(s) = msg {
+            st.insert("msg".into(), json!(s));
+        }
+        let mut t = serde_json::Map::new();
+        t.insert("address".into(), json!(addr));
+        t.insert("state".into(), json!(state));
+        if let Some(n) = name {
+            t.insert("name".into(), json!(n));
+        }
+        if turn != 0 {
+            t.insert("turn".into(), json!(turn));
+        }
+        if !title.is_empty() {
+            t.insert("title".into(), json!(title));
+        }
+        t.insert("cols".into(), json!(94));
+        t.insert("rows".into(), json!(26));
+        if !st.is_empty() {
+            t.insert("status".into(), Value::Object(st));
+        }
+        t.insert("labels".into(), labels);
+        Value::Object(t)
+    }
+
+    fn parity_case(name: &str) -> Value {
+        match name {
+            "title_path" => parity_terminal(
+                "local-farm/t1q", "live", Some("working"), Some("ROLE-1 / 1"), 110,
+                r"C:\Users\BoJaK\Tools\pwsh\pwsh.exe",
+                json!({"agent": "codex", "persona": "ROLE-1 / 1", "group": "dev"}),
+                Some("codex"), Some("hi")),
+            "bad_agent_state" => parity_terminal(
+                "local-farm/t1w", "live", Some("error"), Some("ROLE-2 / 1"), 0,
+                "▆ ROLE-2 | nexus", json!({"group": ""}), Some("forge"), None),
+            "name_only_where" => parity_terminal(
+                "local-farm/t2f", "live", Some("idle"), None, 0,
+                "▏ ROLE-4 | nexus", json!({"where": "QODER"}), None, None),
+            "dead" => parity_terminal(
+                "local-farm/t9", "dead", None, Some("DEAD"), 0,
+                "dead window", json!({}), None, None),
+            "exited" => parity_terminal(
+                "local-farm/t10", "exited", None, Some("EXITED"), 0,
+                "", json!({}), None, None),
+            "finished" => parity_terminal(
+                "local/t11", "finished", None, Some("FINISHED"), 0,
+                "", json!({}), None, None),
+            "no_status" => parity_terminal(
+                "remote-host/t3", "live", None, Some("ALICE"), 0,
+                "", json!({"where": "ROLE-6"}), None, None),
+            "local" => parity_terminal(
+                "t3", "live", None, Some("LOCAL"), 0,
+                "local window", json!({}), None, None),
+            "no_name" => parity_terminal(
+                "local-farm/t12", "live", Some("done"), None, 0,
+                "", json!({}), None, None),
+            _ => panic!("unknown case {name}"),
+        }
+    }
+
+    /// Ожидания из эталона: (public_terminal, roster, core_agent, core_terminal, core_state, core_labels).
+    fn expected_parity(name: &str) -> (Value, Value, Value, Value, Value, Value) {
+        let (pt, rs, ca, ct, cs, cl) = match name {
+            "title_path" => (
+                json!({"address":"local-farm/t1q","name":"ROLE-1 / 1","state":"live","app":"codex","agent_state":"working","agent_msg":"hi","turn":110,"title":r"C:\Users\***\Tools\pwsh\pwsh.exe","cols":94,"rows":26,"machine":"local-farm"}),
+                json!({"agent_id":"local-farm/t1q","name":"ROLE-1 / 1","role":"codex","group":"dev","term":"local-farm/t1q","model":"","status":"working","current_wave":110}),
+                json!({"address":"local-farm/t1q","name":"t1q","state":"working","attention":false,"labels":{"agent":"codex","persona":"ROLE-1 / 1"},"parent":null}),
+                json!({"name":"t1q","machine":"local-farm","address":"local-farm/t1q","state":"working","attention":false,"labels":{"agent":"codex","persona":"ROLE-1 / 1"},"keep":true,"parent":null,"exit_code":null,"created_at":null,"exited_at":null,"respawn_count":0,"cols":94,"rows":26,"title":r"C:\Users\***\Tools\pwsh\pwsh.exe"}),
+                "working", json!({"agent":"codex","persona":"ROLE-1 / 1"})),
+            "bad_agent_state" => (
+                json!({"address":"local-farm/t1w","name":"ROLE-2 / 1","state":"live","app":"forge","agent_state":"error","title":"▆ ROLE-2 | nexus","cols":94,"rows":26,"machine":"local-farm"}),
+                json!({"agent_id":"local-farm/t1w","name":"ROLE-2 / 1","role":"forge","group":"TEAM","term":"local-farm/t1w","model":"","status":"idle","current_wave":0}),
+                json!({"address":"local-farm/t1w","name":"t1w","state":"idle","attention":false,"labels":{"agent":"forge","persona":"ROLE-2 / 1"},"parent":null}),
+                json!({"name":"t1w","machine":"local-farm","address":"local-farm/t1w","state":"idle","attention":false,"labels":{"agent":"forge","persona":"ROLE-2 / 1"},"keep":true,"parent":null,"exit_code":null,"created_at":null,"exited_at":null,"respawn_count":0,"cols":94,"rows":26,"title":"▆ ROLE-2 | nexus"}),
+                "idle", json!({"agent":"forge","persona":"ROLE-2 / 1"})),
+            "name_only_where" => (
+                json!({"address":"local-farm/t2f","name":"QODER","state":"live","agent_state":"idle","title":"▏ ROLE-4 | nexus","cols":94,"rows":26,"machine":"local-farm"}),
+                json!({"agent_id":"local-farm/t2f","name":"QODER","role":"","group":"TEAM","term":"local-farm/t2f","model":"","status":"idle","current_wave":0}),
+                json!({"address":"local-farm/t2f","name":"t2f","state":"idle","attention":false,"labels":{"persona":"QODER"},"parent":null}),
+                json!({"name":"t2f","machine":"local-farm","address":"local-farm/t2f","state":"idle","attention":false,"labels":{"persona":"QODER"},"keep":true,"parent":null,"exit_code":null,"created_at":null,"exited_at":null,"respawn_count":0,"cols":94,"rows":26,"title":"▏ ROLE-4 | nexus"}),
+                "idle", json!({"persona":"QODER"})),
+            "dead" => (
+                json!({"address":"local-farm/t9","name":"DEAD","state":"dead","title":"dead window","cols":94,"rows":26,"machine":"local-farm"}),
+                json!({"agent_id":"local-farm/t9","name":"DEAD","role":"","group":"TEAM","term":"local-farm/t9","model":"","status":"exited","current_wave":0}),
+                json!({"address":"local-farm/t9","name":"t9","state":"exited","attention":false,"labels":{"persona":"DEAD"},"parent":null}),
+                json!({"name":"t9","machine":"local-farm","address":"local-farm/t9","state":"exited","attention":false,"labels":{"persona":"DEAD"},"keep":true,"parent":null,"exit_code":null,"created_at":null,"exited_at":null,"respawn_count":0,"cols":94,"rows":26,"title":"dead window"}),
+                "exited", json!({"persona":"DEAD"})),
+            "exited" => (
+                json!({"address":"local-farm/t10","name":"EXITED","state":"exited","cols":94,"rows":26,"machine":"local-farm"}),
+                json!({"agent_id":"local-farm/t10","name":"EXITED","role":"","group":"TEAM","term":"local-farm/t10","model":"","status":"exited","current_wave":0}),
+                json!({"address":"local-farm/t10","name":"t10","state":"exited","attention":false,"labels":{"persona":"EXITED"},"parent":null}),
+                json!({"name":"t10","machine":"local-farm","address":"local-farm/t10","state":"exited","attention":false,"labels":{"persona":"EXITED"},"keep":true,"parent":null,"exit_code":null,"created_at":null,"exited_at":null,"respawn_count":0,"cols":94,"rows":26}),
+                "exited", json!({"persona":"EXITED"})),
+            "finished" => (
+                json!({"address":"local/t11","name":"FINISHED","state":"finished","cols":94,"rows":26,"machine":"local"}),
+                json!({"agent_id":"local/t11","name":"FINISHED","role":"","group":"TEAM","term":"local/t11","model":"","status":"exited","current_wave":0}),
+                json!({"address":"local/t11","name":"t11","state":"exited","attention":false,"labels":{"persona":"FINISHED"},"parent":null}),
+                json!({"name":"t11","machine":"local","address":"local/t11","state":"exited","attention":false,"labels":{"persona":"FINISHED"},"keep":true,"parent":null,"exit_code":null,"created_at":null,"exited_at":null,"respawn_count":0,"cols":94,"rows":26}),
+                "exited", json!({"persona":"FINISHED"})),
+            "no_status" => (
+                json!({"address":"remote-host/t3","name":"ALICE","state":"live","cols":94,"rows":26,"machine":"remote-host"}),
+                json!({"agent_id":"remote-host/t3","name":"ALICE","role":"","group":"TEAM","term":"remote-host/t3","model":"","status":"idle","current_wave":0}),
+                json!({"address":"remote-host/t3","name":"t3","state":"idle","attention":false,"labels":{"persona":"ALICE"},"parent":null}),
+                json!({"name":"t3","machine":"remote-host","address":"remote-host/t3","state":"idle","attention":false,"labels":{"persona":"ALICE"},"keep":true,"parent":null,"exit_code":null,"created_at":null,"exited_at":null,"respawn_count":0,"cols":94,"rows":26}),
+                "idle", json!({"persona":"ALICE"})),
+            "local" => (
+                json!({"address":"t3","name":"LOCAL","state":"live","title":"local window","cols":94,"rows":26,"machine":"local"}),
+                json!({"agent_id":"t3","name":"LOCAL","role":"","group":"TEAM","term":"t3","model":"","status":"idle","current_wave":0}),
+                json!({"address":"t3","name":"t3","state":"idle","attention":false,"labels":{"persona":"LOCAL"},"parent":null}),
+                json!({"name":"t3","machine":"local","address":"t3","state":"idle","attention":false,"labels":{"persona":"LOCAL"},"keep":true,"parent":null,"exit_code":null,"created_at":null,"exited_at":null,"respawn_count":0,"cols":94,"rows":26,"title":"local window"}),
+                "idle", json!({"persona":"LOCAL"})),
+            "no_name" => (
+                json!({"address":"local-farm/t12","state":"live","agent_state":"done","cols":94,"rows":26,"machine":"local-farm"}),
+                json!({"agent_id":"local-farm/t12","name":"local-farm/t12","role":"","group":"TEAM","term":"local-farm/t12","model":"","status":"done","current_wave":0}),
+                json!({"address":"local-farm/t12","name":"t12","state":"done","attention":false,"labels":{},"parent":null}),
+                json!({"name":"t12","machine":"local-farm","address":"local-farm/t12","state":"done","attention":false,"labels":{},"keep":true,"parent":null,"exit_code":null,"created_at":null,"exited_at":null,"respawn_count":0,"cols":94,"rows":26}),
+                "done", json!({})),
+            _ => panic!("unknown expected {name}"),
+        };
+        (pt, rs, ca, ct, json!(cs), cl)
+    }
+
+    #[test]
+    fn parity_projections_match_mirror() {
+        for name in ["title_path", "bad_agent_state", "name_only_where", "dead", "exited", "finished", "no_status", "local", "no_name"] {
+            let t = parity_case(name);
+            let (ept, ers, eca, ect, ecs, ecl) = expected_parity(name);
+            let pt = public_terminal(&t);
+            assert_eq!(pt, ept, "public_terminal[{name}]");
+            let rs = public_roster_row(&t);
+            assert_eq!(rs, ers, "roster[{name}]");
+            let ca = core_agent_row(&t);
+            assert_eq!(ca, eca, "core_agent[{name}]");
+            let ct = core_terminal_row(&t);
+            assert_eq!(ct, ect, "core_terminal[{name}]");
+            assert_eq!(json!(core_state(&t)), ecs, "core_state[{name}]");
+            assert_eq!(core_labels(&t), ecl, "core_labels[{name}]");
+        }
+    }
+
+    #[test]
+    fn terminal_list_is_sorted_by_address() {
+        let mut rows = vec![
+            json!({"address": "local-farm/t4", "state": "live"}),
+            json!({"address": "local-farm/t3", "state": "live"}),
+            json!({"address": "local-farm/t1q", "state": "live"}),
+            json!({"address": "remote-host/t9", "state": "live"}),
+        ];
+        let sorted = sort_by_address(std::mem::take(&mut rows));
+        let addrs: Vec<&str> = sorted.iter().map(|t| t["address"].as_str().unwrap()).collect();
+        assert_eq!(addrs, vec!["local-farm/t1q", "local-farm/t3", "local-farm/t4", "remote-host/t9"]);
     }
 }
