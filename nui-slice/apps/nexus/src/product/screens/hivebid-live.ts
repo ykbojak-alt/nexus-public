@@ -307,17 +307,17 @@ const RATINGS_TTL_MS = 60_000;
 let ratingsCache: { at: number; result: RatingsResult } | null = null;
 
 /**
- * Рейтинги агентов из nexus-core через локальный мост (D:/<repo>\tools\newf_bridge.py).
- * Static export сам не умеет в /api/core — мост проксирует (CORS). GET — read
- * scope без auth (POST score — admin-only, здесь не используется).
- * Кэш на 60 с (разумный полл). Недоступность А не роняет live-доску:
- * ok=false, ratings={} — вызывающий честно маркирует fallback.
+ * Рейтинги агентов из nexus-core. Static export сам не умеет в /api/core —
+ * используется same-origin путь локального хоста (nue-host / Deck) или явный
+ * base, переданный вызывающим. Кэш на 60 с (разумный полл). Недоступность
+ * не роняет live-доску: ok=false, ratings={} — вызывающий честно маркирует
+ * fallback.
  */
 export async function fetchCoreRatings(bridgeBase?: string): Promise<RatingsResult> {
   if (ratingsCache && Date.now() - ratingsCache.at < RATINGS_TTL_MS) {
     return ratingsCache.result;
   }
-  const base = (bridgeBase || process.env.NEXUS_BRIDGE_BASE || 'http://localhost:8471').replace(/\/$/, '');
+  const base = (bridgeBase || '').replace(/\/$/, '');
   try {
     const res = await fetch(`${base}/api/core/ratings`, { cache: 'no-store' });
     if (!res.ok) {
