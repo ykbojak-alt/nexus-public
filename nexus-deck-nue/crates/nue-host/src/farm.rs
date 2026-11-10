@@ -962,12 +962,12 @@ impl Default for FakeFarm {
     fn default() -> Self {
         let mut terminals = Vec::new();
         let rows = [
-            ("local/agent-q", "working", Some("Agent A / 1"), 110u64, "▆ Agent A | nexus"),
-            ("local/agent-w", "working", Some("Agent B / 1"), 75, "▆ Agent B | nexus"),
-            ("local/agent-y", "blocked", Some("Agent C / 1"), 42, "▆ Agent C | nexus"),
-            ("local/agent-f", "idle", Some("Agent D / 1"), 199, "▏ Agent D | nexus"),
-            ("local/agent-4", "done", Some("Agent E / 1"), 33, "▏ Agent E | nexus"),
-            ("local/agent-3", "idle", Some("Agent F / 1"), 126, "▏ Agent F | nexus"),
+            ("machine-A/term-1", "working", Some("ROLE-1 / 1"), 110u64, "▆ Agent A | nexus"),
+            ("machine-B/term-1", "working", Some("ROLE-2 / 1"), 75, "▆ Agent B | nexus"),
+            ("machine-C/term-1", "blocked", Some("ROLE-3 / 1"), 42, "▆ Agent C | nexus"),
+            ("machine-D/term-1", "idle", Some("ROLE-4 / 1"), 199, "▏ Agent D | nexus"),
+            ("machine-E/term-1", "done", Some("ROLE-5 / 1"), 33, "▏ Agent E | nexus"),
+            ("machine-F/term-1", "idle", Some("ROLE-6 / 1"), 126, "▏ Agent F | nexus"),
         ];
         for (addr, astate, name, turn, title) in rows {
             let status = json!({"app": "codex", "state": astate, "msg": ""});
@@ -985,7 +985,7 @@ impl Default for FakeFarm {
         }
         Self {
             terminals: Mutex::new(terminals),
-            machines: vec![json!({"name": "local-farm", "target": "local", "state": "connected", "version": "0.1.18"})],
+            machines: vec![json!({"name": "machine-A", "target": "local", "state": "connected", "version": "0.1.18"})],
             server: json!({"version": "0.1.18", "uptime_ms": 6_174_500}),
             senders: Mutex::new((Vec::new(), Vec::new())),
         }
@@ -1161,15 +1161,15 @@ mod tests {
 
     #[test]
     fn roster_row_has_exactly_8_fields() {
-        let t = terminal("local/agent-w", "live", Some("working"), Some("Agent B / 1"), 75);
+        let t = terminal("machine-B/term-1", "live", Some("working"), Some("ROLE-2 / 1"), 75);
         let row = public_roster_row(&t);
         let obj = row.as_object().unwrap();
         assert_eq!(obj.len(), 8);
-        assert_eq!(obj["agent_id"], json!("local/agent-w"));
-        assert_eq!(obj["name"], json!("Agent B / 1"));
+        assert_eq!(obj["agent_id"], json!("machine-B/term-1"));
+        assert_eq!(obj["name"], json!("ROLE-2 / 1"));
         assert_eq!(obj["role"], json!(""));
         assert_eq!(obj["group"], json!("TEAM"));
-        assert_eq!(obj["term"], json!("local/agent-w"));
+        assert_eq!(obj["term"], json!("machine-B/term-1"));
         assert_eq!(obj["model"], json!(""));
         assert_eq!(obj["status"], json!("working"));
         assert_eq!(obj["current_wave"], json!(75));
@@ -1189,23 +1189,23 @@ mod tests {
 
     #[test]
     fn core_agent_row_shape() {
-        let t = terminal("local/agent-q", "live", Some("working"), Some("Agent A / 1"), 110);
+        let t = terminal("machine-A/term-1", "live", Some("working"), Some("ROLE-1 / 1"), 110);
         let row = core_agent_row(&t);
-        assert_eq!(row["address"], json!("local/agent-q"));
+        assert_eq!(row["address"], json!("machine-A/term-1"));
         assert_eq!(row["name"], json!("term-1"));
         assert_eq!(row["state"], json!("working"));
         assert_eq!(row["attention"], json!(false));
-        assert_eq!(row["labels"]["persona"], json!("Agent A / 1"));
+        assert_eq!(row["labels"]["persona"], json!("ROLE-1 / 1"));
         assert_eq!(row["parent"], Value::Null);
     }
 
     #[test]
     fn public_terminal_machine_local_without_prefix() {
-        let t = terminal("t3", "live", Some("error"), Some("Agent F / 1"), 126);
+        let t = terminal("t3", "live", Some("error"), Some("ROLE-6 / 1"), 126);
         let p = public_terminal(&t);
         assert_eq!(p["machine"], json!("local"));
         assert_eq!(p["agent_state"], json!("error"));
-        assert_eq!(p["name"], json!("Agent F / 1"));
+        assert_eq!(p["name"], json!("ROLE-6 / 1"));
     }
 
     #[test]

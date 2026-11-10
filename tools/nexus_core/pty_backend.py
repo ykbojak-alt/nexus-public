@@ -610,7 +610,7 @@ if sys.platform == "win32":
         kernel32!CreatePseudoConsole + PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE
         на Windows не присоединяет ребёнка к HPCON: ребёнок получает
         auto-console → stdin EOF → смерть интерактива за 2–12с (#521/#525,
-        reports/SPARK-openconsole-525.md). Рабочая модель — спавним
+        reports/ по теме OpenConsole). Рабочая модель — спавним
         vendored OpenConsole.exe --headless с pipe std-хендлами: он сам
         поднимает консоль и default shell (cmd.exe), команда уходит
         текстом в shell через stdin-pipe.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """test_n6_aegis_p1.py — regression-тесты Фазы 1 AEGIS GUARD.
 
-Каждый класс закрывает bypass-вектор из аудита (SPARK-aegis-audit-1105):
+Каждый класс закрывает bypass-вектор из аудита (aegis-audit-1105):
 - A-1 caller-controlled `sensitive` → server-side operation_class
 - A-2 authN/Z на policy-update / approvals (X-AEGIS-Key)
 - A-3 missing payload_field → fail-closed (нарушение, не пропуск)

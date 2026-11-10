@@ -520,7 +520,7 @@ if __name__ == "__main__":
         "/api/core/events/types",
         lambda b: isinstance(b, (dict, list)))))
 
-    # --- SPARK W79/W89: share-токены (W63) полный цикл ---
+    # --- W79/W89: share-токены (W63) полный цикл ---
     # share создаётся scopes=["screen","info"] → /view screen 200,
     # info 200, dump 403 (scope не выдан), view_url/view_urls по
     # ALICE-патчу, DELETE revoke → view 404. Публичные /view/*

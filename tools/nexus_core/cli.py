@@ -6,7 +6,7 @@ tools/nexus_core/cli.py — консольный CLI `nx` (thin client → core 
 nx говорит с nexus-core по HTTP/SSE (core_client). In-process
 SupervisorV1 из команд убран: параллельный супервизор респавнил
 keep-терминалы в CLI-процессе и конфликтовал с демоном по registry.json
-(см. reports/SPARK-newf-pty-513.md, GAP-1).
+(см. reports/ на тему PTY, GAP-1).
 
     nx run|send|keys|put|read|wait|ls|get|kill|keep|label|interrupt|
        exec|file|server status|events|templates|doc|machine|connect

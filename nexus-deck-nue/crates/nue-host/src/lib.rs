@@ -448,7 +448,7 @@ fn proxy(stream: &mut TcpStream, req: &Request, remote: &str) -> io::Result<()> 
 }
 
 /// Ферм-контур: `/api/deck/*` и `/api/core/*` — локальная сессия `nx connect`
-/// + проекции 1:1 с зеркалом на sage-pl (:5685). Все эндпоинты — GET.
+/// + проекции 1:1 с зеркалом на удалённым зеркалом (:5685). Все эндпоинты — GET.
 /// `/api/deck/events` и `/api/core/events` — SSE-поток (text/event-stream).
 fn api_farm_with(stream: &mut TcpStream, req: &Request, api: &dyn FarmApi) -> io::Result<()> {
     if req.method != "GET" && req.method != "HEAD" {
