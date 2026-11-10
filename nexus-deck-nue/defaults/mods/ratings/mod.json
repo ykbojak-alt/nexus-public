@@ -1,9 +1,0 @@
-{
-  "place": "none",
-  "title": "Ratings",
-  "overlay": {
-    "kind": "window",
-    "width": 460,
-    "height": 560
-  }
-}
