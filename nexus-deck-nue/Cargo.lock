@@ -5179,6 +5179,7 @@ dependencies = [
 name = "nue-host"
 version = "0.1.0"
 dependencies = [
+ "serde_json",
  "ureq",
 ]
 

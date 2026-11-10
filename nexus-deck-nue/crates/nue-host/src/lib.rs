@@ -25,16 +25,39 @@
 use std::io::{self, Read, Write};
 use std::net::{TcpListener, TcpStream};
 use std::path::{Component, Path, PathBuf};
+use std::sync::{Arc, OnceLock};
+use std::time::Duration;
+
+pub mod farm;
+use farm::{FarmApi, FarmError, FarmPool, PoolApi};
 
 pub const DEFAULT_PORT: u16 = 8869;
-/// Default remote backend. Override with `--remote` when running
-/// `nx-nue-host` (see bin/nx-nue-host.rs); the placeholder below is
-/// deliberately not a live host.
 pub const DEFAULT_REMOTE: &str = "https://example.invalid/v1";
 const MAX_BODY: usize = 16 * 1024 * 1024; // тело запроса к прокси (16 MiB)
 
+/// Глобальный пул сессий фермы (лениво поднимается первым запросом).
+fn farm_pool() -> &'static Arc<FarmPool> {
+    static POOL: OnceLock<Arc<FarmPool>> = OnceLock::new();
+    POOL.get_or_init(|| Arc::new(FarmPool::default()))
+}
+
+/// FarmApi-обёртка для роутера (с авто-сбросом при потере соединения).
+fn farm_api() -> Arc<PoolApi> {
+    Arc::new(PoolApi::new(farm_pool().clone()))
+}
+
 /// Поток-обработчик соединения. `root` — папка статики, `remote` — base URL прокси.
 pub fn serve(port: u16, root: PathBuf, remote: String) -> io::Result<()> {
+    serve_with(port, root, remote, farm_api())
+}
+
+/// То же, но с инъекцией источника фермы (для тестов — FakeFarm).
+pub fn serve_with(
+    port: u16,
+    root: PathBuf,
+    remote: String,
+    api: Arc<dyn FarmApi>,
+) -> io::Result<()> {
     let listener = TcpListener::bind(("127.0.0.1", port))?;
     eprintln!(
         "nue-host: NUE на http://127.0.0.1:{port} (root: {}) · /v1/* → {remote}",
@@ -48,8 +71,9 @@ pub fn serve(port: u16, root: PathBuf, remote: String) -> io::Result<()> {
             Ok(stream) => {
                 let root = root.clone();
                 let remote = remote.clone();
+                let api = api.clone();
                 std::thread::spawn(move || {
-                    if let Err(e) = handle(stream, &root, &remote) {
+                    if let Err(e) = handle_with(stream, &root, &remote, api.as_ref()) {
                         eprintln!("nue-host: {e}");
                     }
                 });
@@ -68,7 +92,12 @@ struct Request {
     chunked: bool,
 }
 
-fn handle(mut stream: TcpStream, root: &Path, remote: &str) -> io::Result<()> {
+fn handle_with(
+    mut stream: TcpStream,
+    root: &Path,
+    remote: &str,
+    api: &dyn FarmApi,
+) -> io::Result<()> {
     stream.set_read_timeout(Some(std::time::Duration::from_secs(30)))?;
     let req = read_request(&mut stream)?;
     eprintln!("nue-host: {} {}", req.method, req.path);
@@ -92,6 +121,11 @@ fn handle(mut stream: TcpStream, root: &Path, remote: &str) -> io::Result<()> {
 
     if req.path.starts_with("/v1/") {
         return proxy(&mut stream, &req, remote);
+    }
+
+    // Ферм-контур (Deck/core): локальная сессия `nx connect` + проекции 1:1.
+    if req.path.starts_with("/api/deck/") || req.path.starts_with("/api/core/") {
+        return api_farm_with(&mut stream, &req, api);
     }
 
     serve_static(&mut stream, &req, root)
@@ -413,6 +447,139 @@ fn proxy(stream: &mut TcpStream, req: &Request, remote: &str) -> io::Result<()> 
     }
 }
 
+/// Ферм-контур: `/api/deck/*` и `/api/core/*` — локальная сессия `nx connect`
+/// + проекции 1:1 с зеркалом на sage-pl (:5685). Все эндпоинты — GET.
+/// `/api/deck/events` и `/api/core/events` — SSE-поток (text/event-stream).
+fn api_farm_with(stream: &mut TcpStream, req: &Request, api: &dyn FarmApi) -> io::Result<()> {
+    if req.method != "GET" && req.method != "HEAD" {
+        return response_plain(stream, 405, "Method Not Allowed");
+    }
+    let path = req.path.as_str();
+
+    // SSE: долгоживущий поток событий.
+    if path.ends_with("/events") {
+        return sse_farm_with(stream, path, api);
+    }
+
+    let result: Result<serde_json::Value, FarmError> = if path.starts_with("/api/deck/") {
+        match path.trim_end_matches('/') {
+            "/api/deck/status" => api.deck_status(),
+            "/api/deck/agents" => api.deck_agents(),
+            "/api/deck/terminals" => api.deck_terminals(),
+            "/api/deck/machines" => api.deck_machines(),
+            "/api/deck/roster" => api.deck_roster(),
+            _ => return response_404(stream),
+        }
+    } else {
+        match path.trim_end_matches('/') {
+            "/api/core/agents" => api.core_agents(),
+            "/api/core/terminals" => api.core_terminals(),
+            "/api/core/machines" => api.core_machines(),
+            "/api/core/server" => api.core_server(),
+            "/api/core/spaces" => api.core_spaces(),
+            "/api/core/ratings" => api.core_ratings(),
+            _ => return response_404(stream),
+        }
+    };
+
+    match result {
+        Ok(value) => {
+            let body = serde_json::to_vec(&value).unwrap_or_default();
+            let head = format!(
+                "HTTP/1.1 200 OK\r\nContent-Type: application/json; charset=utf-8\r\nContent-Length: {}\r\nAccess-Control-Allow-Origin: *\r\nConnection: close\r\n\r\n",
+                body.len()
+            );
+            stream.write_all(head.as_bytes())?;
+            if req.method != "HEAD" {
+                stream.write_all(&body)?;
+            }
+            Ok(())
+        }
+        Err(e) => {
+            let status = match &e {
+                FarmError::Spawn(_) | FarmError::Hello(_) => 503,
+                FarmError::Lost(_) | FarmError::Timeout(_) => 502,
+                FarmError::Rpc(_) => 502,
+            };
+            let body = format!("{{\"error\":\"farm_unavailable\",\"detail\":{e:?}}}\n");
+            let head = format!(
+                "HTTP/1.1 {status} {}\r\nContent-Type: application/json; charset=utf-8\r\nContent-Length: {}\r\nAccess-Control-Allow-Origin: *\r\nConnection: close\r\n\r\n",
+                if status == 503 { "Service Unavailable" } else { "Bad Gateway" },
+                body.len()
+            );
+            stream.write_all(head.as_bytes())?;
+            stream.write_all(body.as_bytes())?;
+            Ok(())
+        }
+    }
+}
+
+/// SSE-стриминг: `/api/deck/events` (envelope `event: nx`) и `/api/core/events`
+/// (flat-строка). Heartbeat `: hb` каждые 15 с; при потере фермы — 502.
+fn sse_farm_with(stream: &mut TcpStream, path: &str, api: &dyn FarmApi) -> io::Result<()> {
+    let is_deck = path.starts_with("/api/deck/");
+    let rx = {
+        let r = if is_deck { api.deck_events() } else { api.core_events() };
+        match r {
+            Ok(rx) => rx,
+            Err(e) => {
+                let body = format!("{{\"error\":\"farm_unavailable\",\"detail\":{e:?}}}\n");
+                let head = format!(
+                    "HTTP/1.1 503 Service Unavailable\r\nContent-Type: application/json; charset=utf-8\r\nContent-Length: {}\r\nAccess-Control-Allow-Origin: *\r\nConnection: close\r\n\r\n",
+                    body.len()
+                );
+                stream.write_all(head.as_bytes())?;
+                stream.write_all(body.as_bytes())?;
+                return Ok(());
+            }
+        }
+    };
+
+    let head = "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream; charset=utf-8\r\nCache-Control: no-cache\r\nAccess-Control-Allow-Origin: *\r\nConnection: close\r\n\r\n";
+    stream.write_all(head.as_bytes())?;
+    stream.flush()?;
+
+    let mut last_beat = std::time::Instant::now();
+    let beat_interval = Duration::from_secs(15);
+    loop {
+        // Событие, либо heartbeat по таймауту.
+        let ev = rx.recv_timeout(beat_interval.saturating_sub(last_beat.elapsed()));
+        match ev {
+            Ok(v) => {
+                if v.get("error").is_some() {
+                    // ферма потеряна: завершаем поток.
+                    let body = "data: {\"error\":\"farm_lost\"}\n\n";
+                    let _ = stream.write_all(body.as_bytes());
+                    let _ = stream.flush();
+                    return Ok(());
+                }
+                let line = serde_json::to_string(&v).unwrap_or_default();
+                if is_deck {
+                    let out = format!("event: nx\ndata: {line}\n\n");
+                    stream.write_all(out.as_bytes())?;
+                } else {
+                    let out = format!("data: {line}\n\n");
+                    stream.write_all(out.as_bytes())?;
+                }
+                stream.flush()?;
+                last_beat = std::time::Instant::now();
+            }
+            Err(std::sync::mpsc::RecvTimeoutError::Timeout) => {
+                stream.write_all(b": hb\n\n")?;
+                stream.flush()?;
+                last_beat = std::time::Instant::now();
+            }
+            Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => {
+                // все отправители ушли (ферма умерла) — завершаем.
+                let body = "data: {\"error\":\"farm_lost\"}\n\n";
+                let _ = stream.write_all(body.as_bytes());
+                let _ = stream.flush();
+                return Ok(());
+            }
+        }
+    }
+}
+
 fn reason_phrase(status: u16) -> &'static str {
     match status {
         200 => "OK",
@@ -440,5 +607,127 @@ fn reason_phrase(status: u16) -> &'static str {
         503 => "Service Unavailable",
         504 => "Gateway Timeout",
         _ => "",
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use farm::FakeFarm;
+
+    /// Прокидывает сырой HTTP-запрос в обработчик и возвращает (status, headers, body).
+    fn hit(req_raw: &str, api: Arc<dyn FarmApi>) -> (u16, String, Vec<u8>) {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let addr = listener.local_addr().unwrap();
+        let root = PathBuf::from("tests/fixtures/root");
+        let remote = "http://127.0.0.1:9/v1".to_string(); // недостижимый апстрим
+        let server = std::thread::spawn(move || {
+            if let Ok((s, _)) = listener.accept() {
+                let _ = handle_with(s, &root, &remote, api.as_ref());
+            }
+        });
+        let mut c = TcpStream::connect(addr).unwrap();
+        c.write_all(req_raw.as_bytes()).unwrap();
+        c.flush().unwrap();
+        let mut buf = Vec::new();
+        let _ = c.read_to_end(&mut buf);
+        let _ = server.join();
+        let text = String::from_utf8_lossy(&buf);
+        let head = text.split("\r\n\r\n").next().unwrap_or("");
+        let mut lines = head.lines();
+        let status = lines
+            .next()
+            .and_then(|l| l.split_whitespace().nth(1))
+            .and_then(|s| s.parse::<u16>().ok())
+            .unwrap_or(0);
+        let body = match text.split_once("\r\n\r\n") {
+            Some((_, b)) => b.as_bytes().to_vec(),
+            None => Vec::new(),
+        };
+        (status, head.to_string(), body)
+    }
+
+    fn fake() -> Arc<dyn FarmApi> {
+        Arc::new(FakeFarm::default())
+    }
+
+    #[test]
+    fn deck_agents_200_and_projection_shape() {
+        let (status, _, body) = hit("GET /api/deck/agents HTTP/1.1\r\nHost: localhost\r\n\r\n", fake());
+        assert_eq!(status, 200);
+        let v: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(v["count"], 6);
+        let first = &v["agents"][0];
+        assert_eq!(first["address"], "machine-A/term-1");
+        assert_eq!(first["machine"], "machine-A");
+        assert_eq!(first["agent_state"], "working");
+        assert_eq!(first["turn"], 110);
+        assert!(first.get("cwd").is_none());
+        assert!(first.get("pid").is_none());
+        assert!(first.get("labels").is_none());
+    }
+
+    #[test]
+    fn deck_roster_8_fields() {
+        let (status, _, body) = hit("GET /api/deck/roster HTTP/1.1\r\nHost: localhost\r\n\r\n", fake());
+        assert_eq!(status, 200);
+        let v: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(v["count"], 6);
+        let row = &v["roster"][0];
+        assert_eq!(row.as_object().unwrap().len(), 8);
+        assert_eq!(row["role"], "codex");
+        assert_eq!(row["group"], "TEAM");
+        assert_eq!(row["status"], "working");
+        assert_eq!(row["current_wave"], 110);
+    }
+
+    #[test]
+    fn core_endpoints_200() {
+        for p in ["agents", "terminals", "machines", "server", "spaces", "ratings"] {
+            let (status, _, body) = hit(
+                &format!("GET /api/core/{p} HTTP/1.1\r\nHost: localhost\r\n\r\n"),
+                fake(),
+            );
+            assert_eq!(status, 200, "GET /api/core/{p}");
+            let v: serde_json::Value = serde_json::from_slice(&body).unwrap();
+            assert!(v.is_object());
+        }
+        let (_status, _, body) = hit("GET /api/core/terminals HTTP/1.1\r\nHost: localhost\r\n\r\n", fake());
+        let v: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(v["live"], 6);
+        assert_eq!(v["terminals"][0]["attention"], false);
+        assert_eq!(v["terminals"][0]["keep"], true);
+        assert_eq!(v["terminals"][0]["parent"], serde_json::Value::Null);
+    }
+
+    #[test]
+    fn deck_status_200() {
+        let (status, _, body) = hit("GET /api/deck/status HTTP/1.1\r\nHost: localhost\r\n\r\n", fake());
+        assert_eq!(status, 200);
+        let v: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(v["connected"], true);
+        assert_eq!(v["events_connected"], true);
+        assert_eq!(v["version"], "0.1.18");
+        assert_eq!(v["terminals"], 6);
+        assert_eq!(v["machines"], 1);
+        assert_eq!(v["session"], "nx-deck");
+    }
+
+    #[test]
+    fn unknown_api_path_is_404() {
+        let (status, _, body) = hit("GET /api/deck/unknown HTTP/1.1\r\nHost: localhost\r\n\r\n", fake());
+        assert_eq!(status, 404);
+        assert!(body.starts_with(b"404"));
+        let (status, _, _) = hit("GET /api/core/unknown HTTP/1.1\r\nHost: localhost\r\n\r\n", fake());
+        assert_eq!(status, 404);
+    }
+
+    #[test]
+    fn farm_api_non_get_is_405() {
+        let (status, _, _) = hit(
+            "POST /api/deck/agents HTTP/1.1\r\nHost: localhost\r\nContent-Length: 0\r\n\r\n",
+            fake(),
+        );
+        assert_eq!(status, 405);
     }
 }
