@@ -431,7 +431,7 @@ export function HiveBidScreen() {
       setLive(data);
       setBusy(false);
     });
-    // Рейтинги агентов из nexus-core (мост :8471) — опционально, не роняет доску.
+    // Рейтинги агентов из nexus-core (мост) — опционально, не роняет доску.
     fetchCoreRatings().then((res) => {
       if (!cancelled) {
         setCoreRatings(res.ratings);
@@ -672,7 +672,7 @@ export function HiveBidScreen() {
           index="05"
           title="Swarm standings"
           subtitle={isLive && ratingsLive
-            ? 'Живые рейтинги из nexus-core (мост :8471 · GET /api/core/ratings)'
+            ? 'Живые рейтинги из nexus-core (GET /api/core/ratings)'
             : isLive
               ? 'Ratings API недоступен · честные демо-рейтинги'
               : 'Демо-рейтинги (шкала 0–10 · тренд по истории) · не live-фид'}
