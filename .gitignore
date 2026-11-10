@@ -1,0 +1,33 @@
+# Generated / local artifacts (root-level hygiene for this staging repo)
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+*.egg-info/
+
+# Rust / build
+target/
+Cargo.lock.orig
+*.rs.bk
+
+# Logs / runtime
+*.log
+*.tmp
+*.tmp.cjs
+*.tmp.js
+nue-host.log
+
+# Editors / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Screenshots and local captures (not product assets)
+*_before.png
+*.screenshot.png
+captures/

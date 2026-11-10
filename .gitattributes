@@ -1,0 +1,39 @@
+# Binary assets — no text diffs/merges
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.svg binary
+*.wasm binary
+*.glb binary
+*.mp4 binary
+*.webm binary
+*.pck binary
+*.dll binary
+*.exe binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.tgz binary
+*.nupkg binary
+
+# Text normalization
+*.md text
+*.rs text
+*.py text
+*.toml text
+*.json text
+*.yml text
+*.yaml text
+*.sh text
+*.ps1 text
+*.js text
+*.ts text
+*.tsx text
+*.css text
+*.html text

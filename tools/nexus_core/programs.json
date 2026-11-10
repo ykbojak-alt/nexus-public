@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "programs": [
+    {
+      "id": "cmd",
+      "title": "Command Prompt",
+      "cmd": ["cmd.exe"],
+      "detect": {"exe": "cmd.exe"}
+    },
+    {
+      "id": "pwsh",
+      "title": "PowerShell 7",
+      "cmd": ["pwsh.exe", "-NoLogo"],
+      "detect": {"exe": "pwsh.exe"}
+    },
+    {
+      "id": "powershell",
+      "title": "Windows PowerShell",
+      "cmd": ["powershell.exe", "-NoLogo"],
+      "detect": {"exe": "powershell.exe"}
+    },
+    {
+      "id": "claude",
+      "title": "Claude Code",
+      "cmd": ["claude"],
+      "detect": {"exe": "claude"}
+    },
+    {
+      "id": "codex",
+      "title": "Codex CLI",
+      "cmd": ["codex"],
+      "detect": {"exe": "codex"}
+    },
+    {
+      "id": "qwen",
+      "title": "Qwen Code",
+      "cmd": ["qwen"],
+      "detect": {"exe": "qwen"}
+    },
+    {
+      "id": "opencode",
+      "title": "OpenCode",
+      "cmd": ["opencode"],
+      "detect": {"exe": "opencode"}
+    },
+    {
+      "id": "git-bash",
+      "title": "Git Bash",
+      "cmd": ["C:\\Program Files\\Git\\bin\\bash.exe", "--login", "-i"],
+      "detect": {"where": "C:\\Program Files\\Git\\bin\\bash.exe"}
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "presets": [
+    {
+      "id": "nexus-tests",
+      "title": "NEXUS core tests (pytest -x)",
+      "command": ["python", "-m", "pytest", "tools/nexus_core", "-x", "-q"],
+      "cwd": "<REPO_ROOT>",
+      "env": {"PYTHONUTF8": "1"},
+      "labels": {"kind": "test", "repo": "nexus"},
+      "detect": {"exe": "python"}
+    },
+    {
+      "id": "nexus-frontend",
+      "title": "NEXUS frontend dev (npm run dev)",
+      "command": ["npm", "run", "dev"],
+      "cwd": "<REPO_ROOT>/apps/nexus",
+      "labels": {"kind": "dev", "repo": "nexus"},
+      "detect": {"exe": "npm"}
+    },
+    {
+      "id": "nexus-shell",
+      "title": "NEXUS repo shell",
+      "command": ["cmd.exe"],
+      "cwd": "<REPO_ROOT>",
+      "labels": {"kind": "shell", "repo": "nexus"},
+      "detect": {"exe": "cmd.exe"}
+    },
+    {
+      "id": "scratch-shell",
+      "title": "Scratch shell (D:/Temp)",
+      "command": ["cmd.exe"],
+      "cwd": "D:/Temp",
+      "labels": {"kind": "scratch"},
+      "detect": {"exe": "cmd.exe"}
+    },
+    {
+      "id": "python-repl",
+      "title": "Python REPL",
+      "command": ["python", "-i"],
+      "env": {"PYTHONUTF8": "1"},
+      "labels": {"kind": "repl"},
+      "detect": {"exe": "python"}
+    }
+  ]
+}

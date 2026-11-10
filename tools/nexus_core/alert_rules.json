@@ -1,0 +1,26 @@
+{
+  "rules": [
+    {
+      "id": "fatal-log",
+      "pattern": "(?i)\\b(fatal|panic|segfault|core dumped)\\b",
+      "action": "notify",
+      "enabled": true,
+      "once": true
+    },
+    {
+      "id": "example-label",
+      "pattern": "(?i)\\b(deprecated|warning:)\\b",
+      "action": "label",
+      "label_key": "alerted",
+      "label_value": "warn",
+      "enabled": false,
+      "once": true
+    },
+    {
+      "id": "example-kill",
+      "pattern": "DELETEME-KILL-RULE",
+      "action": "kill",
+      "enabled": false
+    }
+  ]
+}

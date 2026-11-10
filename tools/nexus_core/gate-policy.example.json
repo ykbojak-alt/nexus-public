@@ -1,0 +1,8 @@
+[
+  {"match": {"action": "kill", "subject": "prod-db"}, "decision": "deny"},
+  {"match": {"action": "kill"}, "decision": "require_approval"},
+  {"match": {"action": "group-kill"}, "decision": "require_approval"},
+  {"match": {"action": "space-delete"}, "decision": "require_approval"},
+  {"match": {"action": "send-broadcast"}, "decision": "require_approval", "dual_control": true},
+  {"match": {"action": "restart"}, "decision": {"dual": true}}
+]

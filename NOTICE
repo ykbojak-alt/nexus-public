@@ -1,0 +1,21 @@
+NEXUS — NOTICE
+
+Этот репозиторий собран из копий исходных компонентов (см.
+SOURCE-PROVENANCE.md). Лицензии компонентов:
+
+- nexus-deck-core — Apache-2.0 (LICENSE в подкаталоге), distribution notices
+  в nexus-deck-core/distribution/notices, scripts/notices.
+- nexus-deck-nue — Apache-2.0 (LICENSE), THIRD-PARTY-NOTICES на корне
+  подкаталога.
+- tools/nexus_core — first-party код (без отдельного LICENSE; см. решения
+  владельца в SOURCE-PROVENANCE.md §5).
+- vendor/ghostty (оба workspace) — MIT; pин в .gitmodules.
+- vendor/gpui-kit / gpui-pre* / taffy / quickjs-jit-runtime / zed-xim /
+  xim-ctext — Apache-2.0 / MIT (см. компонентные LICENSE).
+- conpty (Microsoft ConPTY) — Microsoft (MIT-подобная); sha256-пины в
+  nexus-deck-core/scripts/fetch-conpty.ps1.
+
+THIRD-PARTY-NOTICES (корень) — агрегированные third-party notices из
+nexus-deck-nue. Для полного списка см. компонентные notices.
+
+Все товарные знаки и имена — собственность соответствующих владельцев.

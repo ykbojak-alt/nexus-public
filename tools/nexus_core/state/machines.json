@@ -1,0 +1,13 @@
+{
+  "machines": [
+    {
+      "name": "local",
+      "host": "localhost",
+      "transport": "local",
+      "state": "connected",
+      "since_ms": 1794325814611.0037,
+      "why": null,
+      "labels": {}
+    }
+  ]
+}
