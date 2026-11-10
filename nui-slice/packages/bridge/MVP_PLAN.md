@@ -1,6 +1,6 @@
 # Craft Bridge — remediation plan до MVP /tools/solidcraft
 
-F.O.R.G.E. · 2026-10-27 · по findings `CODEX-bridge-vs-contract-20261027.md` (7 gaps)
+AGENT-B · 2026-10-27 · по findings `CODEX-bridge-vs-contract-20261027.md` (7 gaps)
 + смежные: `CODEX-craft-api-contract-20261027.md` (G1/G2/G3), FORGE-recheck (F3/F4).
 Режим: file-only design, no code, no live runs.
 
