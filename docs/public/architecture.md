@@ -2,25 +2,29 @@
 
 ## Общая картина
 
-NEXUS: терминальный рантайм для кодинг-агентов (ядро `nx`) + нативный
-десктоп-клиент (приложение `nx-app`, GPUI) + клиент NUE (Next.js static
-export), который хостится локально внутри `nx-app` через `nue-host`.
+Публичный репозиторий содержит Nexus Deck: веб-UI (`nui-slice/`),
+локальный хост (`crates/nue-host/`), Rust-ядро (`nexus-deck-core/`),
+Python-ядро (`tools/nexus_core/`) и демо-стенд (`demos/`).
+
+Десктоп-приложение NUE в публичный репозиторий не входит (решение
+владельца, 2026-11-10; см. `SOURCE-PROVENANCE.md`).
 
 ```
 ┌───────────────────────────┐      ┌───────────────────────────────┐
-│  nexus-deck-core (Rust)   │      │  nexus-deck-nue (Rust, GPUI) │
-│  - супервизор терминалов  │      │  - nx-app (окно, моды)       │
-│  - API: /api/core/*       │◄────►│  - nue-host (HTTP + прокси)  │
-│  - AEGIS gate/audit       │      │  - манифесты Cargo, defaults │
+│  nexus-deck-core (Rust)   │      │  nui-slice (Next.js, Deck UI) │
+│  - супервизор терминалов  │      │  - apps/nexus/src (web)       │
+│  - API: /api/core/*       │◄────►│  - packages/* (общие библиотеки)│
+│  - AEGIS gate/audit       │      │  - pnpm workspace, lock        │
 └──────────┬────────────────┘      └──────────────┬────────────────┘
            │                                      │
-           │ PYTHONPATH (api.py)                  │ --root <NUE_OUT_DIR>
+           │ PYTHONPATH (api.py)                  │ --root <DECK_OUT_DIR>
            │                                      │ --remote <backend>
   ┌────────▼────────────────┐      ┌──────────────▼────────────────┐
-  │ tools/nexus_core (Python)│      │ NUE-клиент (static export)    │
-  │ REST + SSE, политики     │      │ /v1/* → прокси на remote      │
-  └──────────┬────────────────┘      └──────────────────────────────┘
-             │
+  │ tools/nexus_core (Python)│      │ crates/nue-host (локальный    │
+  │ REST + SSE, политики     │◄────►│ хост): статика Deck-UI +      │
+  └──────────┬────────────────┘      │ прокси /v1/* на remote,      │
+             │                       │ /api/deck|core/* проекции    │
+             │                       └──────────────────────────────┘
   ┌──────────▼────────────────┐
   │ demos/iikuznitsa-agentic  │  demo_stand.py: 32 проверки
   └───────────────────────────┘
@@ -35,12 +39,15 @@ export), который хостится локально внутри `nx-app` 
 - **AEGIS** — политика гейта (`gate-policy.json`), вердикты deny /
   require_approval / dual_control, HMAC-аудит (`audit.jsonl`) и
   endpoint `/api/core/audit/verify`.
-- **`nue-host`** (`nexus-deck-nue/crates/nue-host`) — локальный HTTP-сервер
-  для NUE-бандла (static export) с прокси `/v1/*` на удалённый backend.
-  Безопасность N-1…N-7 (см. `security.md`).
-- **`nx-app`** — GPUI-приложение; моды (JS) в `defaults/mods/` рисуются
-  нативным GPU. В публичном дереве все внешние URL заменены на
-  `example.invalid` — рабочие адреса задаются настройками.
+- **`nue-host`** (`crates/nue-host/`) — локальный HTTP-сервер
+  (standalone Rust-крэйт): раздаёт статику Deck-UI (сборка
+  `nui-slice`), проксирует `/v1/*` на удалённый backend, отдаёт
+  проекции `/api/deck/*` и `/api/core/*` (whitelist, mock-ферма).
+  Безопасность N-1…N-7 (см. `verify.md`).
+- **Deck-UI** (`nui-slice/`) — Next.js-приложение; экраны
+  `/workflow`, `/deck`, `/newf`; общие библиотеки в `packages/*`.
+  Все внешние URL в коде заменены на `example.invalid` — рабочие адреса
+  задаются при запуске хоста.
 
 ## Протоколы
 

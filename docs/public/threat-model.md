@@ -6,14 +6,13 @@
 ┌───────────────────────────────────────────────────────────┐
 │  Локальная машина (user space)                            │
 │  - core (nexus_core) слушает loopback-интерфейс           │
-│  - nue-host (статический хост NUE) слушает loopback       │
+│  - nue-host (статический хост Deck-UI) слушает loopback   │
 │  - demo-стенд поднимает core на loopback                  │
 └──────────────────────────┬────────────────────────────────┘
                            │ только loopback
 ┌──────────────────────────▼────────────────────────────────┐
 │  Удалённый backend (owner-gated, НЕ в этом репозитории)   │
-│  - ai2 host: /v1/* и /api/*                               │
-│  - зеркало deck: /api/deck/*                              │
+│  - /v1/* и /api/*                                         │
 │  - все URL в коде заменены на example.invalid             │
 └───────────────────────────────────────────────────────────┘
 ```
@@ -23,11 +22,11 @@
 | Поверхность | Где живёт | В этом репо? |
 |---|---|---|
 | Core API (`/api/core/*`) | локально (loopback) | да — `tools/nexus_core/api.py` |
-| Агенты/терминалы | локальный рантайм | да — `crates/ghostty-vt` + `tools/nexus_core` |
+| Агенты/терминалы | локальный рантайм | да — `nexus-deck-core` + `tools/nexus_core` |
 | AEGIS gate/audit | локально в core | да — `aegis.py`, `gate-policy.example.json` |
-| NUE-бандл | строится из `apps/nexus` (отдельно) | нет — out/ исключён |
+| Deck-UI | исходники в `nui-slice/`; сборка `out/` | да (исходники); out/ исключён |
 | nue-host | локальный хост | да — `crates/nue-host` |
-| Соединение с ai2 backend | изнутри nue-host (прокси) | конфигурируемо (`--remote`) |
+| Соединение с удалённым backend | изнутри nue-host (прокси) | конфигурируемо (`--remote`) |
 | Зеркало `/api/deck/*` | N/A — в этом репо реализация как whitelist-проекции | да — `crates/nue-host/src/farm.rs` |
 
 ## Blacklist / запрещённое
@@ -45,7 +44,7 @@
    - loopback-слушатели защищены Host-валидацией и анти-traversal.
    - максимальный размер тела ограничен.
 2. **Remote attacker** (не может достучаться до loopback — за NAT/фаерволом).
-3. **Supply chain**: vendored Ghostty (gitlink, пин), gpui-депсы —
+3. **Supply chain**: vendored Ghostty (gitlink, пин), dependencies —
    лицензии и пины в `.gitmodules` и `SOURCE-PROVENANCE.md`.
 
 ## Секреты
