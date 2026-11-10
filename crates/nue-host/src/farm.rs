@@ -1299,7 +1299,7 @@ mod tests {
 
     #[test]
     fn clean_text_masks_home_and_limits() {
-        assert_eq!(clean_text(&json!("C:\\Users\\BoJaK\\Tools\\pwsh.exe")), json!("C:\\Users\\***\\Tools\\pwsh.exe"));
+        assert_eq!(clean_text(&json!("C:\\Users\\<user>\\Tools\\pwsh.exe")), json!("C:\\Users\\***\\Tools\\pwsh.exe"));
         assert_eq!(clean_text(&json!("/home/ubuntu/project")), json!("/home/***/project"));
         let long = "x".repeat(300);
         assert_eq!(clean_text(&json!(long)).as_str().unwrap().len(), 160);
@@ -1365,7 +1365,7 @@ mod tests {
                 "type": "title",
                 "terminal": "term-1",
                 "seq": 123,
-                "data": {"title": "C:\\Users\\BoJaK\\x", "cwd": "/root/secret"}
+                "data": {"title": "C:\\Users\\<user>\\x", "cwd": "/root/secret"}
             }
         });
         let frame = clean_frame(&raw);
@@ -1432,7 +1432,7 @@ mod tests {
         match name {
             "title_path" => parity_terminal(
                 "local-farm/term-1", "live", Some("working"), Some("ROLE-1 / 1"), 110,
-                r"C:\Users\BoJaK\Tools\pwsh\pwsh.exe",
+                r"C:\Users\<user>\Tools\pwsh\pwsh.exe",
                 json!({"agent": "codex", "persona": "ROLE-1 / 1", "group": "dev"}),
                 Some("codex"), Some("hi")),
             "bad_agent_state" => parity_terminal(
