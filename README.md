@@ -22,6 +22,18 @@ NEXUS — платформа агентной инфраструктуры. В �
 
 ## Быстрый старт (для судьи)
 
+### Клонирование: подтянуть субмодули
+
+```sh
+git clone <repo-url> nexus
+cd nexus
+git submodule update --init --recursive   # vendor/ghostty (обязательно для сборки)
+```
+
+Без этого шага `vendor/ghostty` пустые; демо-стенд и тесты `nue-host`
+работают и без них, полная сборка `nx-app`/`nexus-core` — требует.
+
+
 ### Python demo-стенд (без внешних зависимостей)
 
 ```sh
