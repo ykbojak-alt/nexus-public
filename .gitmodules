@@ -1,0 +1,6 @@
+[submodule "nexus-deck-core/vendor/ghostty"]
+	path = nexus-deck-core/vendor/ghostty
+	url = https://github.com/ghostty-org/ghostty
+[submodule "nexus-deck-nue/vendor/ghostty"]
+	path = nexus-deck-nue/vendor/ghostty
+	url = https://github.com/ghostty-org/ghostty
