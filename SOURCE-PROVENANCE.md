@@ -20,8 +20,8 @@
 
 | Путь | Происхождение | Версия/пин | Лицензия |
 |---|---|---|---|
-| `nexus-deck-core/vendor/ghostty` | https://github.com/ghostty-org/ghostty (submodule) | commit `1e5cdb865807abc990181efb8ebfa9122955cce2` | MIT (см. `vendor/ghostty/LICENSE`) |
-| `nexus-deck-nue/vendor/ghostty` | https://github.com/ghostty-org/ghostty (submodule) | commit `291fd050b9e9c293c8adb6a140742649b7e42d3a` | MIT |
+| `nexus-deck-core/vendor/ghostty` | https://github.com/ghostty-org/ghostty (gitlink) | commit `291fd050b9e9c293c8adb6a140742649b7e42d3a` — подтверждено идентичностью `src/` с nue-пином; фиксация 2026-11-10 | MIT (см. `vendor/ghostty/LICENSE`) |
+| `nexus-deck-nue/vendor/ghostty` | https://github.com/ghostty-org/ghostty (gitlink) | commit `291fd050b9e9c293c8adb6a140742649b7e42d3a` | MIT |
 | `nexus-deck-nue/vendor/gpui-kit` и `gpui-pre*`, `taffy`, `quickjs-jit-runtime`, `zed-xim`, `xim-ctext` | локальные path-dependencies (без git-истории в копии) | — | Apache-2.0 / MIT (см. компонентные LICENSE) |
 | `tools/nexus_core/conpty/{conpty.dll,x64/OpenConsole.exe}` | Microsoft ConPTY (v1.24.260710001) из `Microsoft.Windows.Console.ConPTY` nupkg | sha256 сверены с pin в `nexus-deck-core/scripts/fetch-conpty.ps1` | MIT (Microsoft) |
 
