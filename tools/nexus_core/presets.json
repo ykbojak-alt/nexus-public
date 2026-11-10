@@ -14,7 +14,7 @@
       "id": "nexus-frontend",
       "title": "NEXUS frontend dev (npm run dev)",
       "command": ["npm", "run", "dev"],
-      "cwd": "<REPO_ROOT>/apps/nexus",
+      "cwd": "D:/nexus/apps/nexus",
       "labels": {"kind": "dev", "repo": "nexus"},
       "detect": {"exe": "npm"}
     },

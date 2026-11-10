@@ -123,7 +123,7 @@ class SpawnPresetApiTestCase(AioHTTPTestCase):
         self.assertEqual(data["preset"], "sh")
         self.assertEqual(data["address"], "local/p1")
         self.assertEqual(data["command"], ["cmd.exe", "/q"])
-        self.assertEqual(data["cwd"], "<REPO_ROOT>")  # arg.cwd > preset.cwd
+        self.assertEqual(data["cwd"], "D:/nexus")  # arg.cwd > preset.cwd
         self.assertEqual(data["labels"]["kind"], "shell")
         self.assertEqual(data["labels"]["extra"], "l")
         t = self.sup.get_terminal("local/p1")

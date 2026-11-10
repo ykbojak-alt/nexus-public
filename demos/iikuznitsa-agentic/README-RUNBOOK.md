@@ -40,7 +40,7 @@ offline: честный пустой state (до старта сервера / �
 ## Как запустить
 ### Требования
 - Python 3.10+ (проверено на 3.15).
-- `tools/nexus_core/api.py` из репозитория `D:\nexus` (PYTHONPATH=ROOT).
+- `tools/nexus_core/api.py` из корня репозитория (PYTHONPATH=ROOT).
 - Порт `5801` свободен (по умолчанию; `--port` меняет).
 - Только для `--agentic`: NexusLink на `127.0.0.1:5679` и `~/.nexuslink/config.json` с `incoming_token`.
 
@@ -140,8 +140,8 @@ agentic-режиме метки шагов содержат `[agentic(LLM …)]`
 
 ```bash
 # чистое состояние — удалить базу (скрипт делает это сам при `--keep-state`-отсутствии)
-rm -rf D:\nexus\demos\iikuznitsa-agentic\_state
-python D:\nexus\demos\iikuznitsa-agentic\demo_stand.py
+rm -rf demos/iikuznitsa-agentic/_state
+python demos/iikuznitsa-agentic/demo_stand.py
 ```
 
 Скрипт сам убивает поднятый core в конце (SCENE-5) и удаляет `_state/`
@@ -156,7 +156,7 @@ taskkill //F //PID <PID> //T
 
 Если live-демо невозможно (нет сети / прокси недоступен), пройти по записи:
 
-1. [ ] Открыть терминал, `cd D:\nexus`.
+1. [ ] Открыть терминал в корне репозитория.
 2. [ ] `python demos/iikuznitsa-agentic/demo_stand.py` — показать вывод:
        `32/32 PASS`.
 3. [ ] Поднять core вручную и показать ключевые API по шагам:
