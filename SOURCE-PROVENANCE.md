@@ -8,13 +8,20 @@
 | Поддерево | Источник | Ветка | Commit (исходный) | Дата commit | Грязный на момент импорта |
 |---|---|---|---|---|---|
 | `nexus-deck-core/` | `D:\nexus\nexus-deck-core` (commit) | master | `9ce385d9c8abb041dd4437476d770365b3fb5282` | 2026-11-07 01:47 +0300 | нет (0 изменений) |
-| `nexus-deck-nue/` | `D:\nexus\nexus-deck-nue` (commit) | master | `a902c59fb04e0e672c9276fce4811ce2152be025` | 2026-11-07 18:56 +0300 | 220 изменений (это был рабочий state) |
+| `crates/nue-host/` | `D:\nexus\nexus-deck-nue\crates\nue-host` (worktree) | — | — (standalone crate v0.1.1, свой Cargo.toml/Cargo.lock; FORGE, волна 8) | 2026-11-10 | — |
+| `nui-slice/` | `D:\nexus\apps\nexus` + `D:\nexus\packages/*` + корневые монорепо-файлы (worktree) | — | — | 2026-11-10 | — |
 | `tools/nexus_core/` | `D:\nexus\tools\nexus_core` (worktree) | — | — (path в корневом repo `D:\nexus`, ветка master) | 2026-11-10 | — |
 | `demos/iikuznitsa-agentic/` | `D:\nexus\demos\iikuznitsa-agentic` (worktree) | — | — | 2026-11-10 | — |
 
-> Примечание: `nexus-deck-nue/` импортирован **с незакоммиченными правками**
-> (220 записей), т.к. это было рабочее состояние ветки `nue-host`.
-> После импорта в этот staging внесены только sanity-правки (см. §4).
+> **Решение владельца (2026-11-10): NUE (десктоп-приложение NEXUS) не
+> публикуется.** Продуктовая линия `nexus-deck-nue/` (src/, crates/ghostty-sys/,
+> assets/, defaults/, distribution/, docs/, about.toml, justfile, build.rs,
+> корневые Cargo.toml/Cargo.lock/README/AGENTS/CHANGELOG/CONTRIBUTING/SECURITY,
+> submodule vendor/ghostty) **исключена** из публичного репо. Из неё
+> опубликован только локальный хост Deck — `crates/nue-host/` (верхнего
+> уровня, самостоятельный крэйт). Публикуются: Nexus Deck UI (`nui-slice/`),
+> локальный хост (`crates/nue-host/`), ядро (`nexus-deck-core/`), Python-ядро
+> (`tools/nexus_core/`), демо-стенд (`demos/`), документация (`docs/public/`).
 
 ## 2. Vendored/внешние зависимости
 
@@ -28,8 +35,11 @@
 ## 3. Полный перечень импортированных путей
 
 - `nexus-deck-core/**` (кроме `target/`, `.git`, vendored-бинарьев).
-- `nexus-deck-nue/**` (кроме `target/`, `.git`, `nue-host.log`,
-  `nexusscratchtick-before.png`).
+- `crates/nue-host/**` (standalone crate; src/, tests/ (вкл. harden2/harden3,
+  fixtures), Cargo.toml/Cargo.lock, README/SECURITY/CHANGELOG).
+- `nui-slice/**` (Deck-UI: apps/nexus/{src,public(fonts+favicon+legal),конфиги,
+  project.json, scripts/}, packages/* (8 библиотек), корневые package.json,
+  pnpm-workspace.yaml, pnpm-lock.yaml, nx.json, tsconfig.base.json).
 - `tools/nexus_core/**` (кроме `state/`, `__pycache__/`, `.pytest_cache/`).
 - `demos/iikuznitsa-agentic/{demo_stand.py,README-RUNBOOK.md}`.
 - `docs/public/**` (заново написано для судей).
@@ -41,19 +51,17 @@
 
 | Файл | Что изменено |
 |---|---|
-| `nexus-deck-nue/crates/nue-host/src/lib.rs` | дефолт `DEFAULT_REMOTE` → `https://example.invalid/v1` (реальный remote задаётся `--remote`); комментарий |
-| `nexus-deck-nue/crates/nue-host/src/bin/nx-nue-host.rs` | дефолт `--root` → `<NUE_OUT_DIR>`; документация |
-| `nexus-deck-nue/src/nue.rs` | `DEFAULT_UPSTREAM` → `https://example.invalid`; `DEFAULT_OUT` → `<NUE_OUT_DIR>` |
-| `nexus-deck-nue/defaults/mods/nexuslink/main.js` | `gatewayBaseUrl` → `https://gateway.example.invalid` |
-| `nexus-deck-nue/defaults/mods/sysmon/main.js` | `baseUrl` → `https://backend.example.invalid`; `displayName` → "remote" |
-| `nexus-deck-nue/defaults/mods/nexustick/main.js` | внутренние target-адреса → локальные плейсхолдеры |
-| `nexus-deck-nue/crates/nue-host/tests/security.rs` | тестовые пути `C:/Users/<user>/...`, `D:/<repo>/...` → синтетические |
-| `nexus-deck-nue/crates/nue-host/src/farm.rs` | санитизация фикстур: адреса → `machine-A/term-1` и т.п., имена персон → `ROLE-1..6` |
-| `nexus-deck-nue/src/model.rs` | тестовый `C:/Users/can/...` → `C:/Users/user/...` |
+| `crates/nue-host/src/lib.rs` | дефолт `DEFAULT_REMOTE` → `https://example.invalid/v1` (реальный remote задаётся `--remote`); комментарий |
+| `crates/nue-host/src/bin/nx-nue-host.rs` | дефолт `--root` → `<NUE_OUT_DIR>`; документация |
+| `crates/nue-host/src/farm.rs` | санитизация фикстур: адреса → `local-farm/term-1` и т.п., имена персон → `ROLE-1..6`; синтетические `<user>`-пути |
+| `crates/nue-host/tests/security.rs` | тестовые пути `C:/Users/<user>/...`, `D:/<repo>/...` → синтетические |
+| `crates/nue-host/tests/harden2.rs` | адреса `roy1-farm/t*` → `local-farm/term-*` (синхронно с фикстурами) |
+| `crates/nue-host/README.md`, `CHANGELOG.md` | внутренние упоминания → `local-farm`/`term-*`/`remote-host` |
+| `nui-slice/apps/nexus/src/**`, `packages/**` | санитизация: имена персон → `AGENT-*`/`ROLE-*`, внутренние пути/хосты → плейсхолдеры (hivebid: ключи `'machine-A'`/`'bidder-*'`) |
+| `nui-slice/scripts/` | удалены внутренние скрипты (deploy7-*, build-*-art, inventory-project, measure-web-art-quality, desktop-smoke-auto, package-unreal-runtime, approve-visual-baseline, check-budgets) — не нужны для сборки Deck-UI |
 | `tools/nexus_core/presets.json`, `presets.py`, `programs.py`, `test_presets.py` | `D:/nexus` → `<REPO_ROOT>` |
 | `tools/nexus_core/pty_backend.py`, `system_metrics.py` | упоминания `roy1` → `Windows` |
 | `tools/nexus_core/test_n6_aegis_p5.py`, `test_n6_ratings.py` | упоминания внутренней машины → безлично |
-| `nexus-deck-nue/vendor/**` | копии без `.git` (сабмодуль-пины см. §2) |
 
 Правки **не** меняют поведение/логику (кроме дефолтов remote — они в
 публичном дереве намеренно «мёртвые»; рабочий remote задаётся явно).
