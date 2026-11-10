@@ -46,7 +46,7 @@ pnpm build                        # → apps/nexus/out/
 
 ```sh
 cargo build -p nue-host           # из корня репозитория
-cargo test -p nue-host            # 22 теста (13 lib + 9 security)
+cargo test -p nue-host            # 42 теста (19 lib + 8 harden2 + 6 harden3 + 9 security)
 ```
 
 Запуск: `cargo run -p nue-host -- --root <OUT_DIR> --port 8869

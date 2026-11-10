@@ -101,7 +101,7 @@ cargo run -p nue-host -- --root <DECK_OUT_DIR> --remote <BACKEND_BASE>
 
 ## Валидация релиза
 
-- `cargo test -p nue-host` → 22/22.
+- `cargo test -p nue-host` → 42/42 (19 lib + 8 harden2 + 6 harden3 + 9 security).
 - Demo-стенд → 32/32.
 - Секрет-скан индекса → 0.
 - Внутренние идентификаторы → 0.
