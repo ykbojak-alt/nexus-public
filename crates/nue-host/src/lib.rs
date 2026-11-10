@@ -670,11 +670,11 @@ mod tests {
         assert_eq!(status, 200);
         let v: serde_json::Value = serde_json::from_slice(&body).unwrap();
         assert_eq!(v["count"], 6);
-        // Терминалы отсортированы по address; ищем кейс local-farm/t1q.
+        // Терминалы отсортированы по address; ищем кейс local-farm/term-1.
         let first = v["agents"].as_array().unwrap().iter()
-            .find(|a| a["address"] == "local-farm/t1q")
-            .expect("t1q должен быть в списке");
-        assert_eq!(first["address"], "local-farm/t1q");
+            .find(|a| a["address"] == "local-farm/term-1")
+            .expect("term-1 должен быть в списке");
+        assert_eq!(first["address"], "local-farm/term-1");
         assert_eq!(first["machine"], "local-farm");
         assert_eq!(first["agent_state"], "working");
         assert_eq!(first["turn"], 110);
@@ -690,8 +690,8 @@ mod tests {
         let v: serde_json::Value = serde_json::from_slice(&body).unwrap();
         assert_eq!(v["count"], 6);
         let row = v["roster"].as_array().unwrap().iter()
-            .find(|r| r["agent_id"] == "local-farm/t1q")
-            .expect("t1q должен быть в ростере");
+            .find(|r| r["agent_id"] == "local-farm/term-1")
+            .expect("term-1 должен быть в ростере");
         assert_eq!(row.as_object().unwrap().len(), 8);
         assert_eq!(row["role"], "codex");
         assert_eq!(row["group"], "TEAM");

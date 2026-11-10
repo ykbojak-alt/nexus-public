@@ -100,8 +100,8 @@ fn escape_absolute_path_windows_is_404() {
     with_server(|s| {
         for p in [
             "/C:/Windows/win.ini",
-            "/C:/Users/BoJaK/.qoder/settings.json",
-            "/D:/nexus/nexus-deck-nue/Cargo.toml",
+            "/C:/Users/<user>/.config/settings.json",
+            "/D:/repo/placeholder/Cargo.toml",
             "/C:/Windows/System32/drivers/etc/hosts",
         ] {
             let (code, _) = get(s.port, p, "127.0.0.1");

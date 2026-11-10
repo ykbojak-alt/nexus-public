@@ -111,9 +111,9 @@ fn deck_agents_projection_shape_matches_mirror() {
             }
             assert_no_forbidden_keys(row);
         }
-        // Проверка значений терминала local-farm/t1q (FakeFarm).
-        let first = agents.iter().find(|a| a["address"] == "local-farm/t1q").expect("t1q");
-        assert_eq!(first["address"], "local-farm/t1q");
+        // Проверка значений терминала local-farm/term-1 (FakeFarm).
+        let first = agents.iter().find(|a| a["address"] == "local-farm/term-1").expect("term-1");
+        assert_eq!(first["address"], "local-farm/term-1");
         assert_eq!(first["agent_state"], "working");
         assert_eq!(first["turn"], 110);
         assert_eq!(first["machine"], "local-farm");
@@ -134,9 +134,9 @@ fn roster_rows_have_exactly_8_fields() {
             assert!(row.get("env").is_none());
         }
         let row = v["roster"].as_array().unwrap().iter()
-            .find(|r| r["agent_id"] == "local-farm/t1q")
-            .expect("t1q в ростере");
-        assert_eq!(row["agent_id"], "local-farm/t1q");
+            .find(|r| r["agent_id"] == "local-farm/term-1")
+            .expect("term-1 в ростере");
+        assert_eq!(row["agent_id"], "local-farm/term-1");
         assert_eq!(row["status"], "working");
         assert_eq!(row["current_wave"], 110);
     });
@@ -149,10 +149,10 @@ fn core_shapes_match_mirror() {
         assert_eq!(code, 200);
         let v: Value = serde_json::from_slice(&body).unwrap();
         let first = v["agents"].as_array().unwrap().iter()
-            .find(|a| a["address"] == "local-farm/t1q")
-            .expect("t1q");
-        assert_eq!(first["address"], "local-farm/t1q");
-        assert_eq!(first["name"], "t1q");
+            .find(|a| a["address"] == "local-farm/term-1")
+            .expect("term-1");
+        assert_eq!(first["address"], "local-farm/term-1");
+        assert_eq!(first["name"], "term-1");
         assert_eq!(first["state"], "working");
         assert_eq!(first["attention"], false);
         assert_eq!(first["parent"], Value::Null);
@@ -164,8 +164,8 @@ fn core_shapes_match_mirror() {
         let v: Value = serde_json::from_slice(&body).unwrap();
         assert_eq!(v["live"], 6);
         let first = v["terminals"].as_array().unwrap().iter()
-            .find(|a| a["address"] == "local-farm/t1q")
-            .expect("t1q");
+            .find(|a| a["address"] == "local-farm/term-1")
+            .expect("term-1");
         assert_eq!(first["keep"], true);
         assert_eq!(first["parent"], Value::Null);
         assert_eq!(first["exit_code"], Value::Null);

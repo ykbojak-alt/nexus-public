@@ -123,11 +123,11 @@ nx-nue-host --demo --port 8871
 Локальный хост видит ферму со своей стороны:
 
 - **Терминалы локальной машины** имеют адреса без машинного префикса:
-  `machine-A/term-1`, `machine-B/term-1`, `machine-E/term-1` и т.п. (prefix `local`, без `t1q`
-  → `machine-A/term-1`).
-- **Удалённые машины** — с префиксом: `machine-A/term-1`, `remote-host/t3`.
+  `local-farm/term-1`, `local-farm/term-2`, `local-farm/t4` и т.п. (prefix `local`, без `term-1`
+  → `local-farm/term-1`).
+- **Удалённые машины** — с префиксом: `local-farm/term-1`, `remote-host/t3`.
 - Зеркало на remote-host (`farm-mirror`) видит те же терминалы с другой
-  точки: `machine-A/term-1` — как `local-farm` + `t1q` (локальные для него —
+  точки: `local-farm/term-1` — как `local-farm` + `term-1` (локальные для него —
   это терминалы remote-host).
 
 Проекции и сортировка при этом одинаковы (паритет проверен тестами).
