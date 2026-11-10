@@ -51,14 +51,23 @@ nx-nue-host --root <NUE_OUT_DIR> --remote <BACKEND_BASE>
 # <BACKEND_BASE> — адрес удалённого ai2 backend (owner-gated)
 ```
 
-## Что показать судье за 3 минуты
+## Что показать судье за 3 минуты (из публичного репо)
 
-1. `python demos/iikuznitsa-agentic/demo_stand.py` → 32/32 PASS.
-2. `/workflow` (локальный хост) — живой ростер агентов через
-   `/api/deck/roster` (проекции фермы).
-3. `/deck` — deck-экран (список агентов/терминалов).
-4. `/newf` — NEWF-панели.
-5. `/api/core/audit/verify` → `ok:true` (aegis + gate_trail).
+1. **Демо**: `python demos/iikuznitsa-agentic/demo_stand.py` → 32/32 PASS.
+2. **Исходный тур**: `docs/public/{architecture,sequence,threat-model,mock-vs-real,verify}.md`.
+3. **Запуск ядра**: `cargo build` (nexus-deck-core) +
+   `PYTHONPATH="$PWD" python -c "import tools.nexus_core.api; print('ok')"`.
+4. **Сборка клиента-nue-host**:
+   `cargo build -p nue-host` (nexus-deck-nue); `nx-nue-host` на
+   `127.0.0.1:8869` без бандла может отдавать только API-контур фермы
+   (проекции `/api/core/*`, `/api/deck/*`), БЕЗ UI-экранов.
+
+> **ВАЖНО**: экраны `/workflow`, `/deck`, `/newf` — часть **полного
+> продукта**, чьи исходники NUI живут во внутреннем репозитории фермы
+> (`apps/nexus`, `packages/*`) и в публичный репо НЕ включены.
+> Публичный репо даёт ядро, nue-host, демо-стенд и документацию; UI-слой
+> собирается отдельно (см. `docs/public/mock-vs-real.md`).
+> Никаких обещаний, которых репо не выполняет.
 
 ## Что осталось за фермой
 
