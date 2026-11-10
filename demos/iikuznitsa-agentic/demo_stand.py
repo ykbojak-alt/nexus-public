@@ -64,7 +64,14 @@ GATE_POLICY = [
 
 PASS = 0
 FAIL = 0
+SKIP = 0
 
+# ConPTY-доступность (Windows): если бинарники отсутствуют, терминальные
+# сценарии честно пропускаются, а не падают.
+def conpty_available() -> bool:
+    p = os.path.join(ROOT, "tools", "nexus_core", "conpty")
+    return (os.path.isfile(os.path.join(p, "conpty.dll"))
+            and os.path.isfile(os.path.join(p, "x64", "OpenConsole.exe")))
 
 def report(label: str, ok: bool, extra: str = "") -> None:
     global PASS, FAIL
@@ -74,6 +81,11 @@ def report(label: str, ok: bool, extra: str = "") -> None:
     else:
         FAIL += 1
         print(f"  [FAIL] {label}" + (f"  — {extra}" if extra else ""))
+
+def report_skip(label: str, reason: str = "нужен ConPTY (Windows)") -> None:
+    global SKIP
+    SKIP += 1
+    print(f"  [SKIP] {label}  — {reason}")
 
 
 def api(base: str, method: str, path: str, payload=None,
@@ -366,16 +378,21 @@ def main() -> int:
     # SCENE-1: два агентных роли (терминалы в nx runtime)
     # ------------------------------------------------------------------
     print("\n[SCENE-1] два агента в nx runtime")
-    for name, role in (("agent-a", "writer"), ("agent-b", "reader")):
-        st, d = api(url, "POST", "/api/core/run",
-                    {"name": name, "command": ["cmd.exe"],
-                     "labels": {"role": role, "space": "agents"}})
-        report(f"терминал {name} создан (role={role})",
-               st == 200 and d.get("address"), d.get("address"))
-    st, d = api(url, "GET", "/api/core/terminals")
-    names = [t.get("name") for t in d.get("terminals", [])]
-    report("оба терминала лив в /terminals",
-           "agent-a" in names and "agent-b" in names, ",".join(names))
+    if not conpty_available():
+        report_skip("терминал agent-a создан (role=writer)")
+        report_skip("терминал agent-b создан (role=reader)")
+        report_skip("оба терминала лив в /terminals")
+    else:
+        for name, role in (("agent-a", "writer"), ("agent-b", "reader")):
+            st, d = api(url, "POST", "/api/core/run",
+                        {"name": name, "command": ["cmd.exe"],
+                         "labels": {"role": role, "space": "agents"}})
+            report(f"терминал {name} создан (role={role})",
+                   st == 200 and d.get("address"), d.get("address"))
+        st, d = api(url, "GET", "/api/core/terminals")
+        names = [t.get("name") for t in d.get("terminals", [])]
+        report("оба терминала лив в /terminals",
+               "agent-a" in names and "agent-b" in names, ",".join(names))
 
     # ------------------------------------------------------------------
     # SCENE-2: handoff-doc (A пишет N → B читает ту же N)
@@ -429,78 +446,94 @@ def main() -> int:
     print("  gate-policy.json установлен (hot-read)")
 
     # 3.1 — deny: kill prod-db
-    st, d = api(url, "POST", "/api/core/run",
-                {"name": "prod-db", "command": ["cmd.exe"]})
-    report("терминал prod-db создан", st == 200, d.get("address"))
-    req_kill, label_kill = _agent_request_kill_proddb(url, llm)
-    payload_kill = {k: v for k, v in req_kill.items() if k != "action"}
-    st, d = api(url, "POST", "/api/core/kill", payload_kill)
-    report(f"B запрашивает kill prod-db → deny 403 [{label_kill}]",
-           st == 403 and d.get("outcome") == "deny",
-           f"rule={d.get('rule_id')} status={st}")
-    report("deny имеет policy_hash (verifiable)",
-           bool(d.get("policy_hash")), d.get("policy_hash", "")[:16])
+    if not conpty_available():
+        report_skip("терминал prod-db создан")
+        report_skip("B запрашивает kill prod-db → deny 403")
+        report_skip("deny имеет policy_hash (verifiable)")
+        report_skip("B запрашивает doc_put → 202 pending")
+        report_skip("approval виден в /approvals")
+        report_skip("approve(demo1) → мутация выполнена (doc v3)")
+        report_skip("терминал victim1 создан")
+        report_skip("kill victim1 → 202 dual-control")
+        report_skip("голос demo1 → pending 1/2")
+        report_skip("повторный голос demo1 → 409 (dual-control)")
+        report_skip("голос demo2 → kill выполнен")
+        report_skip("victim1 после kill → exited")
+        report_skip("prod-db остался жив (deny не исполнился)")
+    else:
+        # 3.1 — deny: kill prod-db
+        st, d = api(url, "POST", "/api/core/run",
+                    {"name": "prod-db", "command": ["cmd.exe"]})
+        report("терминал prod-db создан", st == 200, d.get("address"))
+        req_kill, label_kill = _agent_request_kill_proddb(url, llm)
+        payload_kill = {k: v for k, v in req_kill.items() if k != "action"}
+        st, d = api(url, "POST", "/api/core/kill", payload_kill)
+        report(f"B запрашивает kill prod-db → deny 403 [{label_kill}]",
+               st == 403 and d.get("outcome") == "deny",
+               f"rule={d.get('rule_id')} status={st}")
+        report("deny имеет policy_hash (verifiable)",
+               bool(d.get("policy_hash")), d.get("policy_hash", "")[:16])
 
-    # 3.2 — require_approval: doc_put (один approver)
-    req_doc, label_doc = _agent_request_doc_put(url, llm)
-    st, d = api(url, "POST", "/api/core/doc",
-                {"content": req_doc.get("content")})
-    report(f"B запрашивает doc_put → 202 pending [{label_doc}]",
-           st == 202 and d.get("status") == "pending"
-           and d.get("approval_id"),
-           f"approval_id={d.get('approval_id','')[:20]}…")
-    aid = d.get("approval_id")
+        # 3.2 — require_approval: doc_put (один approver)
+        req_doc, label_doc = _agent_request_doc_put(url, llm)
+        st, d = api(url, "POST", "/api/core/doc",
+                    {"content": req_doc.get("content")})
+        report(f"B запрашивает doc_put → 202 pending [{label_doc}]",
+               st == 202 and d.get("status") == "pending"
+               and d.get("approval_id"),
+               f"approval_id={d.get('approval_id','')[:20]}…")
+        aid = d.get("approval_id")
 
-    st, d = api(url, "GET", "/api/core/approvals")
-    pending = [m for m in d.get("mutations", [])
-               if m.get("approval_id") == aid]
-    report("approval виден в /approvals",
-           len(pending) == 1 and pending[0]["status"] == "pending",
-           f"action={pending[0]['action'] if pending else None}")
+        st, d = api(url, "GET", "/api/core/approvals")
+        pending = [m for m in d.get("mutations", [])
+                   if m.get("approval_id") == aid]
+        report("approval виден в /approvals",
+               len(pending) == 1 and pending[0]["status"] == "pending",
+               f"action={pending[0]['action'] if pending else None}")
 
-    st, d = api(url, "POST", f"/api/core/approvals/{aid}",
-                {"approved": True}, headers={"X-AEGIS-Key": "demo1"})
-    report("approve(demo1) → мутация выполнена (doc v3)",
-           st == 200 and d.get("status") == "executed"
-           and d.get("result", {}).get("version") == 3,
-           json.dumps(d.get("result")))
+        st, d = api(url, "POST", f"/api/core/approvals/{aid}",
+                    {"approved": True}, headers={"X-AEGIS-Key": "demo1"})
+        report("approve(demo1) → мутация выполнена (doc v3)",
+               st == 200 and d.get("status") == "executed"
+               and d.get("result", {}).get("version") == 3,
+               json.dumps(d.get("result")))
 
-    # 3.3 — require_approval dual-control: kill (два approver'а)
-    st, d = api(url, "POST", "/api/core/run",
-                {"name": "victim1", "command": ["cmd.exe"]})
-    report("терминал victim1 создан", st == 200, d.get("address"))
-    st, d = api(url, "POST", "/api/core/kill",
-                {"term": "victim1", "stage": "terminate"})
-    report("kill victim1 → 202 dual-control",
-           st == 202 and d.get("dual_control") is True
-           and d.get("required_approvals") == 2,
-           f"required={d.get('required_approvals')}")
-    aid2 = d.get("approval_id")
+        # 3.3 — require_approval dual-control: kill (два approver'а)
+        st, d = api(url, "POST", "/api/core/run",
+                    {"name": "victim1", "command": ["cmd.exe"]})
+        report("терминал victim1 создан", st == 200, d.get("address"))
+        st, d = api(url, "POST", "/api/core/kill",
+                    {"term": "victim1", "stage": "terminate"})
+        report("kill victim1 → 202 dual-control",
+               st == 202 and d.get("dual_control") is True
+               and d.get("required_approvals") == 2,
+               f"required={d.get('required_approvals')}")
+        aid2 = d.get("approval_id")
 
-    st, d = api(url, "POST", f"/api/core/approvals/{aid2}",
-                {"approved": True}, headers={"X-AEGIS-Key": "demo1"})
-    report("голос demo1 → pending 1/2",
-           st == 202 and d.get("status") == "pending"
-           and d.get("remaining") == 1, f"remaining={d.get('remaining')}")
+        st, d = api(url, "POST", f"/api/core/approvals/{aid2}",
+                    {"approved": True}, headers={"X-AEGIS-Key": "demo1"})
+        report("голос demo1 → pending 1/2",
+               st == 202 and d.get("status") == "pending"
+               and d.get("remaining") == 1, f"remaining={d.get('remaining')}")
 
-    st, d = api(url, "POST", f"/api/core/approvals/{aid2}",
-                {"approved": True}, headers={"X-AEGIS-Key": "demo1"})
-    report("повторный голос demo1 → 409 (dual-control)",
-           st == 409, f"status={st}")
+        st, d = api(url, "POST", f"/api/core/approvals/{aid2}",
+                    {"approved": True}, headers={"X-AEGIS-Key": "demo1"})
+        report("повторный голос demo1 → 409 (dual-control)",
+               st == 409, f"status={st}")
 
-    st, d = api(url, "POST", f"/api/core/approvals/{aid2}",
-                {"approved": True}, headers={"X-AEGIS-Key": "demo2"})
-    report("голос demo2 → kill выполнен", st == 200
+        st, d = api(url, "POST", f"/api/core/approvals/{aid2}",
+                    {"approved": True}, headers={"X-AEGIS-Key": "demo2"})
+        report("голос demo2 → kill выполнен", st == 200
            and d.get("status") == "executed", json.dumps(d.get("result")))
 
-    st, d = api(url, "GET", "/api/core/terminals")
-    victims = {t.get("name"): t.get("state")
-               for t in d.get("terminals", [])}
-    report("victim1 после kill → exited",
-           victims.get("victim1") == "exited", f"state={victims.get('victim1')}")
-    report("prod-db остался жив (deny не исполнился)",
-           victims.get("prod-db") in ("idle", "running"),
-           f"state={victims.get('prod-db')}")
+        st, d = api(url, "GET", "/api/core/terminals")
+        victims = {t.get("name"): t.get("state")
+                   for t in d.get("terminals", [])}
+        report("victim1 после kill → exited",
+               victims.get("victim1") == "exited", f"state={victims.get('victim1')}")
+        report("prod-db остался жив (deny не исполнился)",
+               victims.get("prod-db") in ("idle", "running"),
+               f"state={victims.get('prod-db')}")
 
     # ------------------------------------------------------------------
     # SCENE-4: видимый след — SSE + audit + verify
@@ -509,32 +542,44 @@ def main() -> int:
     events = sse_replay(url)
     policy_ev = [e for e in events if e.get("type") == "policy"]
     doc_ev = [e for e in events if e.get("type") == "doc"]
-    report("SSE: событие `policy` есть (gate-вердикт)",
-           len(policy_ev) > 0, f"count={len(policy_ev)}")
-    report("SSE: событие `doc` есть (версии документа)",
-           len(doc_ev) > 0, f"count={len(doc_ev)}")
-    report("SSE: policy-события несут outcome (aegis-вердикт)",
-           len(policy_ev) > 0
-           and all(e.get("outcome") for e in policy_ev),
-           f"count={len(policy_ev)}")
-    report("SSE: policy-события несут HMAC content_hash (строго)",
-           len(policy_ev) > 0
-           and all(bool(e.get("content_hash")) for e in policy_ev),
-           f"count={len(policy_ev)}")
+    if not conpty_available():
+        report_skip("SSE: событие `policy` есть (gate-вердикт)")
+        report_skip("SSE: policy-события несут outcome (aegis-вердикт)")
+        report_skip("SSE: policy-события несут HMAC content_hash (строго)")
+        report("SSE: событие `doc` есть (версии документа)",
+               len(doc_ev) > 0, f"count={len(doc_ev)}")
+    else:
+        report("SSE: событие `policy` есть (gate-вердикт)",
+               len(policy_ev) > 0, f"count={len(policy_ev)}")
+        report("SSE: событие `doc` есть (версии документа)",
+               len(doc_ev) > 0, f"count={len(doc_ev)}")
+        report("SSE: policy-события несут outcome (aegis-вердикт)",
+               len(policy_ev) > 0
+               and all(e.get("outcome") for e in policy_ev),
+               f"count={len(policy_ev)}")
+        report("SSE: policy-события несут HMAC content_hash (строго)",
+               len(policy_ev) > 0
+               and all(bool(e.get("content_hash")) for e in policy_ev),
+               f"count={len(policy_ev)}")
 
     st, d = api(url, "GET", "/api/core/audit")
     entries = d.get("entries", [])
     denied = [e for e in entries if e.get("decision") == "deny"]
     approved = [e for e in entries if e.get("decision") == "allow"]
-    report("audit: gate-решения записаны",
-           len(entries) >= 8, f"entries={len(entries)}")
-    report("audit: содержит deny (prod-db)",
-           any(e.get("action") == "kill"
-               and e.get("decision") == "deny" for e in entries),
-           f"deny entries={len(denied)}")
-    report("audit: содержит approval_approved",
-           any(e.get("action") == "approval_approved" for e in entries),
-           f"allow entries={len(approved)}")
+    if not conpty_available():
+        report_skip("audit: gate-решения записаны")
+        report_skip("audit: содержит deny (prod-db)")
+        report_skip("audit: содержит approval_approved")
+    else:
+        report("audit: gate-решения записаны",
+               len(entries) >= 8, f"entries={len(entries)}")
+        report("audit: содержит deny (prod-db)",
+               any(e.get("action") == "kill"
+                   and e.get("decision") == "deny" for e in entries),
+               f"deny entries={len(denied)}")
+        report("audit: содержит approval_approved",
+               any(e.get("action") == "approval_approved" for e in entries),
+               f"allow entries={len(approved)}")
 
     st, d = api(url, "GET", "/api/core/audit/verify")
     report("verify endpoint: ok=True (aegis + gate_trail)",
@@ -565,12 +610,14 @@ def main() -> int:
 
     # ------------------------------------------------------------------
     print("\n" + "=" * 76)
-    total = PASS + FAIL
-    print(f"RESULT: {PASS}/{total} PASS, {FAIL} FAIL")
+    total = PASS + FAIL + SKIP
+    print(f"RESULT: {PASS}/{total} PASS, {FAIL} FAIL, {SKIP} SKIP")
     if FAIL > 0:
         print("STAND: FAIL")
         return 1
     print("STAND: PASS")
+    if SKIP > 0:
+        print(f"(пропущено {SKIP}: нужен ConPTY/Windows)")
     if not args.keep_state:
         shutil.rmtree(base, ignore_errors=True)
         print(f"(база очищена: {base})")

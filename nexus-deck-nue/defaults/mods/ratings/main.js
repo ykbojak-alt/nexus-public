@@ -150,10 +150,10 @@ const MOCK_RATINGS_CORE_RESPONSE = {
 
 const AGENT_DISPLAY_NAMES = Object.freeze({
   alice: "AGENT-A",
-  spark: "S.P.A.R.K.",
+  spark: "AGENT-F",
   forge: "AGENT-B",
   codex: "AGENT-C",
-  ace: "A.C.E.",
+  ace: "AGENT-G",
   neo2: "AGENT-D",
   qoder: "AGENT-E",
   arch: "A.R.C.H.",

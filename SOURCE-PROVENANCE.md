@@ -46,12 +46,12 @@
 | `nexus-deck-nue/src/nue.rs` | `DEFAULT_UPSTREAM` → `https://example.invalid`; `DEFAULT_OUT` → `<NUE_OUT_DIR>` |
 | `nexus-deck-nue/defaults/mods/nexuslink/main.js` | `gatewayBaseUrl` → `https://gateway.example.invalid` |
 | `nexus-deck-nue/defaults/mods/sysmon/main.js` | `baseUrl` → `https://backend.example.invalid`; `displayName` → "remote" |
-| `nexus-deck-nue/defaults/mods/nexustick/main.js` | внутренние target-адреса (`sage-pl/t2c`, `t1r`) → локалные плейсхолдеры |
+| `nexus-deck-nue/defaults/mods/nexustick/main.js` | внутренние target-адреса → локальные плейсхолдеры |
 | `nexus-deck-nue/crates/nue-host/tests/security.rs` | тестовые пути `C:/Users/<user>/...`, `D:/<repo>/...` → синтетические |
 | `nexus-deck-nue/src/model.rs` | тестовый `C:/Users/can/...` → `C:/Users/user/...` |
 | `tools/nexus_core/presets.json`, `presets.py`, `programs.py`, `test_presets.py` | `D:/nexus` → `<REPO_ROOT>` |
 | `tools/nexus_core/pty_backend.py`, `system_metrics.py` | упоминания `roy1` → `Windows` |
-| `tools/nexus_core/test_n6_aegis_p5.py`, `test_n6_ratings.py` | упоминания `sage-pl` → безлично |
+| `tools/nexus_core/test_n6_aegis_p5.py`, `test_n6_ratings.py` | упоминания внутренней машины → безлично |
 | `nexus-deck-nue/vendor/**` | копии без `.git` (сабмодуль-пины см. §2) |
 
 Правки **не** меняют поведение/логику (кроме дефолтов remote — они в
