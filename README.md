@@ -68,6 +68,20 @@ cargo metadata --no-deps --manifest-path nexus-deck-nue/Cargo.toml
   - AEGIS/token-механизмы — owner-gated, в публичном дереве только как
     код и `example`-конфиги, без секретов.
 
+## Требования окружения (Windows)
+
+На Windows demo-стенд поднимает терминалы через ConPTY. Бинарники
+ConPTY **не входят** в репозиторий (fetch-by-script): перед первым
+запуском на Windows выполните:
+
+```sh
+# из nexus-deck-core/ (sha256-пины — внутри скрипта)
+powershell -ExecutionPolicy Bypass -File scripts/fetch-conpty.ps1 -Dest ../tools/nexus_core
+```
+
+Без этого шага на Windows demo упадёт на создании терминалов
+(8/32 FAIL). На Linux/macOS ConPTY не используется (ForkPTYBackend).
+
 ## Лицензии
 
 См. `LICENSE` (Apache-2.0, owner-review), `NOTICE`, и компонентные
