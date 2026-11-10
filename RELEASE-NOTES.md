@@ -33,40 +33,45 @@ python demos/iikuznitsa-agentic/demo_stand.py
 
 Ожидается: `RESULT: 32/32 PASS, 0 FAIL, 0 SKIP`.
 
-### Полная сборка (nx-app / nexus-core)
+### Полная сборка (Deck UI / ядро)
 
 ```sh
-git submodule update --init --recursive   # обязателен: vendor/ghostty
+# 1) Nexus Deck UI (исходники в этом репо)
+cd nui-slice
+pnpm install --frozen-lockfile
+pnpm build
+# 2) Ядро: cargo metadata (без полной сборки)
 cargo metadata --no-deps --manifest-path nexus-deck-core/Cargo.toml
-cargo metadata --no-deps --manifest-path nexus-deck-nue/Cargo.toml
-# сборка: cd nexus-deck-nue && cargo build --release  (вне демо)
+cargo metadata --no-deps --manifest-path Cargo.toml
 ```
 
-### Локальный хост NUE
+### Локальный хост Deck
 
 ```sh
-# из nexus-deck-nue (после сборки)
-nx-nue-host --root <NUE_OUT_DIR> --remote <BACKEND_BASE>
-# <NUE_OUT_DIR> — предсобранный NUE static export (вне этого репо)
-# <BACKEND_BASE> — адрес удалённого ai2 backend (owner-gated)
+# из корня репозитория (после cargo build -p nue-host)
+cargo run -p nue-host -- --root <DECK_OUT_DIR> --remote <BACKEND_BASE>
+# <DECK_OUT_DIR> — сборка Deck-UI (nui-slice/apps/nexus/out)
+# <BACKEND_BASE> — адрес удалённого backend фермы (owner-gated)
 ```
 
 ## Что показать судье за 3 минуты (из публичного репо)
 
 1. **Демо**: `python demos/iikuznitsa-agentic/demo_stand.py` → 32/32 PASS.
 2. **Исходный тур**: `docs/public/{architecture,sequence,threat-model,mock-vs-real,verify}.md`.
-3. **Запуск ядра**: `cargo build` (nexus-deck-core) +
+3. **Запуск ядра**: `cargo metadata --no-deps --manifest-path nexus-deck-core/Cargo.toml` +
    `PYTHONPATH="$PWD" python -c "import tools.nexus_core.api; print('ok')"`.
-4. **Сборка клиента-nue-host**:
-   `cargo build -p nue-host` (nexus-deck-nue); `nx-nue-host` на
+4. **Deck-UI**: `cd nui-slice && pnpm install --frozen-lockfile && pnpm build`
+   → `apps/nexus/out/` (экраны `/workflow`, `/deck`, `/newf`).
+5. **Локальный хост**: `cargo build -p nue-host`; `nx-nue-host` на
    `127.0.0.1:8869` без бандла может отдавать только API-контур фермы
    (проекции `/api/core/*`, `/api/deck/*`), БЕЗ UI-экранов.
 
 > **ВАЖНО**: экраны `/workflow`, `/deck`, `/newf` — часть **полного
 > продукта**, чьи исходники NUI живут во внутреннем репозитории фермы
-> (`apps/nexus`, `packages/*`) и в публичный репо НЕ включены.
-> Публичный репо даёт ядро, nue-host, демо-стенд и документацию; UI-слой
-> собирается отдельно (см. `docs/public/mock-vs-real.md`).
+> (`apps/nexus`, `packages/*`). В публичном репо — Deck-UI-срез
+> (`nui-slice/`), который собирается в эти экраны.
+> Публичный репо даёт ядро, nue-host, Deck-UI-срез, демо-стенд и
+> документацию; десктоп-приложение NUE не публикуется (решение владельца).
 > Никаких обещаний, которых репо не выполняет.
 
 ## Что осталось за фермой
@@ -84,7 +89,8 @@ nx-nue-host --root <NUE_OUT_DIR> --remote <BACKEND_BASE>
 | Mock-совместимость (`CORE_MOCK=1`) | mock |
 | ConPTY-бинарники | включены (MIT) |
 | Ghostty | gitlink (MIT) |
-| NUE-бандл (`out/`) | вне репо (собирается отдельно) |
+| Deck-UI-срез (`nui-slice/`) | source (собирается pnpm build) |
+| Десктоп NUE (полный продукт) | вне репо (решение владельца) |
 | nue-host | source + тесты |
 | Проекции `/api/deck/*` | source-only (whitelist) |
 | NexusLink / ai2 backend | owner-gated |
