@@ -149,13 +149,13 @@ const MOCK_RATINGS_CORE_RESPONSE = {
 };
 
 const AGENT_DISPLAY_NAMES = Object.freeze({
-  alice: "A.L.I.C.E.",
+  alice: "AGENT-A",
   spark: "S.P.A.R.K.",
-  forge: "F.O.R.G.E.",
-  codex: "C.O.D.E.X.",
+  forge: "AGENT-B",
+  codex: "AGENT-C",
   ace: "A.C.E.",
-  neo2: "N.E.O.2",
-  qoder: "Q.O.D.E.R.",
+  neo2: "AGENT-D",
+  qoder: "AGENT-E",
   arch: "A.R.C.H.",
 });
 
