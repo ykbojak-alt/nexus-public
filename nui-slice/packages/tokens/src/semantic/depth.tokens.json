@@ -1,0 +1,35 @@
+{
+  "$description": "Depth-layer mapping (spec §8): Environment -> Surface -> Panel -> Elevated Panel -> Overlay -> Holographic/Core. Each layer binds surface color + shadow + blur so 2D/SVG/DOM fallbacks of 3D scenes render the same depth without WebGL.",
+  "depth": {
+    "environment": {
+      "bg":     { "$type": "color",     "$value": "{surface.environment}" },
+      "shadow": { "$type": "shadow",    "$value": "{shadow.xs}" },
+      "blur":   { "$type": "dimension", "$value": "{blur.none}" }
+    },
+    "surface": {
+      "bg":     { "$type": "color",     "$value": "{surface.base}" },
+      "shadow": { "$type": "shadow",    "$value": "{shadow.sm}" },
+      "blur":   { "$type": "dimension", "$value": "{blur.sm}" }
+    },
+    "panel": {
+      "bg":     { "$type": "color",     "$value": "{surface.panel}" },
+      "shadow": { "$type": "shadow",    "$value": "{shadow.md}" },
+      "blur":   { "$type": "dimension", "$value": "{blur.md}" }
+    },
+    "elevated": {
+      "bg":     { "$type": "color",     "$value": "{surface.elevated}" },
+      "shadow": { "$type": "shadow",    "$value": "{shadow.lg}" },
+      "blur":   { "$type": "dimension", "$value": "{blur.lg}" }
+    },
+    "overlay": {
+      "bg":     { "$type": "color",     "$value": "{surface.overlay}" },
+      "shadow": { "$type": "shadow",    "$value": "{shadow.xl}" },
+      "blur":   { "$type": "dimension", "$value": "{blur.xl}" }
+    },
+    "core": {
+      "bg":     { "$type": "color",  "$value": "{surface.core}" },
+      "shadow": { "$type": "shadow", "$value": "{glow.core}" },
+      "blur":   { "$type": "dimension", "$value": "{blur.none}" }
+    }
+  }
+}

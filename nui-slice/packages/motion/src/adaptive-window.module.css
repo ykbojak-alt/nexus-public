@@ -1,0 +1,162 @@
+/* Adaptive window motion (wave XVII W4): rail collapse + icon strip via
+   container queries; only track sizes/opacity transition — no layout jump.
+   NB: @container не может стилизовать сам контейнер — поэтому
+   .container держит container-type, а грид и переменные живут на
+   дочернем .shell. */
+
+.container {
+  container-type: inline-size;
+  container-name: nexus-window;
+  height: 100%;
+  min-width: 0;
+}
+
+.shell {
+  --nexus-adaptive-rail-duration: var(--nexus-duration-normal, 240ms);
+  --nexus-adaptive-labels-duration: 140ms;
+  --nexus-adaptive-strip-duration: 240ms;
+  --nexus-adaptive-easing: cubic-bezier(0.22, 0.9, 0.35, 1);
+  --nexus-adaptive-rail-w: 240px;
+  --nexus-adaptive-strip-h: 0px;
+  display: grid;
+  grid-template-rows: minmax(0, var(--nexus-adaptive-strip-h)) minmax(0, 1fr);
+  grid-template-columns: var(--nexus-adaptive-rail-w) minmax(0, 1fr);
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  transition:
+    grid-template-columns var(--nexus-adaptive-rail-duration) var(--nexus-adaptive-easing),
+    grid-template-rows var(--nexus-adaptive-strip-duration) var(--nexus-adaptive-easing);
+}
+
+.strip {
+  grid-column: 1 / -1;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity var(--nexus-adaptive-strip-duration) var(--nexus-adaptive-easing);
+}
+
+.strip > * {
+  min-height: 0;
+}
+
+.rail {
+  grid-column: 1;
+  grid-row: 2;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  visibility: visible;
+  transition: visibility 0s linear 0s;
+}
+
+.main {
+  grid-column: 2;
+  grid-row: 2;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Item label fades instead of snapping width: icon column stays 72px. */
+.label {
+  display: inline-block;
+  max-width: 160px;
+  white-space: nowrap;
+  overflow: hidden;
+  opacity: 1;
+  transition:
+    opacity var(--nexus-adaptive-labels-duration) var(--nexus-adaptive-easing),
+    max-width var(--nexus-adaptive-labels-duration) var(--nexus-adaptive-easing);
+}
+
+@container nexus-window (max-width: 1000px) {
+  .shell {
+    --nexus-adaptive-rail-w: 72px;
+  }
+
+  .label {
+    max-width: 0;
+    opacity: 0;
+  }
+}
+
+@container nexus-window (max-width: 560px) {
+  .shell {
+    --nexus-adaptive-rail-w: 0px;
+    --nexus-adaptive-strip-h: 52px;
+  }
+
+  /* Рельс прячется после того, как колонка сжалась до 0 (220ms). */
+  .rail {
+    visibility: hidden;
+    transition-delay: var(--nexus-adaptive-rail-duration);
+  }
+
+  .strip {
+    opacity: 1;
+  }
+}
+
+/* Deterministic mode override for stories/tests without resizing. */
+.container[data-force='full'] .shell {
+  --nexus-adaptive-rail-w: 240px;
+  --nexus-adaptive-strip-h: 0px;
+}
+
+.container[data-force='full'] .label {
+  max-width: 160px;
+  opacity: 1;
+}
+
+.container[data-force='full'] .rail {
+  visibility: visible;
+}
+
+.container[data-force='full'] .strip {
+  opacity: 0;
+}
+
+.container[data-force='icons'] .shell {
+  --nexus-adaptive-rail-w: 72px;
+}
+
+.container[data-force='icons'] .label {
+  max-width: 0;
+  opacity: 0;
+}
+
+.container[data-force='single'] .shell {
+  --nexus-adaptive-rail-w: 0px;
+  --nexus-adaptive-strip-h: 52px;
+}
+
+.container[data-force='single'] .rail {
+  visibility: hidden;
+  transition-delay: var(--nexus-adaptive-rail-duration);
+}
+
+.container[data-force='single'] .label {
+  max-width: 0;
+  opacity: 0;
+}
+
+.container[data-force='single'] .strip {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell,
+  .strip,
+  .label,
+  .rail {
+    transition: none;
+  }
+
+  .rail {
+    transition-delay: 0s;
+  }
+}

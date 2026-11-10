@@ -1,0 +1,4941 @@
+{
+  "version": "6.0",
+  "nxVersion": "23.2.1",
+  "pathMappings": {
+    "@nexus/*": [
+      "./packages/*/src",
+      "./packages/*/src/index.ts"
+    ]
+  },
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "projectFileMap": {
+      "templates": [
+        {
+          "file": "packages/templates/package.json",
+          "hash": "18396999939159359583",
+          "deps": [
+            "themes",
+            "tokens",
+            "ui",
+            "npm:react",
+            "npm:react-dom",
+            "npm:@types/react",
+            "npm:@types/react-dom",
+            "npm:typescript",
+            "npm:vitest"
+          ]
+        },
+        {
+          "file": "packages/templates/project.json",
+          "hash": "18072715233707484495"
+        },
+        {
+          "file": "packages/templates/src/alice-home/activity-ridges.tsx",
+          "hash": "9907131987111745692"
+        },
+        {
+          "file": "packages/templates/src/alice-home/alice-home-template.module.css",
+          "hash": "6056896291418781203"
+        },
+        {
+          "file": "packages/templates/src/alice-home/alice-home-template.stories.tsx",
+          "hash": "10665361491848205624"
+        },
+        {
+          "file": "packages/templates/src/alice-home/alice-home-template.tsx",
+          "hash": "13714066571201603828"
+        },
+        {
+          "file": "packages/templates/src/alice-home/command-composer.stories.tsx",
+          "hash": "887090407677494106"
+        },
+        {
+          "file": "packages/templates/src/alice-home/core-sphere.tsx",
+          "hash": "11052174783620699454"
+        },
+        {
+          "file": "packages/templates/src/alice-home/fixtures.ts",
+          "hash": "1927245399563396195"
+        },
+        {
+          "file": "packages/templates/src/alice-home/index.ts",
+          "hash": "16307648019358428026"
+        },
+        {
+          "file": "packages/templates/src/alice-home/story-fixtures.ts",
+          "hash": "17815363266811941666"
+        },
+        {
+          "file": "packages/templates/src/alice-home/system-status-panel.stories.tsx",
+          "hash": "16886106947277033465"
+        },
+        {
+          "file": "packages/templates/src/alice-home/types.ts",
+          "hash": "8411522195526017989"
+        },
+        {
+          "file": "packages/templates/src/index.ts",
+          "hash": "12975011450718413321"
+        },
+        {
+          "file": "packages/templates/tsconfig.json",
+          "hash": "3768865831446597363"
+        }
+      ],
+      "nexus": [
+        {
+          "file": "apps/nexus/next-env.d.ts",
+          "hash": "6031290551108734700"
+        },
+        {
+          "file": "apps/nexus/next.config.ts",
+          "hash": "11531721164501951894"
+        },
+        {
+          "file": "apps/nexus/package.json",
+          "hash": "7411222952690344881",
+          "deps": [
+            "npm:@testing-library/react",
+            "npm:@testing-library/user-event",
+            "npm:@types/react",
+            "npm:@types/react-dom",
+            "npm:@vitest/coverage-v8",
+            "npm:jsdom",
+            "npm:typescript",
+            "npm:vitest",
+            "icons",
+            "mock-data",
+            "motion",
+            "patterns",
+            "templates",
+            "tokens",
+            "ui",
+            "npm:@xterm/addon-webgl",
+            "npm:@xterm/xterm",
+            "npm:jsnes",
+            "npm:near-api-js",
+            "npm:next",
+            "npm:react",
+            "npm:react-dom"
+          ]
+        },
+        {
+          "file": "apps/nexus/project.json",
+          "hash": "7234479414659936903"
+        },
+        {
+          "file": "apps/nexus/public/favicon.ico",
+          "hash": "7584599478213106350"
+        },
+        {
+          "file": "apps/nexus/public/fonts/OFL.txt",
+          "hash": "17477582468300823401"
+        },
+        {
+          "file": "apps/nexus/public/fonts/README.md",
+          "hash": "17522820037946339604"
+        },
+        {
+          "file": "apps/nexus/public/fonts/cormorant-garamond-cyrillic-wght-normal.woff2",
+          "hash": "18406860626382359126"
+        },
+        {
+          "file": "apps/nexus/public/fonts/cormorant-garamond-latin-ext-wght-normal.woff2",
+          "hash": "17086625573943227685"
+        },
+        {
+          "file": "apps/nexus/public/fonts/cormorant-garamond-latin-wght-normal.woff2",
+          "hash": "3254455436133834900"
+        },
+        {
+          "file": "apps/nexus/public/fonts/ibm-plex-mono-cyrillic-300-normal.woff2",
+          "hash": "5308987841616283506"
+        },
+        {
+          "file": "apps/nexus/public/fonts/ibm-plex-mono-cyrillic-400-normal.woff2",
+          "hash": "18018789755437855314"
+        },
+        {
+          "file": "apps/nexus/public/fonts/ibm-plex-mono-cyrillic-ext-300-normal.woff2",
+          "hash": "16918364225860777051"
+        },
+        {
+          "file": "apps/nexus/public/fonts/ibm-plex-mono-cyrillic-ext-400-normal.woff2",
+          "hash": "18300912718550645041"
+        },
+        {
+          "file": "apps/nexus/public/fonts/ibm-plex-mono-latin-300-normal.woff2",
+          "hash": "2848819409305226065"
+        },
+        {
+          "file": "apps/nexus/public/fonts/ibm-plex-mono-latin-400-normal.woff2",
+          "hash": "16892194006573066188"
+        },
+        {
+          "file": "apps/nexus/public/fonts/ibm-plex-mono-latin-ext-300-normal.woff2",
+          "hash": "1838431389315085636"
+        },
+        {
+          "file": "apps/nexus/public/fonts/ibm-plex-mono-latin-ext-400-normal.woff2",
+          "hash": "1716816393633088614"
+        },
+        {
+          "file": "apps/nexus/public/fonts/inter-tight-cyrillic-ext-wght-normal.woff2",
+          "hash": "11078814266340512040"
+        },
+        {
+          "file": "apps/nexus/public/fonts/inter-tight-cyrillic-wght-normal.woff2",
+          "hash": "6346121968996770642"
+        },
+        {
+          "file": "apps/nexus/public/fonts/inter-tight-latin-ext-wght-normal.woff2",
+          "hash": "12056165605377817464"
+        },
+        {
+          "file": "apps/nexus/public/fonts/inter-tight-latin-wght-normal.woff2",
+          "hash": "874607884467698391"
+        },
+        {
+          "file": "apps/nexus/public/fonts/playfair-display-cyrillic-wght-normal.woff2",
+          "hash": "10651870764375300665"
+        },
+        {
+          "file": "apps/nexus/public/fonts/playfair-display-latin-ext-wght-normal.woff2",
+          "hash": "13221259290251089555"
+        },
+        {
+          "file": "apps/nexus/public/fonts/playfair-display-latin-wght-normal.woff2",
+          "hash": "5133671852818743886"
+        },
+        {
+          "file": "apps/nexus/public/legal/asset-attributions.json",
+          "hash": "7898014753316149128"
+        },
+        {
+          "file": "apps/nexus/scripts/compress-durak-assets.sh",
+          "hash": "876685698036980515"
+        },
+        {
+          "file": "apps/nexus/src/app/agent-select/page.tsx",
+          "hash": "17829446534210726711"
+        },
+        {
+          "file": "apps/nexus/src/app/agents/page.tsx",
+          "hash": "13257655836209222816"
+        },
+        {
+          "file": "apps/nexus/src/app/api/craft/[...path]/route.test.ts.export-parked",
+          "hash": "2963239147410689571"
+        },
+        {
+          "file": "apps/nexus/src/app/api/craft/[...path]/route.ts.export-parked",
+          "hash": "14781552593669499966"
+        },
+        {
+          "file": "apps/nexus/src/app/arch/page.tsx",
+          "hash": "14507564557166951806"
+        },
+        {
+          "file": "apps/nexus/src/app/bus-desktop/page.tsx",
+          "hash": "17244845007789824726"
+        },
+        {
+          "file": "apps/nexus/src/app/chess/page.tsx",
+          "hash": "1225109130566428732"
+        },
+        {
+          "file": "apps/nexus/src/app/chrome.css",
+          "hash": "11638576277510290757"
+        },
+        {
+          "file": "apps/nexus/src/app/codex/page.tsx",
+          "hash": "16100284262244270195"
+        },
+        {
+          "file": "apps/nexus/src/app/compute/page.tsx",
+          "hash": "13318122059521882893"
+        },
+        {
+          "file": "apps/nexus/src/app/connections/page.tsx",
+          "hash": "3154409211946141949"
+        },
+        {
+          "file": "apps/nexus/src/app/craft/page.tsx",
+          "hash": "15943387943862356057"
+        },
+        {
+          "file": "apps/nexus/src/app/data/page.tsx",
+          "hash": "13153085297373732178"
+        },
+        {
+          "file": "apps/nexus/src/app/deck/page.tsx",
+          "hash": "14028796822886704986"
+        },
+        {
+          "file": "apps/nexus/src/app/dialogs/page.tsx",
+          "hash": "2964859361309232384"
+        },
+        {
+          "file": "apps/nexus/src/app/durak/page.tsx",
+          "hash": "14328652055349145154"
+        },
+        {
+          "file": "apps/nexus/src/app/fonts.css",
+          "hash": "327835533099637319"
+        },
+        {
+          "file": "apps/nexus/src/app/forge/page.tsx",
+          "hash": "12042837078430927782"
+        },
+        {
+          "file": "apps/nexus/src/app/games/geneseis/page.tsx",
+          "hash": "2062015762542368638"
+        },
+        {
+          "file": "apps/nexus/src/app/games/genesis/page.tsx",
+          "hash": "7586005847676021250"
+        },
+        {
+          "file": "apps/nexus/src/app/games/machina/page.tsx",
+          "hash": "13207868350699767120"
+        },
+        {
+          "file": "apps/nexus/src/app/games/nes/page.tsx",
+          "hash": "5113354113105339936"
+        },
+        {
+          "file": "apps/nexus/src/app/games/page.tsx",
+          "hash": "3942749352619897961"
+        },
+        {
+          "file": "apps/nexus/src/app/hivebid/page.tsx",
+          "hash": "15199069088664448624"
+        },
+        {
+          "file": "apps/nexus/src/app/home/error.tsx",
+          "hash": "4029988048150440118"
+        },
+        {
+          "file": "apps/nexus/src/app/home/loading.tsx",
+          "hash": "14991244552355529717"
+        },
+        {
+          "file": "apps/nexus/src/app/home/page.tsx",
+          "hash": "7758487707565854207"
+        },
+        {
+          "file": "apps/nexus/src/app/instagram/page.tsx",
+          "hash": "5216164828245073071"
+        },
+        {
+          "file": "apps/nexus/src/app/intelligence/page.tsx",
+          "hash": "9207154688612148890"
+        },
+        {
+          "file": "apps/nexus/src/app/layout.tsx",
+          "hash": "17246459615356979056"
+        },
+        {
+          "file": "apps/nexus/src/app/library/page.tsx",
+          "hash": "3914738161458633324"
+        },
+        {
+          "file": "apps/nexus/src/app/local-agent/page.tsx",
+          "hash": "12005622783563629217"
+        },
+        {
+          "file": "apps/nexus/src/app/mech/page.tsx",
+          "hash": "3491487878866581376"
+        },
+        {
+          "file": "apps/nexus/src/app/media/page.tsx",
+          "hash": "15753981252197720559"
+        },
+        {
+          "file": "apps/nexus/src/app/memory/page.tsx",
+          "hash": "9694722869296688268"
+        },
+        {
+          "file": "apps/nexus/src/app/mission-control/page.tsx",
+          "hash": "12567628711614149939"
+        },
+        {
+          "file": "apps/nexus/src/app/mobile/page.tsx",
+          "hash": "16186934462045985757"
+        },
+        {
+          "file": "apps/nexus/src/app/models/page.tsx",
+          "hash": "17879778743121236968"
+        },
+        {
+          "file": "apps/nexus/src/app/newf-agents/page.tsx",
+          "hash": "14490474497121404508"
+        },
+        {
+          "file": "apps/nexus/src/app/newf-alert-rules/page.tsx",
+          "hash": "17328354166111074532"
+        },
+        {
+          "file": "apps/nexus/src/app/newf-nexuslink/page.tsx",
+          "hash": "5036154007543998419"
+        },
+        {
+          "file": "apps/nexus/src/app/newf-system/page.tsx",
+          "hash": "4635428062381537860"
+        },
+        {
+          "file": "apps/nexus/src/app/newf-terminals/page.tsx",
+          "hash": "9111057623174578420"
+        },
+        {
+          "file": "apps/nexus/src/app/newf/gate.test.tsx",
+          "hash": "15288185198434058766"
+        },
+        {
+          "file": "apps/nexus/src/app/newf/gate.tsx",
+          "hash": "14672754989778891067"
+        },
+        {
+          "file": "apps/nexus/src/app/newf/page.tsx",
+          "hash": "7512471080493378458"
+        },
+        {
+          "file": "apps/nexus/src/app/newf/voice-panel.module.css",
+          "hash": "1727016559825929386"
+        },
+        {
+          "file": "apps/nexus/src/app/newf/voice-panel.test.tsx",
+          "hash": "17708072254147116400"
+        },
+        {
+          "file": "apps/nexus/src/app/newf/voice-panel.tsx",
+          "hash": "11584913431727168323"
+        },
+        {
+          "file": "apps/nexus/src/app/noir/page.tsx",
+          "hash": "8433343960692933988"
+        },
+        {
+          "file": "apps/nexus/src/app/opencode/page.tsx",
+          "hash": "9294371124481024567"
+        },
+        {
+          "file": "apps/nexus/src/app/oracle/page.tsx",
+          "hash": "10321517705735590040"
+        },
+        {
+          "file": "apps/nexus/src/app/page.tsx",
+          "hash": "6947268164713315887"
+        },
+        {
+          "file": "apps/nexus/src/app/plugins/page.tsx",
+          "hash": "8846413882336251392"
+        },
+        {
+          "file": "apps/nexus/src/app/programs/page.tsx",
+          "hash": "13466412103751192567"
+        },
+        {
+          "file": "apps/nexus/src/app/run/page.tsx",
+          "hash": "14024654021925577535"
+        },
+        {
+          "file": "apps/nexus/src/app/runs/page.tsx",
+          "hash": "13362419452243924380"
+        },
+        {
+          "file": "apps/nexus/src/app/runtime/alice/error.tsx",
+          "hash": "5510813453470094628"
+        },
+        {
+          "file": "apps/nexus/src/app/runtime/alice/loading.tsx",
+          "hash": "13040220154285709528"
+        },
+        {
+          "file": "apps/nexus/src/app/runtime/alice/page.tsx",
+          "hash": "11210961953329674193"
+        },
+        {
+          "file": "apps/nexus/src/app/runtime/guard/page.tsx",
+          "hash": "17651430302276728559"
+        },
+        {
+          "file": "apps/nexus/src/app/runtime/page.tsx",
+          "hash": "8985010721347459819"
+        },
+        {
+          "file": "apps/nexus/src/app/settings/page.tsx",
+          "hash": "3483968658102238005"
+        },
+        {
+          "file": "apps/nexus/src/app/settings/usage/page.tsx",
+          "hash": "13597618263212329342"
+        },
+        {
+          "file": "apps/nexus/src/app/social/page.tsx",
+          "hash": "9313084448513127169"
+        },
+        {
+          "file": "apps/nexus/src/app/telegram/page.tsx",
+          "hash": "16735273945960120607"
+        },
+        {
+          "file": "apps/nexus/src/app/tools/craft/page.tsx",
+          "hash": "17377618171391443070"
+        },
+        {
+          "file": "apps/nexus/src/app/tools/office/page.tsx",
+          "hash": "10861759095277754834"
+        },
+        {
+          "file": "apps/nexus/src/app/tools/page.tsx",
+          "hash": "14873884027695444572"
+        },
+        {
+          "file": "apps/nexus/src/app/tools/solidcraft/page.tsx",
+          "hash": "17377618171391443070"
+        },
+        {
+          "file": "apps/nexus/src/app/tools/tplayer/page.tsx",
+          "hash": "5338989175204098385"
+        },
+        {
+          "file": "apps/nexus/src/app/tools/vloader/page.tsx",
+          "hash": "8934543316595477670"
+        },
+        {
+          "file": "apps/nexus/src/app/tools/yoinks/page.tsx",
+          "hash": "14545047658844937290"
+        },
+        {
+          "file": "apps/nexus/src/app/welcome/page.tsx",
+          "hash": "9316503623131575660"
+        },
+        {
+          "file": "apps/nexus/src/app/workflow/page.tsx",
+          "hash": "16356313639877696168"
+        },
+        {
+          "file": "apps/nexus/src/app/x/page.tsx",
+          "hash": "3247920808639547393"
+        },
+        {
+          "file": "apps/nexus/src/app/youtube/page.tsx",
+          "hash": "12251355190795380122"
+        },
+        {
+          "file": "apps/nexus/src/hooks/index.ts",
+          "hash": "12304491497545259637"
+        },
+        {
+          "file": "apps/nexus/src/hooks/use-integration.ts",
+          "hash": "10064502646502742642"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/adapters/product-data-source.stream.test.ts",
+          "hash": "16959698717842579018"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/adapters/product-data-source.test.ts",
+          "hash": "6899522047929339650"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/adapters/product-data-source.ts",
+          "hash": "1697009438526869116"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/api/client.test.ts",
+          "hash": "6537518108593711640"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/api/client.ts",
+          "hash": "4238090092753006456"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/api/errors.ts",
+          "hash": "14527417590521715336"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/api/mock-transport.test.ts",
+          "hash": "15449931396166945810"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/api/mock-transport.ts",
+          "hash": "9967860309415077581"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/contracts/agents.ts",
+          "hash": "11076879464211260344"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/contracts/bus.ts",
+          "hash": "1918708434040482557"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/contracts/capabilities.ts",
+          "hash": "7338990508471542019"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/contracts/chat-compaction.ts",
+          "hash": "14820325111459747057"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/contracts/common.ts",
+          "hash": "16576562727702975834"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/contracts/copilot.test.ts",
+          "hash": "9696345133193724595"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/contracts/copilot.ts",
+          "hash": "2479974545505464006"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/contracts/fs.ts",
+          "hash": "9431788478258475798"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/contracts/images.ts",
+          "hash": "7506457326971342709"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/contracts/lifecycle.ts",
+          "hash": "5148451900849540200"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/contracts/mcp.ts",
+          "hash": "874798393552234771"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/contracts/memory.ts",
+          "hash": "11525964138264339822"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/contracts/neu-plugins.ts",
+          "hash": "15411403277572578188"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/contracts/runs.ts",
+          "hash": "6831167552287354225"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/contracts/sdk.ts",
+          "hash": "17393182594047262336"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/contracts/system.ts",
+          "hash": "18430229788478441167"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/contracts/telegram.ts",
+          "hash": "9644457875806191691"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/contracts/voice.ts",
+          "hash": "14590065877554707220"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/contracts/webhooks.ts",
+          "hash": "13587429626375008086"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/contracts/worker.ts",
+          "hash": "8874058367956838114"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/desktop-bridge/adapter.test.ts",
+          "hash": "6965442925740342235"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/desktop-bridge/adapter.ts",
+          "hash": "10268116346488339080"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/desktop-bridge/browser.ts",
+          "hash": "3714209870820469477"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/desktop-bridge/bus-bridge.ts",
+          "hash": "16328003622288706657"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/desktop-bridge/types.ts",
+          "hash": "881042885192738614"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/sse/parser.ts",
+          "hash": "13682663181184745522"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/sse/run-event-stream.test.ts",
+          "hash": "4913750213988283557"
+        },
+        {
+          "file": "apps/nexus/src/integrations/ai2/sse/run-event-stream.ts",
+          "hash": "17707786021463614639"
+        },
+        {
+          "file": "apps/nexus/src/integrations/craft/seam.ts",
+          "hash": "17996527785884506873"
+        },
+        {
+          "file": "apps/nexus/src/integrations/local-audio/local-audio-adapter.test.ts",
+          "hash": "3065191195535612504"
+        },
+        {
+          "file": "apps/nexus/src/integrations/local-audio/local-audio-adapter.ts",
+          "hash": "4663920545403120507"
+        },
+        {
+          "file": "apps/nexus/src/integrations/noir/api/client.test.ts",
+          "hash": "4557966616052634657"
+        },
+        {
+          "file": "apps/nexus/src/integrations/noir/api/client.ts",
+          "hash": "17206434094613958595"
+        },
+        {
+          "file": "apps/nexus/src/integrations/noir/api/lazy-client.ts",
+          "hash": "879842443624923939"
+        },
+        {
+          "file": "apps/nexus/src/integrations/noir/api/mock-transport.ts",
+          "hash": "6130375817086163793"
+        },
+        {
+          "file": "apps/nexus/src/integrations/noir/contracts/player.ts",
+          "hash": "10643371590296069876"
+        },
+        {
+          "file": "apps/nexus/src/integrations/opencode/seam.ts",
+          "hash": "216094400571719215"
+        },
+        {
+          "file": "apps/nexus/src/product/agents/personas.ts",
+          "hash": "13641027575053066431"
+        },
+        {
+          "file": "apps/nexus/src/product/api-toast.test.tsx",
+          "hash": "13115653173950874117"
+        },
+        {
+          "file": "apps/nexus/src/product/api-toast.tsx",
+          "hash": "4706222017363180801"
+        },
+        {
+          "file": "apps/nexus/src/product/app-shell-palette-routes.test.tsx",
+          "hash": "12755241879508461954"
+        },
+        {
+          "file": "apps/nexus/src/product/app-shell.module.css",
+          "hash": "3134668610100100246"
+        },
+        {
+          "file": "apps/nexus/src/product/app-shell.test.tsx",
+          "hash": "7882977872969882309"
+        },
+        {
+          "file": "apps/nexus/src/product/app-shell.tsx",
+          "hash": "10789160490130671172"
+        },
+        {
+          "file": "apps/nexus/src/product/asset-base.test.tsx",
+          "hash": "5041272285414412278"
+        },
+        {
+          "file": "apps/nexus/src/product/asset-base.ts",
+          "hash": "1700297608764101679"
+        },
+        {
+          "file": "apps/nexus/src/product/assistant/screens/arch-screen.tsx",
+          "hash": "17292680823476852860"
+        },
+        {
+          "file": "apps/nexus/src/product/assistant/screens/codex-screen.tsx",
+          "hash": "12206606594260715431"
+        },
+        {
+          "file": "apps/nexus/src/product/assistant/screens/mech-screen.tsx",
+          "hash": "16565035659640618624"
+        },
+        {
+          "file": "apps/nexus/src/product/authored-surface-contrast.contract.test.ts",
+          "hash": "15718334615130031186"
+        },
+        {
+          "file": "apps/nexus/src/product/boot-motion-components.test.tsx",
+          "hash": "4961076980667017308"
+        },
+        {
+          "file": "apps/nexus/src/product/chess/ai.ts",
+          "hash": "202028133297385949"
+        },
+        {
+          "file": "apps/nexus/src/product/chess/chess.module.css",
+          "hash": "18110313019597135812"
+        },
+        {
+          "file": "apps/nexus/src/product/chess/engine.test.ts",
+          "hash": "2950809511404906124"
+        },
+        {
+          "file": "apps/nexus/src/product/chess/engine.ts",
+          "hash": "17227616688630770241"
+        },
+        {
+          "file": "apps/nexus/src/product/chess/pieces.tsx",
+          "hash": "14027714844568485050"
+        },
+        {
+          "file": "apps/nexus/src/product/chess/screen.test.tsx",
+          "hash": "15971886160011073432"
+        },
+        {
+          "file": "apps/nexus/src/product/chess/screen.tsx",
+          "hash": "8201111210666970706"
+        },
+        {
+          "file": "apps/nexus/src/product/css-floor.test.ts",
+          "hash": "11848665828652999541"
+        },
+        {
+          "file": "apps/nexus/src/product/data-source.test.ts",
+          "hash": "3179006124761961257"
+        },
+        {
+          "file": "apps/nexus/src/product/data-source.ts",
+          "hash": "3093756255343014530"
+        },
+        {
+          "file": "apps/nexus/src/product/deck-vocab.ts",
+          "hash": "1438838422523806293"
+        },
+        {
+          "file": "apps/nexus/src/product/durak/ai.test.ts",
+          "hash": "10732438100221166668"
+        },
+        {
+          "file": "apps/nexus/src/product/durak/ai.ts",
+          "hash": "14511580264908635538"
+        },
+        {
+          "file": "apps/nexus/src/product/durak/durak.module.css",
+          "hash": "1244080170121303558"
+        },
+        {
+          "file": "apps/nexus/src/product/durak/engine.test.ts",
+          "hash": "8967103236609543760"
+        },
+        {
+          "file": "apps/nexus/src/product/durak/engine.ts",
+          "hash": "9740205536151655933"
+        },
+        {
+          "file": "apps/nexus/src/product/durak/screen.test.tsx",
+          "hash": "16595704617711083339"
+        },
+        {
+          "file": "apps/nexus/src/product/durak/screen.tsx",
+          "hash": "2044545233612437010"
+        },
+        {
+          "file": "apps/nexus/src/product/error-journal.test.tsx",
+          "hash": "9724924100256705929"
+        },
+        {
+          "file": "apps/nexus/src/product/error-journal.ts",
+          "hash": "8699853589120225955"
+        },
+        {
+          "file": "apps/nexus/src/product/feed-motion-components.test.tsx",
+          "hash": "11521755828025646291"
+        },
+        {
+          "file": "apps/nexus/src/product/game-motion-boundary.test.ts",
+          "hash": "9601472076568724990"
+        },
+        {
+          "file": "apps/nexus/src/product/game-shell.module.css",
+          "hash": "16443048634450961237"
+        },
+        {
+          "file": "apps/nexus/src/product/game-shell.tsx",
+          "hash": "7762342858446143569"
+        },
+        {
+          "file": "apps/nexus/src/product/games/games.module.css",
+          "hash": "10594015616999248079"
+        },
+        {
+          "file": "apps/nexus/src/product/games/genesis-screen.tsx",
+          "hash": "15400574067704383753"
+        },
+        {
+          "file": "apps/nexus/src/product/games/machina-screen.test.tsx",
+          "hash": "3105700944214174973"
+        },
+        {
+          "file": "apps/nexus/src/product/games/machina-screen.tsx",
+          "hash": "1180300399980444923"
+        },
+        {
+          "file": "apps/nexus/src/product/games/scene-snapshot.test.ts",
+          "hash": "13631205211104144280"
+        },
+        {
+          "file": "apps/nexus/src/product/games/scene-snapshot.ts",
+          "hash": "6533815885143936215"
+        },
+        {
+          "file": "apps/nexus/src/product/games/screen.test.tsx",
+          "hash": "2455668082098535338"
+        },
+        {
+          "file": "apps/nexus/src/product/games/screen.tsx",
+          "hash": "10504595318052445420"
+        },
+        {
+          "file": "apps/nexus/src/product/glass-surface.test.tsx",
+          "hash": "4695740574057085586"
+        },
+        {
+          "file": "apps/nexus/src/product/greeting.ts",
+          "hash": "15810077882622339815"
+        },
+        {
+          "file": "apps/nexus/src/product/keyboard-shortcuts.test.ts",
+          "hash": "5582324222553737876"
+        },
+        {
+          "file": "apps/nexus/src/product/keyboard-shortcuts.ts",
+          "hash": "16341677911996761989"
+        },
+        {
+          "file": "apps/nexus/src/product/lazy-seam.test.ts",
+          "hash": "11661463919323990949"
+        },
+        {
+          "file": "apps/nexus/src/product/lazy-seam.ts",
+          "hash": "18062923412203380238"
+        },
+        {
+          "file": "apps/nexus/src/product/lite/lite-shell.module.css",
+          "hash": "11565407267344592973"
+        },
+        {
+          "file": "apps/nexus/src/product/lite/lite-shell.test.tsx",
+          "hash": "12961427282610305965"
+        },
+        {
+          "file": "apps/nexus/src/product/lite/lite-shell.tsx",
+          "hash": "4711393772929467350"
+        },
+        {
+          "file": "apps/nexus/src/product/model-picker-control.test.tsx",
+          "hash": "5626139831730048937"
+        },
+        {
+          "file": "apps/nexus/src/product/model-picker-control.tsx",
+          "hash": "8375222521564207936"
+        },
+        {
+          "file": "apps/nexus/src/product/modular-bars.test.tsx",
+          "hash": "9757239750191363941"
+        },
+        {
+          "file": "apps/nexus/src/product/modular-bars.tsx",
+          "hash": "10519490583281707088"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/nes-audio.ts",
+          "hash": "1151798725960799109"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/nes-core.ts",
+          "hash": "5833565582570188189"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/nes.module.css",
+          "hash": "2217467592573593743"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/screen.test.tsx",
+          "hash": "12270643572853586627"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/screen.tsx",
+          "hash": "14885418312838106404"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/LICENSE",
+          "hash": "9523101601852139908"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/browser.d.ts",
+          "hash": "16640567035192623073"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/browser/frame-timer.js",
+          "hash": "4300867642702738510"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/browser/gamepad.js",
+          "hash": "7787561161008553523"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/browser/index.js",
+          "hash": "17854437803696550405"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/browser/keyboard.js",
+          "hash": "13146794538731684120"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/browser/screen.js",
+          "hash": "2275990616811911456"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/browser/speakers.js",
+          "hash": "12572921435728281468"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/controller.d.ts",
+          "hash": "2350892979756539214"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/controller.js",
+          "hash": "6942574685808964181"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/cpu.js",
+          "hash": "12698077278980066705"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/gamegenie.d.ts",
+          "hash": "12088402934471426272"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/gamegenie.js",
+          "hash": "62163421276091381"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/index.d.ts",
+          "hash": "15831599038768916513"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/index.js",
+          "hash": "6550328910154955697"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/index.js",
+          "hash": "12849015956639770258"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/mapper0.js",
+          "hash": "2038128995305804375"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/mapper1.js",
+          "hash": "12605531431646090275"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/mapper11.js",
+          "hash": "8813354359190653058"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/mapper118.js",
+          "hash": "14363605594952024433"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/mapper119.js",
+          "hash": "11202458726127679070"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/mapper140.js",
+          "hash": "5679771039007530178"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/mapper180.js",
+          "hash": "16706995769519532352"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/mapper2.js",
+          "hash": "2675181067164667046"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/mapper240.js",
+          "hash": "18043800455395958689"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/mapper241.js",
+          "hash": "9721102741849818700"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/mapper3.js",
+          "hash": "3161799882261451108"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/mapper34.js",
+          "hash": "3175237048800764834"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/mapper38.js",
+          "hash": "219271280843623282"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/mapper4.js",
+          "hash": "7750986454424940984"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/mapper5.js",
+          "hash": "17200933847585936353"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/mapper66.js",
+          "hash": "9622025710345837806"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/mapper7.js",
+          "hash": "11928644228169513022"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/mapper71.js",
+          "hash": "3413755082366407751"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/mapper79.js",
+          "hash": "5240896290225081304"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/mapper9.js",
+          "hash": "17532857916748628784"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/mappers/mapper94.js",
+          "hash": "6460969902019740737"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/nes.d.ts",
+          "hash": "6011951006926919308"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/nes.js",
+          "hash": "14161835374105625799"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/papu/channel-dm.js",
+          "hash": "6551713571699975452"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/papu/channel-noise.js",
+          "hash": "2966758840687306861"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/papu/channel-square.js",
+          "hash": "17244311125557153800"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/papu/channel-triangle.js",
+          "hash": "10295554964277835294"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/papu/index.js",
+          "hash": "2052440613953786852"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/ppu/index.js",
+          "hash": "11540258417076837587"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/ppu/nametable.js",
+          "hash": "5832574939582067321"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/ppu/palette-table.js",
+          "hash": "12465648069246351231"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/rom.js",
+          "hash": "16992199309760911261"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/tile.js",
+          "hash": "900860734356347984"
+        },
+        {
+          "file": "apps/nexus/src/product/nes/vendor/jsnes/utils.js",
+          "hash": "15092327049483248816"
+        },
+        {
+          "file": "apps/nexus/src/product/next-export-rsc-aliases.test.ts",
+          "hash": "9658600088555531746"
+        },
+        {
+          "file": "apps/nexus/src/product/nue-gateway.ts",
+          "hash": "8306879719186373024"
+        },
+        {
+          "file": "apps/nexus/src/product/oracle/cards.ts",
+          "hash": "11568822920475159137"
+        },
+        {
+          "file": "apps/nexus/src/product/oracle/engine.ts",
+          "hash": "10915117587887775564"
+        },
+        {
+          "file": "apps/nexus/src/product/oracle/oracle.module.css",
+          "hash": "9102354926277774095"
+        },
+        {
+          "file": "apps/nexus/src/product/oracle/screen.test.tsx",
+          "hash": "9755253352022825305"
+        },
+        {
+          "file": "apps/nexus/src/product/oracle/screen.tsx",
+          "hash": "9601961452293863723"
+        },
+        {
+          "file": "apps/nexus/src/product/page-transition.test.ts",
+          "hash": "15645115250634210030"
+        },
+        {
+          "file": "apps/nexus/src/product/palette-lazy.tsx",
+          "hash": "8751662034824556060"
+        },
+        {
+          "file": "apps/nexus/src/product/perf-budget.test.ts",
+          "hash": "10133080384303975117"
+        },
+        {
+          "file": "apps/nexus/src/product/persona-home.ts",
+          "hash": "14487917085977116966"
+        },
+        {
+          "file": "apps/nexus/src/product/personas.ts",
+          "hash": "17780296709730725548"
+        },
+        {
+          "file": "apps/nexus/src/product/plugins/builtin-home-widgets.tsx",
+          "hash": "5428294904606588199"
+        },
+        {
+          "file": "apps/nexus/src/product/plugins/builtin-rightbar-tabs.tsx",
+          "hash": "12372766610461670412"
+        },
+        {
+          "file": "apps/nexus/src/product/plugins/builtin.ts",
+          "hash": "14843892404890069048"
+        },
+        {
+          "file": "apps/nexus/src/product/plugins/plugin-host.test.tsx",
+          "hash": "12178891024426559091"
+        },
+        {
+          "file": "apps/nexus/src/product/plugins/plugin-host.tsx",
+          "hash": "1265922329992020477"
+        },
+        {
+          "file": "apps/nexus/src/product/plugins/plugin-install-confirmation.module.css",
+          "hash": "12436068457818645832"
+        },
+        {
+          "file": "apps/nexus/src/product/plugins/plugin-install-confirmation.test.tsx",
+          "hash": "18082744091561137924"
+        },
+        {
+          "file": "apps/nexus/src/product/plugins/plugin-install-confirmation.tsx",
+          "hash": "14981707345059487902"
+        },
+        {
+          "file": "apps/nexus/src/product/plugins/plugin-install-notifications.ts",
+          "hash": "12199578279308838509"
+        },
+        {
+          "file": "apps/nexus/src/product/plugins/plugin-install-sync.ts",
+          "hash": "9482264458143933805"
+        },
+        {
+          "file": "apps/nexus/src/product/plugins/plugins-screen.module.css",
+          "hash": "15394114124549859931"
+        },
+        {
+          "file": "apps/nexus/src/product/plugins/plugins-screen.test.tsx",
+          "hash": "16242302085846886075"
+        },
+        {
+          "file": "apps/nexus/src/product/plugins/plugins-screen.tsx",
+          "hash": "14271047087174727929"
+        },
+        {
+          "file": "apps/nexus/src/product/plugins/right-dock-panel.tsx",
+          "hash": "3914653634002941173"
+        },
+        {
+          "file": "apps/nexus/src/product/plugins/right-dock-state.ts",
+          "hash": "6819930711723686166"
+        },
+        {
+          "file": "apps/nexus/src/product/plugins/right-dock.module.css",
+          "hash": "9523178603266195853"
+        },
+        {
+          "file": "apps/nexus/src/product/plugins/right-dock.test.tsx",
+          "hash": "12006451366084775811"
+        },
+        {
+          "file": "apps/nexus/src/product/plugins/right-dock.tsx",
+          "hash": "690827403636041644"
+        },
+        {
+          "file": "apps/nexus/src/product/plugins/slot-mount.tsx",
+          "hash": "11346655518082474521"
+        },
+        {
+          "file": "apps/nexus/src/product/plugins/slot-runtime.test.ts",
+          "hash": "15284116719406276884"
+        },
+        {
+          "file": "apps/nexus/src/product/plugins/slot-runtime.ts",
+          "hash": "11925549045746848655"
+        },
+        {
+          "file": "apps/nexus/src/product/proc-state-label.ts",
+          "hash": "16121522409271151174"
+        },
+        {
+          "file": "apps/nexus/src/product/profile/profile-store.test.ts",
+          "hash": "1021916762191968649"
+        },
+        {
+          "file": "apps/nexus/src/product/profile/profile-store.ts",
+          "hash": "1714925374865352264"
+        },
+        {
+          "file": "apps/nexus/src/product/profile/profile-types.ts",
+          "hash": "17187875566679649989"
+        },
+        {
+          "file": "apps/nexus/src/product/profile/theme-bootstrap.test.ts",
+          "hash": "1799913665625081243"
+        },
+        {
+          "file": "apps/nexus/src/product/profile/theme-bootstrap.ts",
+          "hash": "17244365365942300513"
+        },
+        {
+          "file": "apps/nexus/src/product/programs/installer-factories.ts",
+          "hash": "8311751574849850392"
+        },
+        {
+          "file": "apps/nexus/src/product/programs/manifest.ts",
+          "hash": "5850306448447204661"
+        },
+        {
+          "file": "apps/nexus/src/product/programs/office-screen.tsx",
+          "hash": "3228458069737355711"
+        },
+        {
+          "file": "apps/nexus/src/product/programs/programs.module.css",
+          "hash": "16588409991277085135"
+        },
+        {
+          "file": "apps/nexus/src/product/programs/screen.test.tsx",
+          "hash": "14596798832736242331"
+        },
+        {
+          "file": "apps/nexus/src/product/programs/screen.tsx",
+          "hash": "10604183746748980757"
+        },
+        {
+          "file": "apps/nexus/src/product/programs/tplayer-screen.test.tsx",
+          "hash": "2591658144851861710"
+        },
+        {
+          "file": "apps/nexus/src/product/programs/tplayer-screen.tsx",
+          "hash": "14022352132091377913"
+        },
+        {
+          "file": "apps/nexus/src/product/programs/tplayer-token.test.ts",
+          "hash": "7464988468008503877"
+        },
+        {
+          "file": "apps/nexus/src/product/programs/tplayer-token.ts",
+          "hash": "1788004260006967196"
+        },
+        {
+          "file": "apps/nexus/src/product/programs/vloader-screen.test.tsx",
+          "hash": "6109637067697542046"
+        },
+        {
+          "file": "apps/nexus/src/product/programs/vloader-screen.tsx",
+          "hash": "8137389099880825062"
+        },
+        {
+          "file": "apps/nexus/src/product/programs/vloader.module.css",
+          "hash": "17206037697014124792"
+        },
+        {
+          "file": "apps/nexus/src/product/rail-agents.tsx",
+          "hash": "17356840886258655316"
+        },
+        {
+          "file": "apps/nexus/src/product/rail-deck-agents.tsx",
+          "hash": "3547154453052662981"
+        },
+        {
+          "file": "apps/nexus/src/product/rail-motion-components.test.tsx",
+          "hash": "3787753882865421525"
+        },
+        {
+          "file": "apps/nexus/src/product/reduced-motion-css.test.ts",
+          "hash": "9608322955362203384"
+        },
+        {
+          "file": "apps/nexus/src/product/runtime-warmup.test.ts",
+          "hash": "18283626089040656128"
+        },
+        {
+          "file": "apps/nexus/src/product/runtime-warmup.ts",
+          "hash": "2661273647697417246"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/agent-chat-feed.test.tsx",
+          "hash": "2110983654781764968"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/agent-chat-feed.tsx",
+          "hash": "16104708042429573661"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/agent-sdk-panels.test.tsx",
+          "hash": "12129056116705621445"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/agent-sdk-panels.tsx",
+          "hash": "14679687363021026494"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/agent-sessions.test.tsx",
+          "hash": "3415681459384953391"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/agent-sessions.tsx",
+          "hash": "17277401899352784310"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/agents.test.tsx",
+          "hash": "5184551432153814649"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/agents.tsx",
+          "hash": "10487291453610102563"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/alice-hero.test.tsx",
+          "hash": "18133134981156654857"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/alice-hero.tsx",
+          "hash": "268484532723743134"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/alice-home-route-adapter.module.css",
+          "hash": "1304640705702233403"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/alice-home-route-adapter.tsx",
+          "hash": "16019981638939727862"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/alice-home-template.test.tsx",
+          "hash": "132076902709080214"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/assistant-hero.module.css",
+          "hash": "8405261838089786386"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/assistant-hero.test.tsx",
+          "hash": "16278524766115111612"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/assistant-hero.tsx",
+          "hash": "14827930905361333297"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/assistant-screen.module.css",
+          "hash": "10993781125816130304"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/assistant-screen.test.tsx",
+          "hash": "1646516705364123813"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/assistant-screen.tsx",
+          "hash": "12910046945600866245"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/boot.test.tsx",
+          "hash": "1186179761804071163"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/boot.tsx",
+          "hash": "8045046754479157834"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/bus-desktop.module.css",
+          "hash": "9040578438505603020"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/bus-desktop.test.tsx",
+          "hash": "14175294231850082283"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/bus-desktop.tsx",
+          "hash": "12705160924951031283"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/bus-tab.test.tsx",
+          "hash": "6416515461927226256"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/bus-tab.tsx",
+          "hash": "6421088706256794921"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/chat-compaction-motion.module.css",
+          "hash": "2002840070873388335"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/chat-compaction-motion.test.tsx",
+          "hash": "13241306299703934725"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/chat-compaction-motion.tsx",
+          "hash": "10985196820542920632"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/chat-compaction.module.css",
+          "hash": "9918281408517945261"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/chat-density.test.ts",
+          "hash": "12369643536044435792"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/compaction-acceptance.test.tsx",
+          "hash": "6018638389818250373"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/connections.test.tsx",
+          "hash": "17025225670388440121"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/connections.tsx",
+          "hash": "10796386123431834439"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/context-usage-indicator.module.css",
+          "hash": "2204643323538837474"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/context-usage-indicator.test.tsx",
+          "hash": "6194184755270597189"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/context-usage-indicator.tsx",
+          "hash": "14935788930548485501"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/copilot-widgets.module.css",
+          "hash": "4661837542082933873"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/copilot-widgets.test.tsx",
+          "hash": "18154344436670534127"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/copilot-widgets.tsx",
+          "hash": "7445572366110602003"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/deck-agents-strip.tsx",
+          "hash": "10345232351144513024"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/deck-screen.test.tsx",
+          "hash": "10906569750433217033"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/deck-screen.tsx",
+          "hash": "9813441666218107568"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/deck-tab.test.tsx",
+          "hash": "14728158041221357599"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/deck-tab.tsx",
+          "hash": "10856824888587477127"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/dialogs.module.css",
+          "hash": "6207512836387839434"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/dialogs.test.tsx",
+          "hash": "9674315104321221769"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/dialogs.tsx",
+          "hash": "3474432473662570565"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/file-viewer.module.css",
+          "hash": "12892942571142830522"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/file-viewer.test.tsx",
+          "hash": "12086818872476150642"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/file-viewer.tsx",
+          "hash": "11635990274558424729"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/forge.module.css",
+          "hash": "18253385823550718070"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/forge.test.tsx",
+          "hash": "14092593067539185520"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/forge.tsx",
+          "hash": "9031680873027340073"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/guard-runtime.module.css",
+          "hash": "12084868455660621640"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/guard-runtime.test.tsx",
+          "hash": "403515103586339701"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/guard-runtime.tsx",
+          "hash": "411133547495562907"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/hivebid-live.test.ts",
+          "hash": "18349006743183000073"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/hivebid-live.ts",
+          "hash": "12147403752498359202"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/hivebid.module.css",
+          "hash": "4332292722774840063"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/hivebid.test.tsx",
+          "hash": "14149357206106145520"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/hivebid.tsx",
+          "hash": "11414303449838036841"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/home.module.css",
+          "hash": "3508252363624017866"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/home.test.tsx",
+          "hash": "9474214049096969699"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/home.tsx",
+          "hash": "4859342814602565063"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/honest-empty.tsx",
+          "hash": "15904718474558833506"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/instagram.tsx",
+          "hash": "9021946805801145845"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/library-catalogs.test.tsx",
+          "hash": "2048306077358314808"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/local-agent.test.tsx",
+          "hash": "3058768742830607428"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/local-agent.tsx",
+          "hash": "11260810394832388695"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/media-imagegen.test.tsx",
+          "hash": "9550039165062270767"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/media.test.ts",
+          "hash": "14092656128041456204"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/media.tsx",
+          "hash": "4723240509144809889"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/memory.test.tsx",
+          "hash": "4822114401921655477"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/memory.tsx",
+          "hash": "1274314676397092205"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/mission-control.test.tsx",
+          "hash": "1274811264168599106"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/mission-control.tsx",
+          "hash": "16297428898364529133"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/mobile.module.css",
+          "hash": "17909037898732899483"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/mobile.test.tsx",
+          "hash": "15963977725060142547"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/mobile.tsx",
+          "hash": "13250971874352426644"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/models.tsx",
+          "hash": "6593660739875084297"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-agent-badge.ts",
+          "hash": "829315325618837756"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-agents-panel.module.css",
+          "hash": "8869180725853996935"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-agents-panel.test.tsx",
+          "hash": "16881061147581368083"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-agents-panel.tsx",
+          "hash": "1176877101029166190"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-alert-rules-panel.test.tsx",
+          "hash": "15819783084630969034"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-alert-rules-panel.tsx",
+          "hash": "1242773780654519690"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-audit-panel.test.tsx",
+          "hash": "5714573359222397746"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-audit-panel.tsx",
+          "hash": "6198311008269690989"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-command-palette.test.tsx",
+          "hash": "17958996514336475218"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-command-palette.tsx",
+          "hash": "9485562936279332041"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-ctx-menu.test.tsx",
+          "hash": "16784094862814628296"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-ctx-menu.tsx",
+          "hash": "13692926804715847358"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-default-layout.ts",
+          "hash": "18095514864788197097"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-diag-drawer.test.tsx",
+          "hash": "8422648739368781787"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-diag-drawer.tsx",
+          "hash": "15356462825353938394"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-events-panel.test.tsx",
+          "hash": "14332720239676621516"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-events-panel.tsx",
+          "hash": "552559512783523518"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-float-pane.module.css",
+          "hash": "18410056221581936629"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-float-pane.test.tsx",
+          "hash": "12502168639685862789"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-float-pane.tsx",
+          "hash": "11822019782659130865"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-focus-trap.test.tsx",
+          "hash": "10346692795247560191"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-focus-trap.ts",
+          "hash": "7069224829771504414"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-gpu-screen-gpu.test.tsx",
+          "hash": "9735278335729282111"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-gpu-screen-lazy.tsx",
+          "hash": "12333496981164717461"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-gpu-screen.test.tsx",
+          "hash": "4870980273208734259"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-gpu-screen.tsx",
+          "hash": "7625333932708974057"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-health-panel.test.tsx",
+          "hash": "8349294501253546973"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-health-panel.tsx",
+          "hash": "4288375131344763147"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-inputline-live.test.ts",
+          "hash": "14948515622350145740"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-keys.test.ts",
+          "hash": "6769706861900037444"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-keys.ts",
+          "hash": "8365388460787999"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-live.test.ts",
+          "hash": "351252479369462259"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-live.ts",
+          "hash": "2549834156176574749"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-lux.test.tsx",
+          "hash": "14185111562326176106"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-lux.tsx",
+          "hash": "4718870062165382285"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-magnetize-roundtrip.test.tsx",
+          "hash": "7832241075143265529"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-magnetize.test.tsx",
+          "hash": "3051091605703041285"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-magnetize.tsx",
+          "hash": "10524002825606396889"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-mods.test.tsx",
+          "hash": "15534729114605603601"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-mods.tsx",
+          "hash": "5813628904489724291"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-nexuslink-panel.module.css",
+          "hash": "12266479432352033563"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-nexuslink-panel.tsx",
+          "hash": "16839252158864698796"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-notifications.test.tsx",
+          "hash": "18225661980009043721"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-notifications.tsx",
+          "hash": "6561527185699234082"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-render-hook.test.ts",
+          "hash": "10525534027455786449"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-render-hook.ts",
+          "hash": "3630148436593304484"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-replay.test.tsx",
+          "hash": "18297691415821834056"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-replay.tsx",
+          "hash": "15881532614220172979"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-roles.ts",
+          "hash": "6752285398946952587"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-screen.test.ts",
+          "hash": "956819372198009743"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-screen.ts",
+          "hash": "11506429813514543629"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-share-ui.test.tsx",
+          "hash": "4419944368529241698"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-share-ui.tsx",
+          "hash": "11380976476596623559"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-shortcuts.test.tsx",
+          "hash": "16149565095608568443"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-shortcuts.tsx",
+          "hash": "16902477866460186965"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-status-bar.test.tsx",
+          "hash": "8005681924373952888"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-status-bar.tsx",
+          "hash": "14082821643345168319"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-system-panel.module.css",
+          "hash": "10691079248687755628"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-system-panel.test.tsx",
+          "hash": "1287159849524344795"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-system-panel.tsx",
+          "hash": "13665564986343465554"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-terminals-grid.test.tsx",
+          "hash": "1633051600309269317"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-terminals-grid.tsx",
+          "hash": "4350392752398391205"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-virtual.test.tsx",
+          "hash": "3247219958809692383"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-virtual.ts",
+          "hash": "9369691732054629876"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-wait.test.ts",
+          "hash": "1879552717893507990"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-wait.ts",
+          "hash": "12747035181894046750"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-zorder.test.tsx",
+          "hash": "12251785547773427846"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf-zorder.ts",
+          "hash": "15640265916227075262"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf.module.css",
+          "hash": "7080184982528256036"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf.test.tsx",
+          "hash": "5186506912141427972"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/newf.tsx",
+          "hash": "5847347516180008350"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/nexus-craft.test.tsx",
+          "hash": "4017948390259145106"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/nexus-craft.tsx",
+          "hash": "9383017009888922308"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/nfp.tsx",
+          "hash": "12330906412796367449"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/noir.test.tsx",
+          "hash": "1688752049964245735"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/noir.tsx",
+          "hash": "8365979823678443653"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/opencode.tsx",
+          "hash": "6024145384334136540"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/ratings.test.tsx",
+          "hash": "11831516532584868936"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/ratings.tsx",
+          "hash": "5054707326900473937"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/run.test.tsx",
+          "hash": "3636650326946627043"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/run.tsx",
+          "hash": "1692046890903093485"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runs-list.test.tsx",
+          "hash": "4107550887212573679"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runs-list.tsx",
+          "hash": "10866640038000098732"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime-echo.tsx",
+          "hash": "1326785401488028674"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime-ops.test.tsx",
+          "hash": "9581739989670509226"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime-ops.tsx",
+          "hash": "14399667217326961460"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime-scene.test.tsx",
+          "hash": "3126233326788312880"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime.tsx",
+          "hash": "12531102291655456971"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/agents-tab.tsx",
+          "hash": "14466794288341999145"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/aux-tabs.test.tsx",
+          "hash": "16139285751515921226"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/chat-scroll-anchor.test.ts",
+          "hash": "5589187522553821426"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/chat-scroll-anchor.ts",
+          "hash": "17718090779600934792"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/history-pagination.test.tsx",
+          "hash": "2430226991000421460"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/history-tab.test.tsx",
+          "hash": "5814168142505595259"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/history-tab.tsx",
+          "hash": "5550371088870288779"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/kpi-band.test.tsx",
+          "hash": "17965949967453395871"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/kpi-band.tsx",
+          "hash": "18113906957743429899"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/overview-tab.test.tsx",
+          "hash": "10821534756094151160"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/overview-tab.tsx",
+          "hash": "4641394874991360959"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/pending-tab.tsx",
+          "hash": "10665484370610273667"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/process-chat-feed.tsx",
+          "hash": "16664420184385108630"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/process-command-hints.module.css",
+          "hash": "17413367449532851655"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/process-command.tsx",
+          "hash": "9572420590290048904"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/process-composer.test.tsx",
+          "hash": "8696372938800730588"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/process-feed.test.tsx",
+          "hash": "9077240478784975859"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/process-gates.test.tsx",
+          "hash": "3681611074316387711"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/process-side.tsx",
+          "hash": "15280391798835432005"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/process-tab.tsx",
+          "hash": "14250116107151855169"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/resources-tab.test.tsx",
+          "hash": "4263303306298309271"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/resources-tab.tsx",
+          "hash": "16609412756123259165"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/results-tab.test.tsx",
+          "hash": "658901807918746100"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/results-tab.tsx",
+          "hash": "7735361716773330917"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/scene-state.tsx",
+          "hash": "9436432801436661455"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/scene-status-chip.test.tsx",
+          "hash": "8718203526663560909"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/scene-status-chip.tsx",
+          "hash": "1184178799925148254"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/scene-tab.tsx",
+          "hash": "9316282229509378025"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/shared.test.ts",
+          "hash": "6602117246118415936"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/shared.ts",
+          "hash": "5293343241328670458"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/team-tab.tsx",
+          "hash": "4802412081201377486"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/test-harness.ts",
+          "hash": "9294546341148146530"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/use-process-fs.ts",
+          "hash": "8833599679667967579"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/use-process-sdk.ts",
+          "hash": "12190672782637816645"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/use-process-tab.ts",
+          "hash": "1609791772857984621"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/runtime/use-process-voice.ts",
+          "hash": "10852595348625548010"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/scenario-tab.test.tsx",
+          "hash": "15878325574019529458"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/scenario-tab.tsx",
+          "hash": "4292235074037761963"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/scene-launch.module.css",
+          "hash": "16735415442689809521"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/scene-launch.test.tsx",
+          "hash": "1065663242235722729"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/scene-launch.tsx",
+          "hash": "15133302160548007885"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/screens.module.css",
+          "hash": "16664564822321898797"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/section-compute.test.tsx",
+          "hash": "11448773550882390438"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/section-compute.tsx",
+          "hash": "4493157123749014731"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/section-data.tsx",
+          "hash": "7428662249432396076"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/section-intelligence.tsx",
+          "hash": "9121168110991165099"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/section-screens.test.tsx",
+          "hash": "784703184695646813"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/section-stub.tsx",
+          "hash": "2664504140163927039"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/settings-ai2-client-key.test.tsx",
+          "hash": "3462234967006959038"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/settings-ai2-client-key.tsx",
+          "hash": "11980893558129173846"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/settings-usage.test.tsx",
+          "hash": "5910859560019928453"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/settings-usage.tsx",
+          "hash": "15507097549769105409"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/settings.test.tsx",
+          "hash": "3521429867799866888"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/settings.tsx",
+          "hash": "5190409893179525468"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/social.test.tsx",
+          "hash": "926566615453734388"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/social.tsx",
+          "hash": "18176025345317383290"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/telegram.tsx",
+          "hash": "15686141304495067925"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/tool-confirm-card.tsx",
+          "hash": "7109509228198643203"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/tool-window-dedup.test.tsx",
+          "hash": "8105726697739441482"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/use-deck-agents.test.tsx",
+          "hash": "13652055998872564734"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/use-deck-agents.ts",
+          "hash": "8088115334841802139"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/voice-ui.ts",
+          "hash": "306843105711207704"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/welcome.test.tsx",
+          "hash": "589949451540952893"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/welcome.tsx",
+          "hash": "16028266735967369664"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/workflow.module.css",
+          "hash": "14296200997675595616"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/workflow.test.tsx",
+          "hash": "2891303651018211975"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/workflow.tsx",
+          "hash": "1327701484615965912"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/x.tsx",
+          "hash": "15163753078460003367"
+        },
+        {
+          "file": "apps/nexus/src/product/screens/youtube.tsx",
+          "hash": "8228512210250134815"
+        },
+        {
+          "file": "apps/nexus/src/product/shell-error-boundary.module.css",
+          "hash": "15394302974745032673"
+        },
+        {
+          "file": "apps/nexus/src/product/shell-error-boundary.tsx",
+          "hash": "7612918882088893752"
+        },
+        {
+          "file": "apps/nexus/src/product/shortcuts-hint.module.css",
+          "hash": "10111298434831293219"
+        },
+        {
+          "file": "apps/nexus/src/product/shortcuts-hint.tsx",
+          "hash": "14028610931007384916"
+        },
+        {
+          "file": "apps/nexus/src/product/skeleton-panel.module.css",
+          "hash": "17898730568554314587"
+        },
+        {
+          "file": "apps/nexus/src/product/skeleton-panel.test.tsx",
+          "hash": "6048063318504913751"
+        },
+        {
+          "file": "apps/nexus/src/product/skeleton-panel.tsx",
+          "hash": "13181632690604750044"
+        },
+        {
+          "file": "apps/nexus/src/product/social/live-source.ts",
+          "hash": "13337223960379856788"
+        },
+        {
+          "file": "apps/nexus/src/product/sync-ai2-static.test.ts",
+          "hash": "7363254669324047759"
+        },
+        {
+          "file": "apps/nexus/src/product/theme-color-probe.test.tsx",
+          "hash": "8033611139321867378"
+        },
+        {
+          "file": "apps/nexus/src/product/theme-color-probe.ts",
+          "hash": "1042327222975634329"
+        },
+        {
+          "file": "apps/nexus/src/product/tokenize-css-codemod.test.ts",
+          "hash": "5741899948969878674"
+        },
+        {
+          "file": "apps/nexus/src/product/use-async-value.test.tsx",
+          "hash": "17063989403697033789"
+        },
+        {
+          "file": "apps/nexus/src/product/use-async-value.ts",
+          "hash": "17800231818768407337"
+        },
+        {
+          "file": "apps/nexus/src/product/use-collapse-phase.ts",
+          "hash": "8681029750514167471"
+        },
+        {
+          "file": "apps/nexus/src/product/use-live-ctx.test.tsx",
+          "hash": "11181346547643806234"
+        },
+        {
+          "file": "apps/nexus/src/product/use-live-ctx.ts",
+          "hash": "13412033669937797763"
+        },
+        {
+          "file": "apps/nexus/src/product/use-reduced-motion.ts",
+          "hash": "12852309347523956579"
+        },
+        {
+          "file": "apps/nexus/src/product/visible-interval.test.ts",
+          "hash": "5557589358896649827"
+        },
+        {
+          "file": "apps/nexus/src/product/visible-interval.ts",
+          "hash": "1020952910523275830"
+        },
+        {
+          "file": "apps/nexus/src/product/waapi-lifecycle.test.tsx",
+          "hash": "7053922042685334865"
+        },
+        {
+          "file": "apps/nexus/src/types/jsnes.d.ts",
+          "hash": "1575325182607332583"
+        },
+        {
+          "file": "apps/nexus/tests/e2e/lite-surface.spec.ts",
+          "hash": "2453659809959421223"
+        },
+        {
+          "file": "apps/nexus/tsconfig.json",
+          "hash": "4390864888664081853"
+        },
+        {
+          "file": "apps/nexus/vitest.config.ts",
+          "hash": "1458361935264086688"
+        }
+      ],
+      "three": [
+        {
+          "file": "packages/three/package.json",
+          "hash": "3081263232065388035",
+          "deps": [
+            "ui",
+            "npm:react",
+            "npm:three",
+            "npm:@react-three/fiber",
+            "npm:@testing-library/jest-dom@6.6.3",
+            "npm:@testing-library/react",
+            "npm:@types/react",
+            "npm:@types/three",
+            "npm:jsdom",
+            "npm:typescript",
+            "npm:vitest"
+          ]
+        },
+        {
+          "file": "packages/three/project.json",
+          "hash": "16503967961939293258"
+        },
+        {
+          "file": "packages/three/src/cores/alice-halo.tsx",
+          "hash": "5907994917574600539"
+        },
+        {
+          "file": "packages/three/src/cores/arch-memory-core.tsx",
+          "hash": "7635081140634425288"
+        },
+        {
+          "file": "packages/three/src/cores/codex-geometry.tsx",
+          "hash": "5371111587431170892"
+        },
+        {
+          "file": "packages/three/src/cores/core-frame.tsx",
+          "hash": "10026857589960613992"
+        },
+        {
+          "file": "packages/three/src/cores/core-state.ts",
+          "hash": "6250113286578086264"
+        },
+        {
+          "file": "packages/three/src/cores/core-webgl.tsx",
+          "hash": "16195738746297432968"
+        },
+        {
+          "file": "packages/three/src/cores/cores.test.tsx",
+          "hash": "14375180014553381993"
+        },
+        {
+          "file": "packages/three/src/cores/forge-crystal.tsx",
+          "hash": "7398449921990938154"
+        },
+        {
+          "file": "packages/three/src/cores/mech-core.tsx",
+          "hash": "11316131665882258438"
+        },
+        {
+          "file": "packages/three/src/cores/nexus-core.tsx",
+          "hash": "13720881561190801011"
+        },
+        {
+          "file": "packages/three/src/fallbacks/core-fallback.tsx",
+          "hash": "10005351402533531600"
+        },
+        {
+          "file": "packages/three/src/fallbacks/spatial-fallback.tsx",
+          "hash": "2601657762951020373"
+        },
+        {
+          "file": "packages/three/src/index.ts",
+          "hash": "14999633444663278784"
+        },
+        {
+          "file": "packages/three/src/preview/scene-preview-lifecycle.test.tsx",
+          "hash": "3516640099450771127"
+        },
+        {
+          "file": "packages/three/src/preview/scene-preview.test.tsx",
+          "hash": "12500153101161343942"
+        },
+        {
+          "file": "packages/three/src/preview/scene-preview.tsx",
+          "hash": "8081646747312507977"
+        },
+        {
+          "file": "packages/three/src/runtime/determinism.ts",
+          "hash": "9325232389859207184"
+        },
+        {
+          "file": "packages/three/src/runtime/frame-lifecycle.test.tsx",
+          "hash": "2770555597838578773"
+        },
+        {
+          "file": "packages/three/src/runtime/frame-stats.tsx",
+          "hash": "15271862591778861898"
+        },
+        {
+          "file": "packages/three/src/runtime/index.ts",
+          "hash": "15988571214583862650"
+        },
+        {
+          "file": "packages/three/src/runtime/quality.ts",
+          "hash": "11714434005398390041"
+        },
+        {
+          "file": "packages/three/src/runtime/reduced-motion.ts",
+          "hash": "12784101825077970371"
+        },
+        {
+          "file": "packages/three/src/runtime/runtime.test.ts",
+          "hash": "10850049803871426599"
+        },
+        {
+          "file": "packages/three/src/runtime/webgl-support.ts",
+          "hash": "685861935833742804"
+        },
+        {
+          "file": "packages/three/src/spatial/agent-constellation.tsx",
+          "hash": "11411357215300170839"
+        },
+        {
+          "file": "packages/three/src/spatial/knowledge-orb.tsx",
+          "hash": "11133518407601639709"
+        },
+        {
+          "file": "packages/three/src/spatial/memory-sphere.tsx",
+          "hash": "16392982030108186790"
+        },
+        {
+          "file": "packages/three/src/spatial/mission-globe.tsx",
+          "hash": "16345863332928136846"
+        },
+        {
+          "file": "packages/three/src/spatial/spatial-frame.tsx",
+          "hash": "14532094679729787851"
+        },
+        {
+          "file": "packages/three/src/spatial/spatial-state.ts",
+          "hash": "15130196151834410948"
+        },
+        {
+          "file": "packages/three/src/spatial/spatial-webgl.tsx",
+          "hash": "8555501148766412271"
+        },
+        {
+          "file": "packages/three/src/spatial/spatial.test.tsx",
+          "hash": "11509278239671842072"
+        },
+        {
+          "file": "packages/three/tsconfig.json",
+          "hash": "681352651352469795"
+        }
+      ],
+      "tokens": [
+        {
+          "file": "packages/tokens/README.md",
+          "hash": "7488731677443959044"
+        },
+        {
+          "file": "packages/tokens/generated/tailwind-theme.css",
+          "hash": "9033956356393295169"
+        },
+        {
+          "file": "packages/tokens/generated/theme-manifest.json",
+          "hash": "13241395263060352584"
+        },
+        {
+          "file": "packages/tokens/generated/tokens.css",
+          "hash": "4651120512799129474"
+        },
+        {
+          "file": "packages/tokens/generated/tokens.d.ts",
+          "hash": "15539733820114113288"
+        },
+        {
+          "file": "packages/tokens/generated/tokens.ts",
+          "hash": "18260270539447063556"
+        },
+        {
+          "file": "packages/tokens/generated/unreal-scene-pack.json",
+          "hash": "13934073354869959727"
+        },
+        {
+          "file": "packages/tokens/generated/unreal-scene-tokens.json",
+          "hash": "7246883327544442450"
+        },
+        {
+          "file": "packages/tokens/package.json",
+          "hash": "5267482216559645452",
+          "deps": [
+            "npm:typescript",
+            "npm:vitest"
+          ]
+        },
+        {
+          "file": "packages/tokens/project.json",
+          "hash": "16306883876610263589"
+        },
+        {
+          "file": "packages/tokens/scripts/build-tokens.ts",
+          "hash": "657538699604604141"
+        },
+        {
+          "file": "packages/tokens/scripts/gen-token-reference.ts",
+          "hash": "4663985658466467892"
+        },
+        {
+          "file": "packages/tokens/scripts/token-lint.ts",
+          "hash": "2736694584554900151"
+        },
+        {
+          "file": "packages/tokens/scripts/validate-tokens.ts",
+          "hash": "1925349965491873542"
+        },
+        {
+          "file": "packages/tokens/src/build-tokens.test.ts",
+          "hash": "6389486177837110892"
+        },
+        {
+          "file": "packages/tokens/src/compact-block.contract.test.ts",
+          "hash": "2122181348130043545"
+        },
+        {
+          "file": "packages/tokens/src/components/agent-card.tokens.json",
+          "hash": "7445689367795334327"
+        },
+        {
+          "file": "packages/tokens/src/components/agent-chat.tokens.json",
+          "hash": "15477166555539506240"
+        },
+        {
+          "file": "packages/tokens/src/components/art-panel.tokens.json",
+          "hash": "13779593935766244753"
+        },
+        {
+          "file": "packages/tokens/src/components/assistant-card.tokens.json",
+          "hash": "10081736741224271207"
+        },
+        {
+          "file": "packages/tokens/src/components/bus-panel.tokens.json",
+          "hash": "13462611254207142824"
+        },
+        {
+          "file": "packages/tokens/src/components/compact-block.tokens.json",
+          "hash": "2738074066433981306"
+        },
+        {
+          "file": "packages/tokens/src/components/compact-summary.tokens.json",
+          "hash": "2844802928927565217"
+        },
+        {
+          "file": "packages/tokens/src/components/composer-controls.tokens.json",
+          "hash": "14870222925974430704"
+        },
+        {
+          "file": "packages/tokens/src/components/glass-bars.tokens.json",
+          "hash": "4361369477825883408"
+        },
+        {
+          "file": "packages/tokens/src/components/glass-panel.tokens.json",
+          "hash": "12348250097303791784"
+        },
+        {
+          "file": "packages/tokens/src/components/hero.tokens.json",
+          "hash": "12742967903350453218"
+        },
+        {
+          "file": "packages/tokens/src/components/hologram.tokens.json",
+          "hash": "8603966680343948249"
+        },
+        {
+          "file": "packages/tokens/src/components/icon-size.tokens.json",
+          "hash": "16975553219027592662"
+        },
+        {
+          "file": "packages/tokens/src/components/icon-strip.tokens.json",
+          "hash": "2410510815716412994"
+        },
+        {
+          "file": "packages/tokens/src/components/metric-ring.tokens.json",
+          "hash": "7733658878601718040"
+        },
+        {
+          "file": "packages/tokens/src/components/navigation.tokens.json",
+          "hash": "2298415878470769339"
+        },
+        {
+          "file": "packages/tokens/src/components/plugin-panels.tokens.json",
+          "hash": "1592940274193283799"
+        },
+        {
+          "file": "packages/tokens/src/components/progress-bar.tokens.json",
+          "hash": "14681202375917067904"
+        },
+        {
+          "file": "packages/tokens/src/components/run-trace.tokens.json",
+          "hash": "1672531083946847745"
+        },
+        {
+          "file": "packages/tokens/src/components/screen-type.tokens.json",
+          "hash": "7234222214022967556"
+        },
+        {
+          "file": "packages/tokens/src/components/scrollbar.tokens.json",
+          "hash": "17856168366246887799"
+        },
+        {
+          "file": "packages/tokens/src/components/session-delegation.tokens.json",
+          "hash": "15529956202998289113"
+        },
+        {
+          "file": "packages/tokens/src/components/start-screen.tokens.json",
+          "hash": "10738777947310324035"
+        },
+        {
+          "file": "packages/tokens/src/components/title.tokens.json",
+          "hash": "2063843119751667498"
+        },
+        {
+          "file": "packages/tokens/src/components/tool-confirmation.tokens.json",
+          "hash": "199310295325555662"
+        },
+        {
+          "file": "packages/tokens/src/components/tooltip.tokens.json",
+          "hash": "17556309224849027606"
+        },
+        {
+          "file": "packages/tokens/src/components/win-chrome.tokens.json",
+          "hash": "12001300280213539887"
+        },
+        {
+          "file": "packages/tokens/src/components/window-frame.tokens.json",
+          "hash": "18056458405521696470"
+        },
+        {
+          "file": "packages/tokens/src/contrast.contract.test.ts",
+          "hash": "1934540182254701570"
+        },
+        {
+          "file": "packages/tokens/src/glass-bars.test.ts",
+          "hash": "1391673873593627153"
+        },
+        {
+          "file": "packages/tokens/src/glass-guard.contract.test.ts",
+          "hash": "5756272072746495318"
+        },
+        {
+          "file": "packages/tokens/src/index.ts",
+          "hash": "9828116824991455944"
+        },
+        {
+          "file": "packages/tokens/src/primitives/color.tokens.json",
+          "hash": "5778855574073310326"
+        },
+        {
+          "file": "packages/tokens/src/primitives/motion.tokens.json",
+          "hash": "14423009263536379563"
+        },
+        {
+          "file": "packages/tokens/src/primitives/radius.tokens.json",
+          "hash": "14499268922430011959"
+        },
+        {
+          "file": "packages/tokens/src/primitives/shadow.tokens.json",
+          "hash": "3698476784458212698"
+        },
+        {
+          "file": "packages/tokens/src/primitives/spacing.tokens.json",
+          "hash": "15792880175118650150"
+        },
+        {
+          "file": "packages/tokens/src/primitives/typography.tokens.json",
+          "hash": "4008582202014856127"
+        },
+        {
+          "file": "packages/tokens/src/readability.gates.test.ts",
+          "hash": "13861361267103652756"
+        },
+        {
+          "file": "packages/tokens/src/semantic/accent.tokens.json",
+          "hash": "5208418446145769407"
+        },
+        {
+          "file": "packages/tokens/src/semantic/border.tokens.json",
+          "hash": "301287932246230440"
+        },
+        {
+          "file": "packages/tokens/src/semantic/chart.tokens.json",
+          "hash": "11318187724246752716"
+        },
+        {
+          "file": "packages/tokens/src/semantic/compact.tokens.json",
+          "hash": "17368447092245866714"
+        },
+        {
+          "file": "packages/tokens/src/semantic/depth.tokens.json",
+          "hash": "5489695026219148749"
+        },
+        {
+          "file": "packages/tokens/src/semantic/disabled.tokens.json",
+          "hash": "550249416962131948"
+        },
+        {
+          "file": "packages/tokens/src/semantic/elevation.tokens.json",
+          "hash": "6620594120705750952"
+        },
+        {
+          "file": "packages/tokens/src/semantic/icon.tokens.json",
+          "hash": "17901414922736168734"
+        },
+        {
+          "file": "packages/tokens/src/semantic/layer.tokens.json",
+          "hash": "13587136982176920259"
+        },
+        {
+          "file": "packages/tokens/src/semantic/link.tokens.json",
+          "hash": "10773888542605828640"
+        },
+        {
+          "file": "packages/tokens/src/semantic/materials.tokens.json",
+          "hash": "17951710915303670759"
+        },
+        {
+          "file": "packages/tokens/src/semantic/motion.tokens.json",
+          "hash": "18078303737360107272"
+        },
+        {
+          "file": "packages/tokens/src/semantic/opacity.tokens.json",
+          "hash": "11545094617194605591"
+        },
+        {
+          "file": "packages/tokens/src/semantic/scene.tokens.json",
+          "hash": "3902360406283915242"
+        },
+        {
+          "file": "packages/tokens/src/semantic/selection.tokens.json",
+          "hash": "14235535280937540645"
+        },
+        {
+          "file": "packages/tokens/src/semantic/state.tokens.json",
+          "hash": "9558527008758127833"
+        },
+        {
+          "file": "packages/tokens/src/semantic/surface.tokens.json",
+          "hash": "3042371290829637327"
+        },
+        {
+          "file": "packages/tokens/src/semantic/text.tokens.json",
+          "hash": "16978818680964677317"
+        },
+        {
+          "file": "packages/tokens/src/start-scenes-consistency.test.ts",
+          "hash": "194912358285814287"
+        },
+        {
+          "file": "packages/tokens/src/theme-matrix.test.ts",
+          "hash": "3212635915420037758"
+        },
+        {
+          "file": "packages/tokens/src/theme-scope.contract.test.ts",
+          "hash": "17703635556061994018"
+        },
+        {
+          "file": "packages/tokens/src/title.contract.test.ts",
+          "hash": "993982491261625137"
+        },
+        {
+          "file": "packages/tokens/src/token-usage.gates.test.ts",
+          "hash": "1256398543869419153"
+        },
+        {
+          "file": "packages/tokens/src/tokenize-codemod.test.ts",
+          "hash": "10553236341091484491"
+        },
+        {
+          "file": "packages/tokens/src/tokens-reference.test.ts",
+          "hash": "13949551412248983277"
+        },
+        {
+          "file": "packages/tokens/src/unreal-scene-export.test.ts",
+          "hash": "1197452149207052149"
+        },
+        {
+          "file": "packages/tokens/src/unreal-scene-pack.test.ts",
+          "hash": "5660340264793154189"
+        },
+        {
+          "file": "packages/tokens/tsconfig.json",
+          "hash": "3786411037507381261"
+        }
+      ],
+      "ui": [
+        {
+          "file": "packages/ui/README.md",
+          "hash": "2678872562862352058"
+        },
+        {
+          "file": "packages/ui/package.json",
+          "hash": "12018656000073810243",
+          "deps": [
+            "icons",
+            "motion",
+            "themes",
+            "tokens",
+            "npm:react",
+            "npm:react-dom",
+            "npm:@testing-library/jest-dom@6.6.3",
+            "npm:@testing-library/react",
+            "npm:@testing-library/user-event",
+            "npm:jsdom",
+            "npm:typescript",
+            "npm:vitest"
+          ]
+        },
+        {
+          "file": "packages/ui/project.json",
+          "hash": "9817779391034632830"
+        },
+        {
+          "file": "packages/ui/public-api.json",
+          "hash": "8052555246751421599"
+        },
+        {
+          "file": "packages/ui/src/accessibility/a11y-primitives.test.tsx",
+          "hash": "205814241522234474"
+        },
+        {
+          "file": "packages/ui/src/accessibility/focus-ring.contract.test.ts",
+          "hash": "14021033976137928748"
+        },
+        {
+          "file": "packages/ui/src/accessibility/focus-ring.css",
+          "hash": "3723336343896133768"
+        },
+        {
+          "file": "packages/ui/src/accessibility/list.tsx",
+          "hash": "3094544671338949378"
+        },
+        {
+          "file": "packages/ui/src/accessibility/scroll-region.module.css",
+          "hash": "7386870053038294852"
+        },
+        {
+          "file": "packages/ui/src/accessibility/scroll-region.tsx",
+          "hash": "6162124552550425726"
+        },
+        {
+          "file": "packages/ui/src/accessibility/scrollbars.css",
+          "hash": "2948289289725532587"
+        },
+        {
+          "file": "packages/ui/src/accessibility/visually-hidden.tsx",
+          "hash": "17497287898025133454"
+        },
+        {
+          "file": "packages/ui/src/accessibility/win-chrome.css",
+          "hash": "6462454312661248441"
+        },
+        {
+          "file": "packages/ui/src/actions/action-menu/action-menu.tsx",
+          "hash": "14514053328043195818"
+        },
+        {
+          "file": "packages/ui/src/actions/actions.module.css",
+          "hash": "5533332234249948308"
+        },
+        {
+          "file": "packages/ui/src/actions/button/button.module.css",
+          "hash": "11488151229840385338"
+        },
+        {
+          "file": "packages/ui/src/actions/button/button.tsx",
+          "hash": "7888275157591382824"
+        },
+        {
+          "file": "packages/ui/src/actions/chip/chip.tsx",
+          "hash": "14014984321444017393"
+        },
+        {
+          "file": "packages/ui/src/actions/command-trigger/command-trigger.tsx",
+          "hash": "15568618250277384328"
+        },
+        {
+          "file": "packages/ui/src/actions/icon-button/icon-button.module.css",
+          "hash": "8679620631062438132"
+        },
+        {
+          "file": "packages/ui/src/actions/icon-button/icon-button.tsx",
+          "hash": "12870330533963838796"
+        },
+        {
+          "file": "packages/ui/src/actions/responsive-density.test.tsx",
+          "hash": "12435804484198611264"
+        },
+        {
+          "file": "packages/ui/src/actions/split-button/split-button.test.tsx",
+          "hash": "13546150621157731339"
+        },
+        {
+          "file": "packages/ui/src/actions/split-button/split-button.tsx",
+          "hash": "9002254784981004114"
+        },
+        {
+          "file": "packages/ui/src/agent-chat/agent-chat.module.css",
+          "hash": "3339262642494006789"
+        },
+        {
+          "file": "packages/ui/src/agent-chat/agent-chat.test.tsx",
+          "hash": "1543034339361034756"
+        },
+        {
+          "file": "packages/ui/src/agent-chat/agent-composer.tsx",
+          "hash": "4493332550158817738"
+        },
+        {
+          "file": "packages/ui/src/agent-chat/attachment-list.tsx",
+          "hash": "12914872676697118316"
+        },
+        {
+          "file": "packages/ui/src/agent-chat/checkpoint-marker.tsx",
+          "hash": "4585054386504506524"
+        },
+        {
+          "file": "packages/ui/src/agent-chat/delegation-tree.tsx",
+          "hash": "9053863802826992704"
+        },
+        {
+          "file": "packages/ui/src/agent-chat/diff-review-card.tsx",
+          "hash": "10285729771761107201"
+        },
+        {
+          "file": "packages/ui/src/agent-chat/file-mention.tsx",
+          "hash": "13591536489507740734"
+        },
+        {
+          "file": "packages/ui/src/agent-chat/session-row.tsx",
+          "hash": "9539649322189685000"
+        },
+        {
+          "file": "packages/ui/src/agent-chat/stream-text.tsx",
+          "hash": "10843342730230294383"
+        },
+        {
+          "file": "packages/ui/src/agent-chat/tool-confirmation-card.tsx",
+          "hash": "14193792142946271609"
+        },
+        {
+          "file": "packages/ui/src/agent-chat/usage-meter.tsx",
+          "hash": "9432352135555150768"
+        },
+        {
+          "file": "packages/ui/src/agent-panel/agent-panel.module.css",
+          "hash": "17661999952636452865"
+        },
+        {
+          "file": "packages/ui/src/agent-panel/agent-panel.test.tsx",
+          "hash": "7328658443652252761"
+        },
+        {
+          "file": "packages/ui/src/agent-panel/agent-panel.tsx",
+          "hash": "11049047104537831974"
+        },
+        {
+          "file": "packages/ui/src/ai.contract.test.tsx",
+          "hash": "9775167796053791216"
+        },
+        {
+          "file": "packages/ui/src/ai/agent-avatar/agent-avatar.tsx",
+          "hash": "6886923665123262307"
+        },
+        {
+          "file": "packages/ui/src/ai/agent-badge/agent-badge.tsx",
+          "hash": "712573656593293979"
+        },
+        {
+          "file": "packages/ui/src/ai/agent-card/agent-card.tsx",
+          "hash": "3244276308690792899"
+        },
+        {
+          "file": "packages/ui/src/ai/agent-handoff/agent-handoff.tsx",
+          "hash": "13797549486414747297"
+        },
+        {
+          "file": "packages/ui/src/ai/agent-identity/agent-identity.tsx",
+          "hash": "657726951054924488"
+        },
+        {
+          "file": "packages/ui/src/ai/agent-presence/agent-presence.tsx",
+          "hash": "17253085435504963418"
+        },
+        {
+          "file": "packages/ui/src/ai/agent-selector/agent-selector.tsx",
+          "hash": "3752740659149327396"
+        },
+        {
+          "file": "packages/ui/src/ai/agent-status/agent-status.tsx",
+          "hash": "4025109969725202539"
+        },
+        {
+          "file": "packages/ui/src/ai/ai.module.css",
+          "hash": "10091251952978487983"
+        },
+        {
+          "file": "packages/ui/src/ai/assistant-card/assistant-card.module.css",
+          "hash": "4024005980816561418"
+        },
+        {
+          "file": "packages/ui/src/ai/assistant-card/assistant-card.tsx",
+          "hash": "15327058844191363874"
+        },
+        {
+          "file": "packages/ui/src/ai/confidence-meter/confidence-meter.tsx",
+          "hash": "4391872784326165501"
+        },
+        {
+          "file": "packages/ui/src/ai/evidence-strength/evidence-strength.tsx",
+          "hash": "2666265934103404697"
+        },
+        {
+          "file": "packages/ui/src/ai/integration-badge/integration-badge.tsx",
+          "hash": "17559808643143542793"
+        },
+        {
+          "file": "packages/ui/src/ai/memory-state/memory-state.tsx",
+          "hash": "17483577543862321931"
+        },
+        {
+          "file": "packages/ui/src/ai/model-badge/model-badge.tsx",
+          "hash": "6136954946177570621"
+        },
+        {
+          "file": "packages/ui/src/ai/runtime-status/runtime-status.tsx",
+          "hash": "7140755762111150117"
+        },
+        {
+          "file": "packages/ui/src/ai/tool-badge/tool-badge.tsx",
+          "hash": "42989787391850328"
+        },
+        {
+          "file": "packages/ui/src/ai/types.ts",
+          "hash": "16533183529097528891"
+        },
+        {
+          "file": "packages/ui/src/charts/area-chart/area-chart.test.tsx",
+          "hash": "17301055105686695109"
+        },
+        {
+          "file": "packages/ui/src/charts/area-chart/area-chart.tsx",
+          "hash": "18172897424861502212"
+        },
+        {
+          "file": "packages/ui/src/charts/bar-chart/bar-chart.test.tsx",
+          "hash": "836551621829187438"
+        },
+        {
+          "file": "packages/ui/src/charts/bar-chart/bar-chart.tsx",
+          "hash": "3561005209266091662"
+        },
+        {
+          "file": "packages/ui/src/charts/chart-frame.module.css",
+          "hash": "8130325889941976739"
+        },
+        {
+          "file": "packages/ui/src/charts/chart-frame.tsx",
+          "hash": "13257182845972122059"
+        },
+        {
+          "file": "packages/ui/src/charts/chart-math.ts",
+          "hash": "5760401552508062151"
+        },
+        {
+          "file": "packages/ui/src/charts/chart-svg.module.css",
+          "hash": "11342772869486119469"
+        },
+        {
+          "file": "packages/ui/src/charts/charts.test.ts",
+          "hash": "5103650488777908887"
+        },
+        {
+          "file": "packages/ui/src/charts/donut-chart/donut-chart.test.tsx",
+          "hash": "15538812938584658030"
+        },
+        {
+          "file": "packages/ui/src/charts/donut-chart/donut-chart.tsx",
+          "hash": "6991968209907437097"
+        },
+        {
+          "file": "packages/ui/src/charts/event-ribbon/event-ribbon.test.tsx",
+          "hash": "11756254719912723122"
+        },
+        {
+          "file": "packages/ui/src/charts/event-ribbon/event-ribbon.tsx",
+          "hash": "13259266164539057096"
+        },
+        {
+          "file": "packages/ui/src/charts/event-ribbon/ribbon-list.tsx",
+          "hash": "6733018716504818937"
+        },
+        {
+          "file": "packages/ui/src/charts/flow-steps/flow-steps.test.tsx",
+          "hash": "16680130196312614564"
+        },
+        {
+          "file": "packages/ui/src/charts/flow-steps/flow-steps.tsx",
+          "hash": "15819619496950872186"
+        },
+        {
+          "file": "packages/ui/src/charts/heatmap/heatmap.test.tsx",
+          "hash": "8107551408589785920"
+        },
+        {
+          "file": "packages/ui/src/charts/heatmap/heatmap.tsx",
+          "hash": "9501304573787782682"
+        },
+        {
+          "file": "packages/ui/src/charts/index.ts",
+          "hash": "1046893127037656629"
+        },
+        {
+          "file": "packages/ui/src/charts/line-chart/line-chart.module.css",
+          "hash": "5466266551266012866"
+        },
+        {
+          "file": "packages/ui/src/charts/line-chart/line-chart.test.tsx",
+          "hash": "5888789204831392725"
+        },
+        {
+          "file": "packages/ui/src/charts/line-chart/line-chart.tsx",
+          "hash": "15039971432778606729"
+        },
+        {
+          "file": "packages/ui/src/charts/palette.generated.test.ts",
+          "hash": "13414912989749251971"
+        },
+        {
+          "file": "packages/ui/src/charts/palette.ts",
+          "hash": "6941708224509470429"
+        },
+        {
+          "file": "packages/ui/src/charts/radar-chart/radar-chart.test.tsx",
+          "hash": "12811387509489576353"
+        },
+        {
+          "file": "packages/ui/src/charts/radar-chart/radar-chart.tsx",
+          "hash": "1248493293062684274"
+        },
+        {
+          "file": "packages/ui/src/charts/scales.test.ts",
+          "hash": "7820547203572019644"
+        },
+        {
+          "file": "packages/ui/src/charts/scales.ts",
+          "hash": "11092253131216917180"
+        },
+        {
+          "file": "packages/ui/src/charts/stacked-bar-chart/stacked-bar-chart.test.tsx",
+          "hash": "13979168238143234557"
+        },
+        {
+          "file": "packages/ui/src/charts/stacked-bar-chart/stacked-bar-chart.tsx",
+          "hash": "6172514817733297476"
+        },
+        {
+          "file": "packages/ui/src/charts/state-matrix.test.tsx",
+          "hash": "11261335824355569094"
+        },
+        {
+          "file": "packages/ui/src/charts/sufficiency.ts",
+          "hash": "6491185374323676821"
+        },
+        {
+          "file": "packages/ui/src/charts/timeline-chart/timeline-chart.test.tsx",
+          "hash": "12825358318614733197"
+        },
+        {
+          "file": "packages/ui/src/charts/timeline-chart/timeline-chart.tsx",
+          "hash": "3793069489926009987"
+        },
+        {
+          "file": "packages/ui/src/charts/types.ts",
+          "hash": "6123103099216987603"
+        },
+        {
+          "file": "packages/ui/src/compaction/compact-badge.tsx",
+          "hash": "5277525506826010897"
+        },
+        {
+          "file": "packages/ui/src/compaction/compact-block.module.css",
+          "hash": "791238690732296502"
+        },
+        {
+          "file": "packages/ui/src/compaction/compact-block.test.tsx",
+          "hash": "14314201221421155074"
+        },
+        {
+          "file": "packages/ui/src/compaction/compact-block.tsx",
+          "hash": "744160153234124106"
+        },
+        {
+          "file": "packages/ui/src/compaction/compact-indicator.tsx",
+          "hash": "18355616209012914917"
+        },
+        {
+          "file": "packages/ui/src/compaction/compact-summary-row.tsx",
+          "hash": "4345716121117153006"
+        },
+        {
+          "file": "packages/ui/src/compaction/compact-summary.module.css",
+          "hash": "801029231591537452"
+        },
+        {
+          "file": "packages/ui/src/compaction/compact-summary.test.tsx",
+          "hash": "3143472189164822592"
+        },
+        {
+          "file": "packages/ui/src/compaction/index.ts",
+          "hash": "6065011765388812063"
+        },
+        {
+          "file": "packages/ui/src/contrast-computability.contract.test.ts",
+          "hash": "6258022892714748661"
+        },
+        {
+          "file": "packages/ui/src/css-modules.d.ts",
+          "hash": "16404199229234718618"
+        },
+        {
+          "file": "packages/ui/src/dev/reference-frame/reference-frame.module.css",
+          "hash": "919806810358572372"
+        },
+        {
+          "file": "packages/ui/src/dev/reference-frame/reference-frame.tsx",
+          "hash": "6035319712736445922"
+        },
+        {
+          "file": "packages/ui/src/families-extended.contract.test.tsx",
+          "hash": "5795130008895733472"
+        },
+        {
+          "file": "packages/ui/src/families.contract.test.tsx",
+          "hash": "9815574689150218331"
+        },
+        {
+          "file": "packages/ui/src/feedback/approval-request/approval-request.module.css",
+          "hash": "13297909889940821897"
+        },
+        {
+          "file": "packages/ui/src/feedback/approval-request/approval-request.tsx",
+          "hash": "3834693752484909769"
+        },
+        {
+          "file": "packages/ui/src/feedback/empty-state/empty-state.tsx",
+          "hash": "2657861437380350343"
+        },
+        {
+          "file": "packages/ui/src/feedback/error-state/error-state.tsx",
+          "hash": "21077505037301082"
+        },
+        {
+          "file": "packages/ui/src/feedback/feedback.module.css",
+          "hash": "15557835101690199640"
+        },
+        {
+          "file": "packages/ui/src/feedback/loading-state/loading-state.tsx",
+          "hash": "3350354404988831386"
+        },
+        {
+          "file": "packages/ui/src/feedback/progress-arc/progress-arc.tsx",
+          "hash": "15498900340793211021"
+        },
+        {
+          "file": "packages/ui/src/feedback/progress-bar/progress-bar.tsx",
+          "hash": "4617036650601682699"
+        },
+        {
+          "file": "packages/ui/src/feedback/skeleton/skeleton.tsx",
+          "hash": "12130365251395801815"
+        },
+        {
+          "file": "packages/ui/src/feedback/state-primitives.test.tsx",
+          "hash": "11630383654915195127"
+        },
+        {
+          "file": "packages/ui/src/feedback/state-typography.test.tsx",
+          "hash": "3928322054370018395"
+        },
+        {
+          "file": "packages/ui/src/feedback/status-badge/status-badge.module.css",
+          "hash": "15579059293963222536"
+        },
+        {
+          "file": "packages/ui/src/feedback/status-badge/status-badge.test.tsx",
+          "hash": "15773119637257483524"
+        },
+        {
+          "file": "packages/ui/src/feedback/status-badge/status-badge.tsx",
+          "hash": "13182020830890485826"
+        },
+        {
+          "file": "packages/ui/src/feedback/system-notice/system-notice.tsx",
+          "hash": "18398783829377777116"
+        },
+        {
+          "file": "packages/ui/src/feedback/toast/toast.test.tsx",
+          "hash": "1428039647583015017"
+        },
+        {
+          "file": "packages/ui/src/feedback/toast/toast.tsx",
+          "hash": "7708803780164673593"
+        },
+        {
+          "file": "packages/ui/src/feedback/typing-indicator/typing-indicator.module.css",
+          "hash": "1877416778324152903"
+        },
+        {
+          "file": "packages/ui/src/feedback/typing-indicator/typing-indicator.test.tsx",
+          "hash": "9229252414125023690"
+        },
+        {
+          "file": "packages/ui/src/feedback/typing-indicator/typing-indicator.tsx",
+          "hash": "17044953157174670242"
+        },
+        {
+          "file": "packages/ui/src/feedback/unavailable-state/unavailable-state.tsx",
+          "hash": "14314570906007139425"
+        },
+        {
+          "file": "packages/ui/src/game/chess-piece/chess-piece.module.css",
+          "hash": "17809564020031245025"
+        },
+        {
+          "file": "packages/ui/src/game/chess-piece/chess-piece.tsx",
+          "hash": "18213204155066157186"
+        },
+        {
+          "file": "packages/ui/src/index.ts",
+          "hash": "15764255107308934263"
+        },
+        {
+          "file": "packages/ui/src/inputs/checkbox/checkbox.tsx",
+          "hash": "10892781316526460820"
+        },
+        {
+          "file": "packages/ui/src/inputs/combobox/combobox.tsx",
+          "hash": "12603258301573070598"
+        },
+        {
+          "file": "packages/ui/src/inputs/inputs.module.css",
+          "hash": "13430471990541340519"
+        },
+        {
+          "file": "packages/ui/src/inputs/listbox/listbox.tsx",
+          "hash": "9843257528146217243"
+        },
+        {
+          "file": "packages/ui/src/inputs/radio/radio.tsx",
+          "hash": "18305194691180928791"
+        },
+        {
+          "file": "packages/ui/src/inputs/range-slider/range-slider.tsx",
+          "hash": "12174874073382328473"
+        },
+        {
+          "file": "packages/ui/src/inputs/search-field/search-field.tsx",
+          "hash": "10688778075114944069"
+        },
+        {
+          "file": "packages/ui/src/inputs/select/select.module.css",
+          "hash": "14696698041564328647"
+        },
+        {
+          "file": "packages/ui/src/inputs/select/select.tsx",
+          "hash": "16757574170677741501"
+        },
+        {
+          "file": "packages/ui/src/inputs/slider/slider.tsx",
+          "hash": "17596504735846294529"
+        },
+        {
+          "file": "packages/ui/src/inputs/switch/switch.module.css",
+          "hash": "4862698618756654190"
+        },
+        {
+          "file": "packages/ui/src/inputs/switch/switch.tsx",
+          "hash": "5106481237864511800"
+        },
+        {
+          "file": "packages/ui/src/inputs/text-area/text-area.tsx",
+          "hash": "356562121519838268"
+        },
+        {
+          "file": "packages/ui/src/inputs/text-field/text-field.tsx",
+          "hash": "16837303684881378443"
+        },
+        {
+          "file": "packages/ui/src/jest-axe.d.ts",
+          "hash": "17777416362233364346"
+        },
+        {
+          "file": "packages/ui/src/layout/command-layout.tsx",
+          "hash": "14333221610663076753"
+        },
+        {
+          "file": "packages/ui/src/layout/intelligence-layout.tsx",
+          "hash": "14317733491336528416"
+        },
+        {
+          "file": "packages/ui/src/layout/layout.module.css",
+          "hash": "3955120435284049771"
+        },
+        {
+          "file": "packages/ui/src/layout/nexus-shell.tsx",
+          "hash": "13750442430390583045"
+        },
+        {
+          "file": "packages/ui/src/layout/studio-layout.tsx",
+          "hash": "1350761849389916221"
+        },
+        {
+          "file": "packages/ui/src/layout/window-controls.tsx",
+          "hash": "12784483993378337342"
+        },
+        {
+          "file": "packages/ui/src/layout/window-frame.test.tsx",
+          "hash": "7481201691367829650"
+        },
+        {
+          "file": "packages/ui/src/layout/window-frame.tsx",
+          "hash": "1517081790588497101"
+        },
+        {
+          "file": "packages/ui/src/metrics/metric-card/metric-card.tsx",
+          "hash": "8702807915648005437"
+        },
+        {
+          "file": "packages/ui/src/metrics/metric-ring/metric-ring.tsx",
+          "hash": "16352956966025136772"
+        },
+        {
+          "file": "packages/ui/src/metrics/metric-strip/metric-strip.tsx",
+          "hash": "13933527551120520157"
+        },
+        {
+          "file": "packages/ui/src/metrics/metrics.module.css",
+          "hash": "3085231400053690121"
+        },
+        {
+          "file": "packages/ui/src/metrics/resource-bar/resource-bar.tsx",
+          "hash": "17603885189859000189"
+        },
+        {
+          "file": "packages/ui/src/metrics/sparkline/sparkline.tsx",
+          "hash": "5967687993889270688"
+        },
+        {
+          "file": "packages/ui/src/metrics/status-gauge/status-gauge.tsx",
+          "hash": "18016710979864591209"
+        },
+        {
+          "file": "packages/ui/src/motion/ambient-canvas.test.tsx",
+          "hash": "9800973130270422700"
+        },
+        {
+          "file": "packages/ui/src/motion/ambient-canvas.tsx",
+          "hash": "7599759584516816906"
+        },
+        {
+          "file": "packages/ui/src/motion/motion-copilot.test.tsx",
+          "hash": "2522849304164260707"
+        },
+        {
+          "file": "packages/ui/src/motion/motion-copilot.tsx",
+          "hash": "5512442886411665382"
+        },
+        {
+          "file": "packages/ui/src/motion/motion-helpers.ts",
+          "hash": "4426602992242711953"
+        },
+        {
+          "file": "packages/ui/src/motion/motion-wrappers.tsx",
+          "hash": "246011060581369654"
+        },
+        {
+          "file": "packages/ui/src/motion/motion.module.css",
+          "hash": "7760145654045410411"
+        },
+        {
+          "file": "packages/ui/src/motion/parallax-layer.tsx",
+          "hash": "533788284446421188"
+        },
+        {
+          "file": "packages/ui/src/navigation/breadcrumbs/breadcrumbs.tsx",
+          "hash": "10929257552932569077"
+        },
+        {
+          "file": "packages/ui/src/navigation/command-palette/command-palette.module.css",
+          "hash": "16284614817619221121"
+        },
+        {
+          "file": "packages/ui/src/navigation/command-palette/command-palette.tsx",
+          "hash": "2179083677746945077"
+        },
+        {
+          "file": "packages/ui/src/navigation/icon-rail/icon-rail.tsx",
+          "hash": "15192517890757418903"
+        },
+        {
+          "file": "packages/ui/src/navigation/nav-item/nav-item.tsx",
+          "hash": "8578687403557134642"
+        },
+        {
+          "file": "packages/ui/src/navigation/navigation.module.css",
+          "hash": "6403181354974731938"
+        },
+        {
+          "file": "packages/ui/src/navigation/page-header/page-header.tsx",
+          "hash": "5843270356578708267"
+        },
+        {
+          "file": "packages/ui/src/navigation/pagination/pagination.tsx",
+          "hash": "13641654307662708421"
+        },
+        {
+          "file": "packages/ui/src/navigation/sidebar/sidebar.tsx",
+          "hash": "916249575242691507"
+        },
+        {
+          "file": "packages/ui/src/navigation/tabs/tab-primitives.tsx",
+          "hash": "16665421931022300882"
+        },
+        {
+          "file": "packages/ui/src/navigation/tabs/tabs.module.css",
+          "hash": "13334294255284769855"
+        },
+        {
+          "file": "packages/ui/src/navigation/tabs/tabs.tsx",
+          "hash": "9391492127718697914"
+        },
+        {
+          "file": "packages/ui/src/navigation/top-bar/top-bar.tsx",
+          "hash": "6797972644095007177"
+        },
+        {
+          "file": "packages/ui/src/panel-header/index.ts",
+          "hash": "3655774562512682088"
+        },
+        {
+          "file": "packages/ui/src/panel-header/panel-header.module.css",
+          "hash": "17618917325411353882"
+        },
+        {
+          "file": "packages/ui/src/panel-header/panel-header.test.tsx",
+          "hash": "11237766409202246682"
+        },
+        {
+          "file": "packages/ui/src/panel-header/panel-header.tsx",
+          "hash": "17861085078373239450"
+        },
+        {
+          "file": "packages/ui/src/plugins/plugin-card.tsx",
+          "hash": "9748176970748016723"
+        },
+        {
+          "file": "packages/ui/src/plugins/plugin-group.tsx",
+          "hash": "12627197897047752499"
+        },
+        {
+          "file": "packages/ui/src/plugins/plugin-status-badge.tsx",
+          "hash": "4238116354967923346"
+        },
+        {
+          "file": "packages/ui/src/plugins/plugins.module.css",
+          "hash": "6834440769350189164"
+        },
+        {
+          "file": "packages/ui/src/plugins/plugins.test.tsx",
+          "hash": "14874500446620651905"
+        },
+        {
+          "file": "packages/ui/src/plugins/right-panel-tab-bar.tsx",
+          "hash": "2585419397773620130"
+        },
+        {
+          "file": "packages/ui/src/public-api.contract.test.ts",
+          "hash": "12337912076973065425"
+        },
+        {
+          "file": "packages/ui/src/runtime/agenda-row/agenda-row.tsx",
+          "hash": "8087958540306893029"
+        },
+        {
+          "file": "packages/ui/src/runtime/audio-player/audio-player.tsx",
+          "hash": "11410183001483918130"
+        },
+        {
+          "file": "packages/ui/src/runtime/client-catalog.test.tsx",
+          "hash": "7019511286177184861"
+        },
+        {
+          "file": "packages/ui/src/runtime/client-catalog/client-catalog.tsx",
+          "hash": "1075267924252130382"
+        },
+        {
+          "file": "packages/ui/src/runtime/comment-row/comment-row.tsx",
+          "hash": "9689719001907769623"
+        },
+        {
+          "file": "packages/ui/src/runtime/composer/composer.tsx",
+          "hash": "4072153350906972556"
+        },
+        {
+          "file": "packages/ui/src/runtime/connection-status/connection-status.tsx",
+          "hash": "10400898994811792372"
+        },
+        {
+          "file": "packages/ui/src/runtime/context-item/context-item.tsx",
+          "hash": "18002956287984133903"
+        },
+        {
+          "file": "packages/ui/src/runtime/docs-item/docs-item.tsx",
+          "hash": "16275183764842473496"
+        },
+        {
+          "file": "packages/ui/src/runtime/event-row/event-row.tsx",
+          "hash": "4487484343966768185"
+        },
+        {
+          "file": "packages/ui/src/runtime/file-diff-row/file-diff-row.tsx",
+          "hash": "11963974153849643532"
+        },
+        {
+          "file": "packages/ui/src/runtime/grant-liveness.test.ts",
+          "hash": "16121340682602694606"
+        },
+        {
+          "file": "packages/ui/src/runtime/grant-liveness.ts",
+          "hash": "4422798445428890030"
+        },
+        {
+          "file": "packages/ui/src/runtime/job-control/job-control.tsx",
+          "hash": "5321024973691483398"
+        },
+        {
+          "file": "packages/ui/src/runtime/mask-secrets.test.ts",
+          "hash": "6375318950805153063"
+        },
+        {
+          "file": "packages/ui/src/runtime/mask-secrets.ts",
+          "hash": "15333326521245600509"
+        },
+        {
+          "file": "packages/ui/src/runtime/message-row/message-row.tsx",
+          "hash": "16916917586228007630"
+        },
+        {
+          "file": "packages/ui/src/runtime/permission-mode/permission-mode.tsx",
+          "hash": "10829671094571618141"
+        },
+        {
+          "file": "packages/ui/src/runtime/plan-summary/plan-summary.tsx",
+          "hash": "8368651587179947035"
+        },
+        {
+          "file": "packages/ui/src/runtime/provider-embed/provider-embed.tsx",
+          "hash": "17522657681674342742"
+        },
+        {
+          "file": "packages/ui/src/runtime/provider-search-results/provider-search-results.tsx",
+          "hash": "16772526224801574652"
+        },
+        {
+          "file": "packages/ui/src/runtime/provider-search-state-visuals.test.tsx",
+          "hash": "7238510546201190047"
+        },
+        {
+          "file": "packages/ui/src/runtime/qwen-client-card.test.tsx",
+          "hash": "3648033843435958308"
+        },
+        {
+          "file": "packages/ui/src/runtime/qwen-client-card/qwen-client-card.tsx",
+          "hash": "9188949850189418916"
+        },
+        {
+          "file": "packages/ui/src/runtime/readiness-item/readiness-item.tsx",
+          "hash": "8117472143641706825"
+        },
+        {
+          "file": "packages/ui/src/runtime/run-trajectory/run-trajectory.tsx",
+          "hash": "2949928438520112759"
+        },
+        {
+          "file": "packages/ui/src/runtime/runtime-launcher/runtime-launcher.tsx",
+          "hash": "16071175185617100350"
+        },
+        {
+          "file": "packages/ui/src/runtime/runtime.contract.test.tsx",
+          "hash": "5985418402546598216"
+        },
+        {
+          "file": "packages/ui/src/runtime/runtime.module.css",
+          "hash": "11609394711097004792"
+        },
+        {
+          "file": "packages/ui/src/runtime/service-card/service-card.tsx",
+          "hash": "11209596734871017278"
+        },
+        {
+          "file": "packages/ui/src/runtime/session-status/session-status.tsx",
+          "hash": "13963730738722224688"
+        },
+        {
+          "file": "packages/ui/src/runtime/source-link/source-link.tsx",
+          "hash": "8702459045502183668"
+        },
+        {
+          "file": "packages/ui/src/runtime/thread-row/thread-row.tsx",
+          "hash": "14263392158668081524"
+        },
+        {
+          "file": "packages/ui/src/runtime/types.ts",
+          "hash": "822921695964933956"
+        },
+        {
+          "file": "packages/ui/src/runtime/workspace-picker/workspace-picker.tsx",
+          "hash": "3861796121952560072"
+        },
+        {
+          "file": "packages/ui/src/story-coverage.contract.test.ts",
+          "hash": "7396386957698435870"
+        },
+        {
+          "file": "packages/ui/src/subpath-size.contract.test.ts",
+          "hash": "782388036391057518"
+        },
+        {
+          "file": "packages/ui/src/surfaces/art-panel/art-panel.module.css",
+          "hash": "2352862921069778246"
+        },
+        {
+          "file": "packages/ui/src/surfaces/art-panel/art-panel.test.tsx",
+          "hash": "4215763764125372528"
+        },
+        {
+          "file": "packages/ui/src/surfaces/art-panel/art-panel.tsx",
+          "hash": "15814796585157129181"
+        },
+        {
+          "file": "packages/ui/src/surfaces/card/card.tsx",
+          "hash": "8793716300406089760"
+        },
+        {
+          "file": "packages/ui/src/surfaces/divider/divider.tsx",
+          "hash": "18022860720805954191"
+        },
+        {
+          "file": "packages/ui/src/surfaces/drawer/drawer.tsx",
+          "hash": "13919048218992556164"
+        },
+        {
+          "file": "packages/ui/src/surfaces/floating-panel/floating-panel.tsx",
+          "hash": "5082056888567834844"
+        },
+        {
+          "file": "packages/ui/src/surfaces/glass-bars/capsule-input.tsx",
+          "hash": "692820634041233885"
+        },
+        {
+          "file": "packages/ui/src/surfaces/glass-bars/glass-bars.module.css",
+          "hash": "11579092264373743737"
+        },
+        {
+          "file": "packages/ui/src/surfaces/glass-bars/glass-bars.test.tsx",
+          "hash": "14214049648747808292"
+        },
+        {
+          "file": "packages/ui/src/surfaces/glass-bars/glass-surface.tsx",
+          "hash": "2504744768379655931"
+        },
+        {
+          "file": "packages/ui/src/surfaces/glass-bars/status-strip.tsx",
+          "hash": "10149336799501291940"
+        },
+        {
+          "file": "packages/ui/src/surfaces/glass-panel/glass-panel.module.css",
+          "hash": "4433593661028944413"
+        },
+        {
+          "file": "packages/ui/src/surfaces/glass-panel/glass-panel.tsx",
+          "hash": "1122316320123109030"
+        },
+        {
+          "file": "packages/ui/src/surfaces/modal/modal.module.css",
+          "hash": "1233474046728944066"
+        },
+        {
+          "file": "packages/ui/src/surfaces/modal/modal.tsx",
+          "hash": "2982199442046213986"
+        },
+        {
+          "file": "packages/ui/src/surfaces/popover/popover.tsx",
+          "hash": "15198392047437679153"
+        },
+        {
+          "file": "packages/ui/src/surfaces/section/section.tsx",
+          "hash": "8545248544947351644"
+        },
+        {
+          "file": "packages/ui/src/surfaces/surfaces.module.css",
+          "hash": "13940035590791089808"
+        },
+        {
+          "file": "packages/ui/src/surfaces/table/table.tsx",
+          "hash": "13040826871137349509"
+        },
+        {
+          "file": "packages/ui/src/surfaces/toolbar/toolbar.tsx",
+          "hash": "6790612297876133468"
+        },
+        {
+          "file": "packages/ui/src/surfaces/tooltip/tooltip.test.tsx",
+          "hash": "16569737713764112966"
+        },
+        {
+          "file": "packages/ui/src/surfaces/tooltip/tooltip.tsx",
+          "hash": "8444358924857073727"
+        },
+        {
+          "file": "packages/ui/src/theme/nexus-theme-provider.test.tsx",
+          "hash": "10901236172618184891"
+        },
+        {
+          "file": "packages/ui/src/theme/nexus-theme-provider.tsx",
+          "hash": "17920778706724783515"
+        },
+        {
+          "file": "packages/ui/src/types/index.ts",
+          "hash": "15560891005921359321"
+        },
+        {
+          "file": "packages/ui/src/typography/kbd/kbd.module.css",
+          "hash": "8097475308094810920"
+        },
+        {
+          "file": "packages/ui/src/typography/kbd/kbd.test.tsx",
+          "hash": "17009990098588147811"
+        },
+        {
+          "file": "packages/ui/src/typography/kbd/kbd.tsx",
+          "hash": "15661658213228402589"
+        },
+        {
+          "file": "packages/ui/src/typography/type-roles.css",
+          "hash": "4305669994875104364"
+        },
+        {
+          "file": "packages/ui/src/vitest-matchers.d.ts",
+          "hash": "2146161292206472887"
+        },
+        {
+          "file": "packages/ui/test/a11y.smoke.test.tsx",
+          "hash": "1211831473553643360"
+        },
+        {
+          "file": "packages/ui/test/public-api-consumer.tsx",
+          "hash": "6118839180991675550"
+        },
+        {
+          "file": "packages/ui/test/setup.ts",
+          "hash": "113293077859924301"
+        },
+        {
+          "file": "packages/ui/test/tsconfig.consumer.json",
+          "hash": "15442509608619149741"
+        },
+        {
+          "file": "packages/ui/tsconfig.json",
+          "hash": "945304399757338595"
+        }
+      ],
+      "icons": [
+        {
+          "file": "packages/icons/README.md",
+          "hash": "10213444253610665092"
+        },
+        {
+          "file": "packages/icons/package.json",
+          "hash": "1615706113652997538",
+          "deps": [
+            "npm:react",
+            "npm:typescript",
+            "npm:vitest"
+          ]
+        },
+        {
+          "file": "packages/icons/project.json",
+          "hash": "14740431509640864806"
+        },
+        {
+          "file": "packages/icons/src/icon.tsx",
+          "hash": "312283026238011754"
+        },
+        {
+          "file": "packages/icons/src/index.ts",
+          "hash": "15479996561778569197"
+        },
+        {
+          "file": "packages/icons/src/registry.ts",
+          "hash": "7696954111457372201"
+        },
+        {
+          "file": "packages/icons/tsconfig.json",
+          "hash": "945304399757338595"
+        }
+      ],
+      "mock-data": [
+        {
+          "file": "packages/mock-data/package.json",
+          "hash": "7717443683862932042",
+          "deps": [
+            "patterns",
+            "npm:typescript",
+            "npm:vitest"
+          ]
+        },
+        {
+          "file": "packages/mock-data/project.json",
+          "hash": "9853899768764814114"
+        },
+        {
+          "file": "packages/mock-data/src/graph-scenes.ts",
+          "hash": "6743481085484928049"
+        },
+        {
+          "file": "packages/mock-data/src/index.ts",
+          "hash": "11284309171077330514"
+        },
+        {
+          "file": "packages/mock-data/src/instagram.ts",
+          "hash": "8061301375853859377"
+        },
+        {
+          "file": "packages/mock-data/src/media.ts",
+          "hash": "17713225583468090908"
+        },
+        {
+          "file": "packages/mock-data/src/memory.ts",
+          "hash": "3677173135166797557"
+        },
+        {
+          "file": "packages/mock-data/src/missions.ts",
+          "hash": "17927279071551160800"
+        },
+        {
+          "file": "packages/mock-data/src/mock-stream.test.ts",
+          "hash": "15819782641355241035"
+        },
+        {
+          "file": "packages/mock-data/src/mock-stream.ts",
+          "hash": "3730991395038981392"
+        },
+        {
+          "file": "packages/mock-data/src/models.ts",
+          "hash": "6514599506395549605"
+        },
+        {
+          "file": "packages/mock-data/src/personas.ts",
+          "hash": "4224806522826980159"
+        },
+        {
+          "file": "packages/mock-data/src/runs.ts",
+          "hash": "6266235310343700563"
+        },
+        {
+          "file": "packages/mock-data/src/services.ts",
+          "hash": "18278563026565677394"
+        },
+        {
+          "file": "packages/mock-data/src/social.ts",
+          "hash": "4839522895084315187"
+        },
+        {
+          "file": "packages/mock-data/src/system.ts",
+          "hash": "6427678043594216231"
+        },
+        {
+          "file": "packages/mock-data/src/telegram.ts",
+          "hash": "822923901843697213"
+        },
+        {
+          "file": "packages/mock-data/src/types.ts",
+          "hash": "15954472241784244585"
+        },
+        {
+          "file": "packages/mock-data/tsconfig.json",
+          "hash": "11160238903678373072"
+        }
+      ],
+      "patterns": [
+        {
+          "file": "packages/patterns/package.json",
+          "hash": "7874416698748352059",
+          "deps": [
+            "mock-data",
+            "ui",
+            "npm:react",
+            "npm:react-dom",
+            "npm:@testing-library/jest-dom@6.6.3",
+            "npm:@testing-library/react",
+            "npm:@testing-library/user-event",
+            "npm:@types/react",
+            "npm:@types/react-dom",
+            "npm:jsdom",
+            "npm:typescript",
+            "npm:vitest"
+          ]
+        },
+        {
+          "file": "packages/patterns/project.json",
+          "hash": "897164008378881043"
+        },
+        {
+          "file": "packages/patterns/src/a11y.smoke.test.tsx",
+          "hash": "12553299317534790159"
+        },
+        {
+          "file": "packages/patterns/src/agents/agent-handoff.tsx",
+          "hash": "17540082285791259698"
+        },
+        {
+          "file": "packages/patterns/src/agents/agent-inspector.tsx",
+          "hash": "625485639618097698"
+        },
+        {
+          "file": "packages/patterns/src/agents/agent-presence.tsx",
+          "hash": "15290999046226022297"
+        },
+        {
+          "file": "packages/patterns/src/agents/agent-roster.tsx",
+          "hash": "2815949565568998613"
+        },
+        {
+          "file": "packages/patterns/src/agents/agent-types.ts",
+          "hash": "17749857022040859799"
+        },
+        {
+          "file": "packages/patterns/src/agents/agents.module.css",
+          "hash": "16657733846150788146"
+        },
+        {
+          "file": "packages/patterns/src/agents/agents.test.tsx",
+          "hash": "18258825171933372428"
+        },
+        {
+          "file": "packages/patterns/src/agents/status-map.ts",
+          "hash": "3939985527964515207"
+        },
+        {
+          "file": "packages/patterns/src/graphs/agent-flow/agent-flow.tsx",
+          "hash": "14262293534859811381"
+        },
+        {
+          "file": "packages/patterns/src/graphs/cap-marker.tsx",
+          "hash": "17695834861842222943"
+        },
+        {
+          "file": "packages/patterns/src/graphs/caps.ts",
+          "hash": "11517450753510465727"
+        },
+        {
+          "file": "packages/patterns/src/graphs/graph-frame.tsx",
+          "hash": "9049156230268423180"
+        },
+        {
+          "file": "packages/patterns/src/graphs/graph-list.tsx",
+          "hash": "18403677275643430065"
+        },
+        {
+          "file": "packages/patterns/src/graphs/graph-nodes.tsx",
+          "hash": "11232549564302657156"
+        },
+        {
+          "file": "packages/patterns/src/graphs/graphs.test.tsx",
+          "hash": "10938595025732160392"
+        },
+        {
+          "file": "packages/patterns/src/graphs/knowledge-graph/knowledge-graph.tsx",
+          "hash": "7682950499239687658"
+        },
+        {
+          "file": "packages/patterns/src/graphs/layout.ts",
+          "hash": "1572557912223446929"
+        },
+        {
+          "file": "packages/patterns/src/graphs/message-graph/message-graph.tsx",
+          "hash": "15607368665234573069"
+        },
+        {
+          "file": "packages/patterns/src/graphs/model-router-graph/model-router-graph.tsx",
+          "hash": "286140260367685213"
+        },
+        {
+          "file": "packages/patterns/src/graphs/plan-dag/plan-dag.module.css",
+          "hash": "10017766128444503090"
+        },
+        {
+          "file": "packages/patterns/src/graphs/plan-dag/plan-dag.tsx",
+          "hash": "5961877016151781326"
+        },
+        {
+          "file": "packages/patterns/src/graphs/types.ts",
+          "hash": "4487047066217538430"
+        },
+        {
+          "file": "packages/patterns/src/guard/guard-shield.test.tsx",
+          "hash": "6036523802718227791"
+        },
+        {
+          "file": "packages/patterns/src/guard/guard-shield.tsx",
+          "hash": "9060508730323201649"
+        },
+        {
+          "file": "packages/patterns/src/images/generated-image-card.test.tsx",
+          "hash": "12860190240359668324"
+        },
+        {
+          "file": "packages/patterns/src/images/generated-image-card.tsx",
+          "hash": "340488470276285580"
+        },
+        {
+          "file": "packages/patterns/src/images/images.module.css",
+          "hash": "15106785939409820768"
+        },
+        {
+          "file": "packages/patterns/src/index.ts",
+          "hash": "15021793315342309551"
+        },
+        {
+          "file": "packages/patterns/src/jest-axe.d.ts",
+          "hash": "5144038794638307822"
+        },
+        {
+          "file": "packages/patterns/src/memory/memory-browser.tsx",
+          "hash": "12197580224504295250"
+        },
+        {
+          "file": "packages/patterns/src/memory/memory-inspector.tsx",
+          "hash": "17843449522144806696"
+        },
+        {
+          "file": "packages/patterns/src/memory/memory-template.tsx",
+          "hash": "7445649854389701217"
+        },
+        {
+          "file": "packages/patterns/src/memory/memory.module.css",
+          "hash": "12175491961907004669"
+        },
+        {
+          "file": "packages/patterns/src/memory/memory.test.tsx",
+          "hash": "5170477938411930979"
+        },
+        {
+          "file": "packages/patterns/src/missions/mission-map.ts",
+          "hash": "14701109341613298957"
+        },
+        {
+          "file": "packages/patterns/src/missions/mission-outputs.tsx",
+          "hash": "10677619774938854395"
+        },
+        {
+          "file": "packages/patterns/src/missions/mission-overview.tsx",
+          "hash": "16042636335161758274"
+        },
+        {
+          "file": "packages/patterns/src/missions/mission-progress.tsx",
+          "hash": "10202782843617712258"
+        },
+        {
+          "file": "packages/patterns/src/missions/mission-timeline.tsx",
+          "hash": "16711785818015618259"
+        },
+        {
+          "file": "packages/patterns/src/missions/missions.module.css",
+          "hash": "14241016254910925290"
+        },
+        {
+          "file": "packages/patterns/src/missions/missions.test.tsx",
+          "hash": "10886371424554413316"
+        },
+        {
+          "file": "packages/patterns/src/models/model-center.tsx",
+          "hash": "14914467565921993432"
+        },
+        {
+          "file": "packages/patterns/src/models/model-comparison.tsx",
+          "hash": "2047806024832480789"
+        },
+        {
+          "file": "packages/patterns/src/models/model-map.ts",
+          "hash": "3505959287837026046"
+        },
+        {
+          "file": "packages/patterns/src/models/model-performance.tsx",
+          "hash": "8126101420178271262"
+        },
+        {
+          "file": "packages/patterns/src/models/model-picker.test.tsx",
+          "hash": "6097809691273089328"
+        },
+        {
+          "file": "packages/patterns/src/models/model-picker.tsx",
+          "hash": "7795348335712228492"
+        },
+        {
+          "file": "packages/patterns/src/models/model-router.tsx",
+          "hash": "8153953049743046865"
+        },
+        {
+          "file": "packages/patterns/src/models/models.module.css",
+          "hash": "2278406210314200471"
+        },
+        {
+          "file": "packages/patterns/src/models/models.test.tsx",
+          "hash": "13501612138648389540"
+        },
+        {
+          "file": "packages/patterns/src/providers/provider-lifecycle.test.ts",
+          "hash": "7627061305722427818"
+        },
+        {
+          "file": "packages/patterns/src/providers/provider-lifecycle.ts",
+          "hash": "3168277032923889529"
+        },
+        {
+          "file": "packages/patterns/src/runs/run-detail.tsx",
+          "hash": "5766600169956027848"
+        },
+        {
+          "file": "packages/patterns/src/runs/runs.module.css",
+          "hash": "12850121895092147222"
+        },
+        {
+          "file": "packages/patterns/src/runs/runs.test.tsx",
+          "hash": "12957448274894618549"
+        },
+        {
+          "file": "packages/patterns/src/settings/agent-registry-panel.tsx",
+          "hash": "5338945969432500298"
+        },
+        {
+          "file": "packages/patterns/src/settings/capabilities-panel.tsx",
+          "hash": "16971345304017437283"
+        },
+        {
+          "file": "packages/patterns/src/settings/integrations-panel.tsx",
+          "hash": "11146206320628342935"
+        },
+        {
+          "file": "packages/patterns/src/settings/preset-panel.tsx",
+          "hash": "2808149396548216952"
+        },
+        {
+          "file": "packages/patterns/src/settings/security-panel.tsx",
+          "hash": "15884083082730106712"
+        },
+        {
+          "file": "packages/patterns/src/settings/settings.module.css",
+          "hash": "3714623912494657214"
+        },
+        {
+          "file": "packages/patterns/src/settings/settings.test.tsx",
+          "hash": "7500653152917451577"
+        },
+        {
+          "file": "packages/patterns/src/settings/system-overview.tsx",
+          "hash": "15725332123862223708"
+        },
+        {
+          "file": "packages/patterns/src/settings/tools-panel.tsx",
+          "hash": "1962987240495187113"
+        },
+        {
+          "file": "packages/patterns/src/vitest-matchers.d.ts",
+          "hash": "2676623401020494783"
+        },
+        {
+          "file": "packages/patterns/tsconfig.json",
+          "hash": "11160238903678373072"
+        }
+      ],
+      "themes": [
+        {
+          "file": "packages/themes/README.md",
+          "hash": "16956359988709470935"
+        },
+        {
+          "file": "packages/themes/package.json",
+          "hash": "3129885650184643902",
+          "deps": [
+            "npm:typescript",
+            "npm:vitest"
+          ]
+        },
+        {
+          "file": "packages/themes/project.json",
+          "hash": "13539080141115505561"
+        },
+        {
+          "file": "packages/themes/src/core/create-nexus-theme.ts",
+          "hash": "8365249279352425029"
+        },
+        {
+          "file": "packages/themes/src/core/registry.ts",
+          "hash": "827673423595521709"
+        },
+        {
+          "file": "packages/themes/src/core/resolve-theme.ts",
+          "hash": "7552314622109204976"
+        },
+        {
+          "file": "packages/themes/src/core/types.ts",
+          "hash": "13442768472924213039"
+        },
+        {
+          "file": "packages/themes/src/index.ts",
+          "hash": "5923226267604460495"
+        },
+        {
+          "file": "packages/themes/src/theme-engine.test.ts",
+          "hash": "3740490439051777103"
+        },
+        {
+          "file": "packages/themes/src/themes/alice.ts",
+          "hash": "10156256925743700178"
+        },
+        {
+          "file": "packages/themes/src/themes/arch.ts",
+          "hash": "10774113775407008499"
+        },
+        {
+          "file": "packages/themes/src/themes/aurum-dark.ts",
+          "hash": "6960189990908335586"
+        },
+        {
+          "file": "packages/themes/src/themes/codex.ts",
+          "hash": "13221505994590142194"
+        },
+        {
+          "file": "packages/themes/src/themes/forge.ts",
+          "hash": "17585204629387785575"
+        },
+        {
+          "file": "packages/themes/src/themes/mech.ts",
+          "hash": "12732773258911377536"
+        },
+        {
+          "file": "packages/themes/src/themes/nexus.ts",
+          "hash": "3635446293557940960"
+        },
+        {
+          "file": "packages/themes/tsconfig.json",
+          "hash": "7503546174926772043"
+        }
+      ],
+      "motion": [
+        {
+          "file": "packages/motion/package.json",
+          "hash": "14552630491515355747",
+          "deps": [
+            "npm:react",
+            "npm:typescript",
+            "npm:vitest"
+          ]
+        },
+        {
+          "file": "packages/motion/project.json",
+          "hash": "6732503103630120720"
+        },
+        {
+          "file": "packages/motion/src/adaptive-window-components.tsx",
+          "hash": "15431032229128573204"
+        },
+        {
+          "file": "packages/motion/src/adaptive-window.module.css",
+          "hash": "17787377887923317525"
+        },
+        {
+          "file": "packages/motion/src/adaptive-window.test.ts",
+          "hash": "13480752018621926617"
+        },
+        {
+          "file": "packages/motion/src/adaptive-window.ts",
+          "hash": "13794492117235232312"
+        },
+        {
+          "file": "packages/motion/src/boot-components.tsx",
+          "hash": "3731335749441457964"
+        },
+        {
+          "file": "packages/motion/src/boot-lifecycle.test.tsx",
+          "hash": "5953045481517954204"
+        },
+        {
+          "file": "packages/motion/src/boot-motion.module.css",
+          "hash": "16148697483710833354"
+        },
+        {
+          "file": "packages/motion/src/boot-motion.test.ts",
+          "hash": "7174718126008227254"
+        },
+        {
+          "file": "packages/motion/src/boot-motion.ts",
+          "hash": "9498111242822904564"
+        },
+        {
+          "file": "packages/motion/src/compaction-motion.test.ts",
+          "hash": "14861952838605850779"
+        },
+        {
+          "file": "packages/motion/src/compaction-motion.ts",
+          "hash": "7455292111780966148"
+        },
+        {
+          "file": "packages/motion/src/css-modules.d.ts",
+          "hash": "12457749841794557894"
+        },
+        {
+          "file": "packages/motion/src/dock-motion.test.ts",
+          "hash": "17358560084481809570"
+        },
+        {
+          "file": "packages/motion/src/dock-motion.ts",
+          "hash": "6808562931130130414"
+        },
+        {
+          "file": "packages/motion/src/drag-motion.test.ts",
+          "hash": "7090174546107676327"
+        },
+        {
+          "file": "packages/motion/src/drag-motion.ts",
+          "hash": "12689750641282389782"
+        },
+        {
+          "file": "packages/motion/src/feed-components.tsx",
+          "hash": "26014044478651893"
+        },
+        {
+          "file": "packages/motion/src/feed-lifecycle.test.tsx",
+          "hash": "7912075334749648492"
+        },
+        {
+          "file": "packages/motion/src/feed-motion.module.css",
+          "hash": "8540591427010549536"
+        },
+        {
+          "file": "packages/motion/src/feed-motion.test.ts",
+          "hash": "2169309562750834437"
+        },
+        {
+          "file": "packages/motion/src/feed-motion.ts",
+          "hash": "14378508244594514854"
+        },
+        {
+          "file": "packages/motion/src/game-motion.test.ts",
+          "hash": "9385970469318268594"
+        },
+        {
+          "file": "packages/motion/src/game-motion.ts",
+          "hash": "4238726985811173519"
+        },
+        {
+          "file": "packages/motion/src/glass-backdrop-components.tsx",
+          "hash": "4737427022771240509"
+        },
+        {
+          "file": "packages/motion/src/glass-backdrop.module.css",
+          "hash": "13722195351583434016"
+        },
+        {
+          "file": "packages/motion/src/glass-backdrop.test.ts",
+          "hash": "1140108505850767610"
+        },
+        {
+          "file": "packages/motion/src/glass-backdrop.ts",
+          "hash": "15039872601464214888"
+        },
+        {
+          "file": "packages/motion/src/hero-components.tsx",
+          "hash": "14907012525473396952"
+        },
+        {
+          "file": "packages/motion/src/hero-motion.module.css",
+          "hash": "11426595619064994235"
+        },
+        {
+          "file": "packages/motion/src/hero-motion.test.ts",
+          "hash": "16757316703278710014"
+        },
+        {
+          "file": "packages/motion/src/hero-motion.ts",
+          "hash": "646793427735738549"
+        },
+        {
+          "file": "packages/motion/src/index.ts",
+          "hash": "14102994053547479492"
+        },
+        {
+          "file": "packages/motion/src/loading-motion.test.ts",
+          "hash": "8851562352789871994"
+        },
+        {
+          "file": "packages/motion/src/loading-motion.ts",
+          "hash": "14736418488092940547"
+        },
+        {
+          "file": "packages/motion/src/motion-primitives.test.ts",
+          "hash": "13177364508803681895"
+        },
+        {
+          "file": "packages/motion/src/motion-primitives.ts",
+          "hash": "8216165386166490374"
+        },
+        {
+          "file": "packages/motion/src/motion.generated.test.ts",
+          "hash": "12655161513167024337"
+        },
+        {
+          "file": "packages/motion/src/motion.test.ts",
+          "hash": "17955659841381333048"
+        },
+        {
+          "file": "packages/motion/src/notify-motion.test.ts",
+          "hash": "11790559315799961566"
+        },
+        {
+          "file": "packages/motion/src/notify-motion.ts",
+          "hash": "11649790375164081584"
+        },
+        {
+          "file": "packages/motion/src/page-motion.test.ts",
+          "hash": "8772927528370434279"
+        },
+        {
+          "file": "packages/motion/src/page-motion.ts",
+          "hash": "1245005313344871135"
+        },
+        {
+          "file": "packages/motion/src/plugin-panel-component-lifecycle.test.tsx",
+          "hash": "13822834038518982844"
+        },
+        {
+          "file": "packages/motion/src/plugin-panel-components.tsx",
+          "hash": "4067815447801512379"
+        },
+        {
+          "file": "packages/motion/src/plugin-panel-lifecycle.test.tsx",
+          "hash": "5290102855583672816"
+        },
+        {
+          "file": "packages/motion/src/plugin-panel-motion.module.css",
+          "hash": "11131236030517375904"
+        },
+        {
+          "file": "packages/motion/src/plugin-panel-motion.test.ts",
+          "hash": "11013036360253005782"
+        },
+        {
+          "file": "packages/motion/src/plugin-panel-motion.ts",
+          "hash": "11983968787728301036"
+        },
+        {
+          "file": "packages/motion/src/presets.ts",
+          "hash": "17126377551151297895"
+        },
+        {
+          "file": "packages/motion/src/rail-components.tsx",
+          "hash": "14656029519191879973"
+        },
+        {
+          "file": "packages/motion/src/rail-motion.module.css",
+          "hash": "5721550008769800255"
+        },
+        {
+          "file": "packages/motion/src/rail-motion.test.ts",
+          "hash": "7201780514177436984"
+        },
+        {
+          "file": "packages/motion/src/rail-motion.ts",
+          "hash": "6169604906051253055"
+        },
+        {
+          "file": "packages/motion/src/reduced-motion.ts",
+          "hash": "7466433079290174157"
+        },
+        {
+          "file": "packages/motion/src/scenario-components.tsx",
+          "hash": "12914845099268571397"
+        },
+        {
+          "file": "packages/motion/src/scenario-motion.module.css",
+          "hash": "11119796064928787110"
+        },
+        {
+          "file": "packages/motion/src/scenario-motion.test.ts",
+          "hash": "14962266520500368019"
+        },
+        {
+          "file": "packages/motion/src/scenario-motion.ts",
+          "hash": "12066192485413052933"
+        },
+        {
+          "file": "packages/motion/src/signatures.ts",
+          "hash": "8023725098557077514"
+        },
+        {
+          "file": "packages/motion/src/typing-motion.test.ts",
+          "hash": "16325197643237556585"
+        },
+        {
+          "file": "packages/motion/src/typing-motion.ts",
+          "hash": "18102099915189311893"
+        },
+        {
+          "file": "packages/motion/tsconfig.json",
+          "hash": "7503546174926772043"
+        }
+      ]
+    },
+    "nonProjectFiles": [
+      {
+        "file": ".gitignore",
+        "hash": "13120088921342602481"
+      },
+      {
+        "file": "integrations/unreal/NexusRuntimeScene/Content/Nexus/tokens/nexus-scene-pack.json",
+        "hash": "13934073354869959727"
+      },
+      {
+        "file": "package.json",
+        "hash": "1528535829793917620"
+      },
+      {
+        "file": "packages/bridge/LIVE_PROBE.md",
+        "hash": "16069848120863528143"
+      },
+      {
+        "file": "packages/bridge/MVP_PLAN.md",
+        "hash": "4167538405290332536"
+      },
+      {
+        "file": "packages/bridge/craft-adapter-test.mjs",
+        "hash": "12362591395821313026"
+      },
+      {
+        "file": "packages/bridge/craft-adapter.mjs",
+        "hash": "10313210635447172791"
+      },
+      {
+        "file": "packages/bridge/craft-bridge-server.mjs",
+        "hash": "3909855054871176572"
+      },
+      {
+        "file": "packages/bridge/craft-bridge.mjs",
+        "hash": "8036420808726303483"
+      },
+      {
+        "file": "packages/bridge/craft-bridge.test.mjs",
+        "hash": "17565422637790337834"
+      },
+      {
+        "file": "packages/bridge/live-probe.mjs",
+        "hash": "13511089565304872347"
+      },
+      {
+        "file": "packages/bridge/nexus-products-manifest.json",
+        "hash": "9422217056513447745"
+      },
+      {
+        "file": "packages/bridge/src/craft-adapter.test.ts",
+        "hash": "7548004719050133525"
+      },
+      {
+        "file": "packages/bridge/src/craft-adapter.ts",
+        "hash": "2839587535551330133"
+      },
+      {
+        "file": "pnpm-lock.yaml",
+        "hash": "12152216173709248625"
+      },
+      {
+        "file": "pnpm-workspace.yaml",
+        "hash": "17088531057188185751"
+      },
+      {
+        "file": "scripts/approve-visual-baseline.mjs",
+        "hash": "8664718021226629572"
+      },
+      {
+        "file": "scripts/build-durak-assets.py",
+        "hash": "10461884832696099077"
+      },
+      {
+        "file": "scripts/build-export.mjs",
+        "hash": "8283814916201128454"
+      },
+      {
+        "file": "scripts/build-neu-art.py",
+        "hash": "15072093549173782012"
+      },
+      {
+        "file": "scripts/build-web-art-registry.py",
+        "hash": "7844080697843000605"
+      },
+      {
+        "file": "scripts/check-budgets.mjs",
+        "hash": "2678835535292408804"
+      },
+      {
+        "file": "scripts/deploy7-acceptance.sh",
+        "hash": "7315389869424170038"
+      },
+      {
+        "file": "scripts/deploy7-execute.sh",
+        "hash": "17000283099675154833"
+      },
+      {
+        "file": "scripts/desktop-smoke-auto.py",
+        "hash": "5797228200339373772"
+      },
+      {
+        "file": "scripts/inventory-project.py",
+        "hash": "399495447063372352"
+      },
+      {
+        "file": "scripts/measure-web-art-quality.py",
+        "hash": "7501702317163640912"
+      },
+      {
+        "file": "scripts/next-export-rsc-aliases.d.mts",
+        "hash": "8170980951740907177"
+      },
+      {
+        "file": "scripts/next-export-rsc-aliases.mjs",
+        "hash": "6210992449437703799"
+      },
+      {
+        "file": "scripts/package-unreal-runtime.ps1",
+        "hash": "4293506191749000076"
+      },
+      {
+        "file": "scripts/ship.ps1",
+        "hash": "10942821649618516654"
+      },
+      {
+        "file": "scripts/ship.test.ps1",
+        "hash": "10342884876357951995"
+      },
+      {
+        "file": "scripts/sync-ai2-static.d.mts",
+        "hash": "17106904469932721847"
+      },
+      {
+        "file": "scripts/sync-ai2-static.mjs",
+        "hash": "17831775441087732860"
+      },
+      {
+        "file": "scripts/sync-ai2-static.test.ts",
+        "hash": "6728223032925524163"
+      },
+      {
+        "file": "tools/codemods/tokenize-css.d.mts",
+        "hash": "18400788725530031948"
+      },
+      {
+        "file": "tools/codemods/tokenize-css.mjs",
+        "hash": "10830370228330918319"
+      },
+      {
+        "file": "tsconfig.base.json",
+        "hash": "11666646546214668865"
+      }
+    ]
+  },
+  "externalNodesHash": "10183426847940174795"
+}

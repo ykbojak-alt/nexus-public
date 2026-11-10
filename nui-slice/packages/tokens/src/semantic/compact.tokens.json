@@ -1,0 +1,9 @@
+{
+  "$description": "Semantic states for compact conversation blocks. Values follow the theme's readable state roles.",
+  "compact": {
+    "$description": "Compact-block states; color is supplementary to the visible text label and indicator pattern.",
+    "normal": { "$type": "color", "$value": "{state.offline}" },
+    "warning": { "$type": "color", "$value": "{state.warning}" },
+    "active": { "$type": "color", "$value": "{state.active}" }
+  }
+}

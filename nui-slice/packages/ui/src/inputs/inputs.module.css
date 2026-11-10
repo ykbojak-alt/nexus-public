@@ -1,0 +1,69 @@
+/* Shared input family styling — all values via tokens. */
+.field { display: flex; flex-direction: column; gap: var(--nexus-space-2, 8px); }
+.label {
+  font: var(--nexus-type-caption-font-weight, 500) var(--nexus-type-caption-font-size, 13px)/var(--nexus-type-caption-line-height, 18px) var(--nexus-type-caption-font-family, 'Inter Tight', system-ui, sans-serif);
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+.control {
+  background: var(--nexus-surface-panel, #1A1A21);
+  border: 1px solid var(--nexus-border-default, rgba(246,240,228,0.12));
+  border-radius: var(--nexus-radius-md, 8px);
+  color: var(--nexus-text-primary, #F6F0E4);
+  font: inherit;
+  transition: border-color var(--nexus-duration-fast, 140ms) var(--nexus-easing-standard, cubic-bezier(0.2,0,0,1));
+}
+.control:hover:not(:disabled) { border-color: var(--nexus-border-strong, rgba(246,240,228,0.2)); }
+.control:focus { border-color: var(--nexus-border-focus, #539EFF); outline: none; }
+/* W2-131: same 0,2,0 specificity as .control:focus, later in this file —
+   the keyboard ring wins deterministically over the module's outline:none
+   instead of racing the global focus-ring.css in bundle order. */
+.control:focus-visible {
+  outline: var(--nexus-focus-ring-width, 2px) solid var(--nexus-focus-ring, #539EFF);
+  outline-offset: var(--nexus-focus-ring-offset, 2px);
+}
+.control:disabled { opacity: var(--nexus-disabled-opacity, 0.45); cursor: not-allowed; }
+.control::placeholder { color: var(--nexus-text-tertiary, #8E97A5); }
+
+.textField, .searchField { height: 36px; padding: 0 var(--nexus-space-3, 12px); }
+.textArea { min-height: 96px; padding: var(--nexus-space-3, 12px); resize: vertical; }
+
+.searchWrap { position: relative; display: flex; align-items: center; }
+.searchWrap .searchField { width: 100%; padding-right: 32px; }
+.clear {
+  position: absolute; right: 4px;
+  width: 24px; height: 24px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: none; border-radius: var(--nexus-radius-sm, 4px);
+  background: transparent; color: var(--nexus-text-tertiary, #8E97A5); cursor: pointer;
+}
+.clear:hover { color: var(--nexus-text-primary, #F6F0E4); background: var(--nexus-nav-item-bg-hover, rgba(246,240,228,0.04)); }
+
+.checkRow, .radioRow { display: inline-flex; align-items: center; gap: var(--nexus-space-2, 8px); cursor: pointer; }
+.checkRow input, .radioRow input { accent-color: var(--nexus-accent-primary, #C9A45C); width: 16px; height: 16px; }
+.checkRow:has(input:disabled), .radioRow:has(input:disabled) { opacity: var(--nexus-disabled-opacity, 0.45); cursor: not-allowed; }
+
+.slider { accent-color: var(--nexus-accent-primary, #C9A45C); width: 100%; }
+
+.comboWrap { position: relative; }
+.comboList {
+  position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+  background: var(--nexus-depth-elevated-bg, #232329);
+  border: 1px solid var(--nexus-border-default, rgba(246,240,228,0.12));
+  border-radius: var(--nexus-radius-md, 8px);
+  box-shadow: var(--nexus-depth-overlay-shadow, 0 16px 56px rgba(0,0,0,0.52));
+  max-height: 240px; overflow: auto; padding: var(--nexus-space-1, 4px); z-index: var(--nexus-layer-dropdown, 50);
+}
+.comboOption {
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-3, 12px);
+  border-radius: var(--nexus-radius-sm, 4px);
+  color: var(--nexus-text-secondary, #B0B7C2); cursor: pointer;
+}
+.comboOption[data-active] { background: var(--nexus-accent-primary-soft, rgba(201,164,92,0.16)); color: var(--nexus-text-primary, #F6F0E4); }
+
+.hint { font-size: var(--nexus-type-caption-font-size, 13px); color: var(--nexus-text-tertiary, #8E97A5); }
+.error { font-size: var(--nexus-type-caption-font-size, 13px); color: var(--nexus-state-error, #F97F66); }
+.control[aria-invalid='true'] { border-color: var(--nexus-border-error, #EE5B3F); }
+
+@media (prefers-reduced-motion: reduce) {
+  .control { transition: none; }
+}

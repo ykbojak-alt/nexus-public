@@ -1,0 +1,17 @@
+{
+  "name": "ui",
+  "projectType": "library",
+  "sourceRoot": "packages/ui/src",
+  "tags": [
+    "scope:ui",
+    "runtime:dom"
+  ],
+  "targets": {
+    "test": {
+      "command": "vitest run packages/ui --passWithNoTests"
+    },
+    "lint": {
+      "command": "tsc --noEmit -p packages/ui/tsconfig.json"
+    }
+  }
+}

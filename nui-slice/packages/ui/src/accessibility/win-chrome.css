@@ -1,0 +1,59 @@
+/* W2-138 · window-chrome — единый примитив оконных контролов плавающих
+ * панелей (grip/return/collapse/close в bubble/echo/bar). Глобальный класс,
+ * чтобы product css-модули могли ссылаться на один источник без копий.
+ *
+ * Использование: <button class="nexusWinChrome" data-grab|data-quiet …>
+ *   data-grab   — cursor grab / grabbing на :active (grip переноса)
+ *   data-quiet  — opacity 0.65 до hover/focus (reveal-on-hover, bubble-паттерн)
+ * Позиционирование кластера (absolute/inset/порядок) остаётся у владельца —
+ * это layout, не chrome.
+ */
+
+.nexusWinChrome {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: var(--nexus-win-chrome-size, 26px);
+  height: var(--nexus-win-chrome-size, 26px);
+  padding: 0;
+  border: 1px solid var(--nexus-win-chrome-border, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-win-chrome-radius, 4px);
+  background: var(--nexus-win-chrome-bg, rgba(28, 28, 34, 0.86));
+  color: var(--nexus-win-chrome-fg, #B0B7C2);
+  font: inherit;
+  line-height: 1; /* tokenlint-ignore: иконочный глиф в боксе фиксированного размера, line box не участвует в раскладке */
+  cursor: pointer;
+  touch-action: none;
+  -webkit-app-region: no-drag;
+}
+
+.nexusWinChrome[data-grab] { cursor: grab; }
+.nexusWinChrome[data-grab]:active { cursor: grabbing; }
+
+.nexusWinChrome[data-quiet] { opacity: var(--nexus-win-chrome-opacity-quiet, 0.65); }
+
+.nexusWinChrome:hover,
+.nexusWinChrome:focus-visible {
+  border-color: var(--nexus-win-chrome-border-hover, #C9A45C);
+  color: var(--nexus-win-chrome-fg-hover, #F6F0E4);
+  opacity: 1;
+}
+
+.nexusWinChrome:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, #539EFF);
+  outline-offset: 1px;
+}
+
+@media (forced-colors: active) {
+  .nexusWinChrome {
+    border-color: ButtonBorder;
+    color: ButtonText;
+    background: ButtonFace;
+    opacity: 1;
+  }
+  .nexusWinChrome:hover,
+  .nexusWinChrome:focus-visible {
+    border-color: Highlight;
+    color: ButtonText;
+  }
+}

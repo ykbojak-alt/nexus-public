@@ -1,0 +1,2148 @@
+.home {
+    --gold: #c9a45c;
+    min-height: 100%;
+    padding: 22px 26px 30px;
+    color: var(--nexus-text-primary);
+    font-family: var(--nexus-type-body-font-family, 'Inter Tight', system-ui, sans-serif);
+    font-size: 15px;
+    line-height: 1.5;
+    background: radial-gradient(ellipse at 40% 0%, color-mix(in srgb, var(--gold) 11%, transparent), transparent 48%), radial-gradient(ellipse at 76% 12%, rgba(229, 190, 128, .08), transparent 34%);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow: auto;
+    scrollbar-gutter: stable;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid var(--nexus-border-subtle);
+    padding-bottom: 12px;
+    /* W14-W4: тёмный скрим под текстом шапки — золотое пятно radial-градиента
+       .home поднимало подложку eyebrow до ~4.44:1 (<4.5 AA). Подложка тускнеет
+       к верхней кромке, чтобы читалась как врезка, а не бар. */
+    background: linear-gradient(180deg, rgba(9, 9, 13, .12), rgba(9, 9, 13, .3));
+    margin: -4px -10px 0;
+    padding: 6px 10px 12px;
+    border-radius: 10px 10px 0 0
+}
+
+.header>div {
+    display: flex;
+    align-items: center;
+    gap: 14px
+}
+
+.eyebrow {
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    letter-spacing: .17em;
+    color: var(--nexus-text-tertiary);
+    font-weight: 700
+}
+
+.online,
+.railStatus {
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    color: var(--nexus-text-secondary);
+    display: flex;
+    gap: 7px;
+    align-items: center
+}
+
+.online i,
+.railStatus i,
+.activity i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #61bd91;
+    box-shadow: 0 0 10px #61bd9180
+}
+
+.tabs {
+    display: flex;
+    gap: 6px
+}
+
+.tabs a {
+    padding: 7px 12px;
+    border-radius: 999px;
+    color: var(--nexus-text-secondary);
+    text-decoration: none;
+    font-size: var(--nexus-type-caption-font-size, 13px)
+}
+
+.tabs a[aria-current=page],
+.tabs a:hover {
+    background: color-mix(in srgb, var(--gold) 17%, transparent);
+    color: var(--nexus-text-primary)
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 18px;
+    max-width: 1500px;
+    width: 100%;
+    margin: 0 auto
+}
+
+/* XIV W3 (NQ-088): голые ссылки внутри контента экрана — семантический
+   text.link (≥4.5:1); шапка-табы не затрагивается (ссылки там стилизованы
+   .tabs a). Светлая тема alice — accent-текст темы. */
+.layout a:not([class]) {
+    color: var(--nexus-text-link, #7FB9FF)
+}
+
+.layout a:not([class]):hover {
+    text-decoration: underline
+}
+
+[data-theme='alice'] .layout a:not([class]) {
+    color: var(--nexus-text-accent, #65522A)
+}
+
+.mainColumn {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px
+}
+
+.hero {
+    min-height: 220px;
+    display: grid;
+    grid-template-columns: minmax(180px, 34%) 1fr;
+    align-items: center;
+    gap: 20px;
+    padding: 12px 24px;
+    background: radial-gradient(ellipse at 20% 54%, rgba(218, 175, 102, .2), transparent 40%), linear-gradient(110deg, rgba(237, 221, 196, .04), transparent 62%);
+    border: 1px solid var(--nexus-border-subtle);
+    border-radius: 18px;
+    overflow: hidden
+}
+
+.portrait {
+    height: 212px;
+    display: grid;
+    place-items: center;
+    position: relative
+}
+
+.portrait:before,
+.portrait:after {
+    content: "";
+    position: absolute;
+    border: 1px solid color-mix(in srgb, var(--gold) 40%, transparent);
+    border-radius: 50%;
+    width: 190px;
+    height: 190px;
+    box-shadow: 0 0 42px rgba(201, 164, 92, .16), inset 0 0 35px rgba(201, 164, 92, .12)
+}
+
+.portrait:after {
+    width: 155px;
+    height: 155px;
+    border-style: dashed;
+    opacity: .6
+}
+
+.portrait img {
+    position: relative;
+    z-index: 1;
+    width: 148px;
+    height: 148px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid color-mix(in srgb, var(--gold) 66%, transparent);
+    box-shadow: 0 0 34px rgba(201, 164, 92, .28)
+}
+
+.greeting h1 {
+    font-family: var(--nexus-type-page-title-font-family, Georgia, serif);
+    font-size: clamp(25px, 3vw, 42px);
+    font-weight: 500;
+    margin: 10px 0
+}
+
+.greeting>p:not(.eyebrow) {
+    color: var(--nexus-text-secondary);
+    font-size: 14px;
+    margin: 0
+}
+
+.motto {
+    margin-top: 18px;
+    font: clamp(16px, 1.8vw, 24px)/1.38 Georgia, serif;
+    color: var(--nexus-text-primary)
+}
+
+/* Эхо рантайма в hero-пузыре (main7): запуск задачи раскрывает поток
+   событий здесь же, без перехода на /runtime. Высота ленты ограничена,
+   чтобы hero не растягивался и композитор оставался на экране. */
+.echo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 0;
+    padding: 16px 18px;
+    transition:
+        gap var(--nexus-duration-fast, 140ms) var(--nexus-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
+        padding-block var(--nexus-duration-fast, 140ms) var(--nexus-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+    border: 1px solid color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 28%, transparent);
+    border-radius: 18px;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--nexus-surface-elevated, #fff) 74%, transparent), color-mix(in srgb, var(--nexus-surface-elevated, #fff) 48%, transparent));
+    box-shadow: 0 12px 34px rgba(44, 34, 18, .08);
+    animation: chatPanelEnter var(--nexus-motion-promote, .32s) var(--nexus-easing-drift) both
+}
+
+.echoHead {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 22px
+}
+
+.echoDragGrip,
+.echoReturn,
+.echoCollapse,
+.echoHeadClose {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: 1px solid color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 28%, transparent);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--nexus-surface-elevated, #fff) 82%, transparent);
+    color: var(--nexus-text-secondary);
+    font: inherit;
+    line-height: 1;
+    cursor: grab;
+    touch-action: none;
+}
+
+.echoReturn,
+.echoCollapse,
+.echoHeadClose {
+    cursor: pointer;
+}
+
+.echoDragGrip:hover,
+.echoDragGrip:focus-visible,
+.echoReturn:hover,
+.echoReturn:focus-visible,
+.echoCollapse:hover,
+.echoCollapse:focus-visible,
+.echoHeadClose:hover,
+.echoHeadClose:focus-visible {
+    border-color: var(--nexus-accent-primary, #C9A45C);
+    color: var(--nexus-text-primary);
+    outline: 2px solid var(--nexus-focus-ring, #539EFF);
+    outline-offset: 1px;
+}
+
+.echo[data-collapsed] {
+    gap: 0;
+    padding-block: 10px
+}
+
+/* W4-1015 · collapse keep-alive: фаза 140ms fast — grid-rows 1fr→0fr
+   честно сжимает высоту, inner клипает + гаснет. */
+.collapseItem {
+    display: grid;
+    grid-template-rows: 1fr
+}
+
+.collapseInner {
+    min-height: 0;
+    overflow: hidden
+}
+
+.collapseItem[data-collapse-anim='shrink'] {
+    animation: echoCollapseOut var(--nexus-duration-fast, 140ms)
+        var(--nexus-easing-standard, cubic-bezier(0.2, 0, 0, 1)) forwards
+}
+
+.collapseItem[data-collapse-anim='grow'] {
+    animation: echoCollapseIn var(--nexus-duration-fast, 140ms)
+        var(--nexus-easing-standard, cubic-bezier(0.2, 0, 0, 1))
+}
+
+.collapseItem[data-collapse-anim='shrink'] .collapseInner {
+    animation: echoCollapseFadeOut var(--nexus-duration-fast, 140ms)
+        var(--nexus-easing-standard, cubic-bezier(0.2, 0, 0, 1)) forwards
+}
+
+.collapseItem[data-collapse-anim='grow'] .collapseInner {
+    animation: echoCollapseFadeIn var(--nexus-duration-fast, 140ms)
+        var(--nexus-easing-standard, cubic-bezier(0.2, 0, 0, 1))
+}
+
+@keyframes echoCollapseOut {
+    to { grid-template-rows: 0fr }
+}
+
+@keyframes echoCollapseIn {
+    from { grid-template-rows: 0fr }
+}
+
+@keyframes echoCollapseFadeOut {
+    to { opacity: 0 }
+}
+
+@keyframes echoCollapseFadeIn {
+    from { opacity: 0 }
+}
+
+.echo[data-floating] {
+    position: absolute;
+    z-index: 120;
+    max-width: calc(100% - 24px);
+    max-height: min(72vh, 720px);
+    overflow: auto;
+    scrollbar-gutter: stable;
+    pointer-events: auto;
+    box-shadow: 0 16px 44px rgba(0, 0, 0, .36);
+}
+
+.echoPlaceholder {
+    min-height: 0;
+    pointer-events: none;
+}
+
+.echoStatus {
+    margin-left: auto;
+    padding: 2px 10px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--nexus-text-primary);
+    white-space: nowrap
+}
+
+.echoStatus[data-status='error'],
+.echoStatus[data-status='timeout'] {
+    border-color: rgba(194, 91, 91, .55);
+    color: #c25b5b
+}
+
+.echoStatus[data-status='done'] {
+    border-color: rgba(79, 138, 95, .55);
+    color: #4f8a5f
+}
+
+/* Лента фраз и вопрос пользователя — в одну строку: её операции слева,
+   вопрос справа напротив них. На узком — вопрос едет под ленту. */
+.echoBody {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: var(--nexus-space-2, 8px) var(--nexus-space-4, 16px);
+    align-items: stretch
+}
+
+.echoQuestion {
+    order: 2;
+    justify-self: end;
+    width: 100%;
+    max-width: 420px;
+    align-self: start;
+    padding: var(--nexus-space-3, 12px) var(--nexus-space-4, 16px);
+    border-radius: 17px 17px 4px 17px;
+    border: 1px solid color-mix(in srgb, var(--gold, #C9A45C) 42%, transparent);
+    background: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 11%, var(--nexus-surface-elevated, #fff));
+    box-shadow: 0 6px 20px rgba(44, 34, 18, .06)
+}
+
+.echoQuestionLabel {
+    display: block;
+    margin-bottom: var(--nexus-space-1, 4px);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--nexus-text-secondary)
+}
+
+.echoQuestionText {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    font-weight: 600;
+    color: var(--nexus-text-primary);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere
+}
+
+@media (max-width: 720px) {
+    .echoBody {
+        grid-template-columns: 1fr
+    }
+
+    .echoQuestion {
+        order: 2;
+        justify-self: stretch;
+        max-width: none
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .echo {
+        animation: none;
+        transition: none;
+    }
+
+    .collapseItem[data-collapse-anim],
+    .collapseItem[data-collapse-anim] .collapseInner {
+        animation: none;
+    }
+}
+
+.echoFeed {
+    list-style: none;
+    margin: 0;
+    padding: 0 8px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    max-height: 210px;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    overscroll-behavior: contain;
+    scrollbar-width: thin
+}
+
+.echoFeed[data-side='left'] {
+    grid-column: 1;
+}
+
+.echoQuestion[data-side='right'] {
+    grid-column: 2;
+}
+
+.echoRow {
+    display: grid;
+    grid-template-columns: 14px minmax(0, 1fr);
+    column-gap: 10px;
+    row-gap: 2px;
+    align-items: start;
+    font-size: 15px;
+    line-height: 1.5;
+    font-style: italic;
+    color: var(--nexus-text-primary);
+    animation: echoRowIn .4s var(--nexus-easing-exit) both
+}
+
+.echoRow[data-tone='idle'] {
+    color: var(--nexus-text-secondary)
+}
+
+.echoRow[data-tone='active'] {
+    color: var(--nexus-text-secondary);
+    font-style: italic
+}
+
+.echoMark {
+    width: 6px;
+    height: 6px;
+    margin-top: 7px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 72%, transparent);
+    box-shadow: 0 0 8px rgba(201, 164, 92, .5)
+}
+
+.echoRow[data-tone='active'] .echoMark {
+    animation: echoPulse var(--nexus-motion-glow, 1.6s) var(--nexus-easing-symmetric) infinite
+}
+
+/* Текст «печатается» слева направо: clip-path + steps — без JS и без
+   мутаций DOM, поэтому скринридер читает строку целиком сразу. */
+.echoText {
+    display: inline-block;
+    animation: echoTypeIn .85s steps(30, end) both
+}
+
+.echoCount {
+    margin-left: 7px;
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    letter-spacing: .04em;
+    color: var(--nexus-text-secondary)
+}
+
+.echoExcerpt {
+    grid-column: 2;
+    font: italic 14px/1.5 Georgia, serif;
+    color: var(--nexus-text-primary);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    animation: echoFadeIn .6s .15s var(--nexus-easing-exit) both
+}
+
+.echoDots {
+    display: inline-flex;
+    gap: 3px;
+    margin-left: 5px;
+    vertical-align: middle
+}
+
+.echoDots i {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: .25;
+    animation: echoDot 1.2s var(--nexus-easing-symmetric) infinite
+}
+
+.echoDots i:nth-child(2) {
+    animation-delay: .18s
+}
+
+.echoDots i:nth-child(3) {
+    animation-delay: .36s
+}
+
+.echoAnswer {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 14px;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 12px;
+    border: 1px solid color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 30%, transparent);
+    background: color-mix(in srgb, var(--nexus-hero-gold, #C9A45C) 10%, transparent)
+}
+
+.echoAnswerLabel {
+    margin: 0;
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--nexus-text-secondary)
+}
+
+.echoAnswerText {
+    margin: 0;
+    max-width: 75ch;
+    max-height: 150px;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    overscroll-behavior: contain;
+    /* Промежуточный ответ — жирный курсив, крупнее и контрастнее фраз. */
+    font: italic 700 clamp(16px, 1.6vw, 19px)/1.55 Georgia, serif;
+    color: var(--nexus-text-primary);
+    white-space: pre-wrap
+}
+
+.echoConfidence {
+    align-self: flex-start;
+    padding: 1px 9px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 35%, transparent);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    color: var(--nexus-text-secondary)
+}
+
+@keyframes echoRowIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px)
+    }
+
+    to {
+        opacity: 1;
+        transform: none
+    }
+}
+
+@keyframes chatPanelEnter {
+    from {
+        opacity: 0;
+        transform: translateY(9px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes echoTypeIn {
+    from {
+        clip-path: inset(-20% 100% -20% 0)
+    }
+
+    to {
+        clip-path: inset(-20% 0 -20% 0)
+    }
+}
+
+@keyframes echoFadeIn {
+    from {
+        opacity: 0
+    }
+
+    to {
+        opacity: .85
+    }
+}
+
+@keyframes echoDot {
+
+    0%,
+    60%,
+    100% {
+        opacity: .2;
+        transform: translateY(0)
+    }
+
+    30% {
+        opacity: 1;
+        transform: translateY(-2px)
+    }
+}
+
+@keyframes echoPulse {
+
+    0%,
+    100% {
+        opacity: .5;
+        transform: scale(1)
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.35)
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .echoRow,
+    .echoText,
+    .echoExcerpt {
+        animation: none
+    }
+
+    .echoDots i,
+    .echoRow[data-tone='active'] .echoMark {
+        animation: none;
+        opacity: .8
+    }
+}
+
+.echoActions {
+    display: flex;
+    align-items: center;
+    gap: 12px
+}
+
+.echoVoice {
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--nexus-hero-gold, #C9A45C) 45%, transparent);
+    background: color-mix(in srgb, var(--nexus-hero-gold, #C9A45C) 12%, transparent);
+    color: var(--nexus-text-primary);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    cursor: pointer
+}
+
+.echoVoice:disabled {
+    opacity: var(--nexus-disabled-opacity, 0.45);
+    cursor: not-allowed
+}
+
+.echoOpen {
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    color: var(--nexus-text-primary);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--nexus-hero-gold, #C9A45C) 55%, transparent)
+}
+
+.echoOpen:hover {
+    color: var(--nexus-hero-gold-strong, #a9853f)
+}
+
+.echoClose {
+    border: 0;
+    background: none;
+    padding: 0;
+    font: inherit;
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    color: var(--nexus-text-tertiary);
+    cursor: pointer
+}
+
+.echoClose:hover {
+    color: var(--nexus-text-secondary)
+}
+
+.composerPanel {
+    padding: 12px 16px !important;
+    border-radius: 16px !important;
+    /* Полупрозрачный пузырь пользователя — как прочие elevated-поверхности
+       (shortcut: 55%), а не почти сплошная плашка. */
+    background: color-mix(in srgb, var(--nexus-surface-elevated) 55%, transparent) !important
+}
+
+/* Chat bubble — expandable panel above composer for dialog with AGENT-A */
+.chatBubble {
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    border: 1px solid color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 28%, transparent);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--nexus-surface-elevated, #fff) 74%, transparent), color-mix(in srgb, var(--nexus-surface-elevated, #fff) 48%, transparent));
+    box-shadow: 0 12px 34px rgba(44, 34, 18, .08);
+    animation: chatPanelEnter var(--nexus-motion-promote, .32s) var(--nexus-easing-drift) both;
+    overflow: hidden;
+    max-height: 40vh;
+}
+
+.chatBubbleHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 18%, transparent);
+    background: color-mix(in srgb, var(--nexus-surface-elevated, #fff) 60%, transparent);
+}
+
+.chatBubbleTitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--nexus-text-primary);
+    letter-spacing: .02em;
+}
+
+.chatBubbleCollapse,
+.chatBubbleClose {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: 1px solid color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 28%, transparent);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--nexus-surface-elevated, #fff) 82%, transparent);
+    color: var(--nexus-text-secondary);
+    font: inherit;
+    line-height: 1;
+    cursor: pointer;
+    touch-action: none;
+}
+
+.chatBubbleCollapse:hover,
+.chatBubbleCollapse:focus-visible,
+.chatBubbleClose:hover,
+.chatBubbleClose:focus-visible {
+    border-color: var(--nexus-accent-primary, #C9A45C);
+    color: var(--nexus-text-primary);
+    outline: 2px solid var(--nexus-focus-ring, #539EFF);
+    outline-offset: 1px;
+}
+
+.chatBubbleBody {
+    flex: 1;
+    min-height: 0;
+    max-height: 35vh;
+    overflow-y: auto;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+}
+
+.chatBubbleMessage {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-width: 90%;
+}
+
+.chatBubbleMessage_user {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.chatBubbleMessage_alice {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.chatBubbleMessage_error {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.chatBubbleRole {
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--nexus-text-secondary);
+    white-space: nowrap;
+}
+
+.chatBubbleMessage_user .chatBubbleRole {
+    text-align: right;
+}
+
+.chatBubbleText {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--nexus-text-primary);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    padding: 8px 12px;
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 10%, transparent);
+    box-shadow: 0 2px 8px rgba(44, 34, 18, .05);
+}
+
+.chatBubbleMessage_user .chatBubbleText {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--gold, #C9A45C) 18%, transparent), color-mix(in srgb, var(--gold, #C9A45C) 8%, transparent));
+    border-radius: 14px 14px 4px 14px;
+    border: 1px solid color-mix(in srgb, var(--gold, #C9A45C) 30%, transparent);
+}
+
+.chatBubbleMessage_alice .chatBubbleText {
+    background: color-mix(in srgb, var(--nexus-surface-elevated, #fff) 60%, transparent);
+    border-radius: 14px 14px 14px 4px;
+    border: 1px solid color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 20%, transparent);
+}
+
+.chatBubbleMessage_error .chatBubbleText {
+    background: color-mix(in srgb, #e88080 12%, transparent);
+    border-radius: 14px 14px 14px 4px;
+    border: 1px solid color-mix(in srgb, #e88080 40%, transparent);
+    color: #c25b5b;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .chatBubble {
+        animation: none;
+    }
+}
+
+.composer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px
+}
+
+.composer textarea {
+    width: 100%;
+    resize: vertical;
+    min-height: 50px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--nexus-text-primary);
+    font: inherit;
+    padding: 5px 2px
+}
+
+.composer textarea:focus-visible {
+    outline: 2px solid var(--nexus-focus-ring, var(--nexus-accent-primary));
+    outline-offset: 2px
+}
+
+.composer textarea::placeholder {
+    color: var(--nexus-text-tertiary)
+}
+
+.composerFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    border-top: 1px solid var(--nexus-border-subtle);
+    padding-top: 10px
+}
+
+.composerFooter>span {
+    color: var(--nexus-text-tertiary);
+    font-size: var(--nexus-type-caption-font-size, 13px)
+}
+
+.composerFooter button {
+    display: flex;
+    gap: 10px;
+    align-items: center
+}
+
+/* «Слушать ответ» в пузыре пользователя — лёгкая кнопка-пилюля, визуально
+   ближе к чипам инструментов, чем к основной submit-кнопке. */
+.composerVoice {
+    border: 1px solid color-mix(in srgb, var(--gold, #C9A45C) 45%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--gold, #C9A45C) 12%, transparent);
+    padding: 6px 14px;
+    font: inherit;
+    font-size: 13px;
+    color: var(--nexus-text-primary);
+    cursor: pointer
+}
+
+.composerVoice:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--gold, #C9A45C) 20%, transparent)
+}
+
+.composerVoice:disabled {
+    opacity: var(--nexus-disabled-opacity, 0.45);
+    cursor: default
+}
+
+/* Mic button in composer footer — same pill style as voice, with
+   recording pulse and state indicators. */
+.composerMic {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid color-mix(in srgb, var(--gold, #C9A45C) 45%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--gold, #C9A45C) 12%, transparent);
+    padding: 6px 14px;
+    font: inherit;
+    font-size: 13px;
+    color: var(--nexus-text-primary);
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.composerMic:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--gold, #C9A45C) 20%, transparent);
+}
+
+.composerMic:disabled {
+    opacity: var(--nexus-disabled-opacity, 0.45);
+    cursor: default;
+}
+
+.composerMic[data-mic="recording"] {
+    border-color: color-mix(in srgb, #e88080 60%, transparent);
+    background: color-mix(in srgb, #e88080 15%, transparent);
+}
+
+.micPulse {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #e88080;
+    animation: micPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes micPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+.shortcutGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px
+}
+
+.shortcut {
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    align-items: center;
+    column-gap: 10px;
+    padding: 13px;
+    border: 1px solid var(--nexus-border-subtle);
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--nexus-text-primary);
+    background: color-mix(in srgb, var(--nexus-surface-elevated) 55%, transparent)
+}
+
+.shortcut:hover {
+    border-color: color-mix(in srgb, var(--gold) 55%, transparent)
+}
+
+.shortcutIcon {
+    grid-row: span 2;
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    color: var(--gold);
+    background: color-mix(in srgb, var(--gold) 14%, transparent);
+    font-size: 19px
+}
+
+.shortcut strong {
+    font-size: var(--nexus-type-caption-font-size, 13px)
+}
+
+.shortcut small {
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    color: var(--nexus-text-tertiary);
+    margin-top: 3px
+}
+
+.lowerGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px
+}
+
+.infoPanel,
+.railPanel {
+    padding: 15px !important
+}
+
+.panelHead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px
+}
+
+.panelHead h2,
+.railPanel h2 {
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    margin: 0;
+    letter-spacing: .05em
+}
+
+.panelHead a,
+.railPanel>a {
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    color: var(--gold);
+    text-decoration: none
+}
+
+.steps,
+.activity {
+    list-style: none;
+    padding: 0;
+    margin: 14px 0 0;
+    display: grid;
+    gap: 10px
+}
+
+.steps li {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    color: var(--nexus-text-tertiary)
+}
+
+.steps i {
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--nexus-border-default);
+    border-radius: 50%
+}
+
+.steps li[data-current=true] {
+    color: var(--nexus-text-primary)
+}
+
+.steps li[data-current=true] i {
+    background: var(--gold);
+    border-color: var(--gold);
+    box-shadow: 0 0 9px color-mix(in srgb, var(--gold) 60%, transparent)
+}
+
+.windowLinks {
+    margin-top: 10px;
+    display: grid
+}
+
+.windowLinks a {
+    display: grid;
+    grid-template-columns: 28px 1fr 16px;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0;
+    border-top: 1px solid var(--nexus-border-subtle);
+    text-decoration: none;
+    color: var(--nexus-text-primary);
+    font-size: var(--nexus-type-caption-font-size, 13px)
+}
+
+.windowLinks b {
+    color: var(--gold);
+    font-size: var(--nexus-type-caption-font-size, 13px)
+}
+
+.windowLinks small {
+    display: block;
+    margin-top: 4px;
+    color: var(--nexus-text-tertiary);
+    font-size: var(--nexus-type-caption-font-size, 13px)
+}
+
+.windowLinks i {
+    color: var(--nexus-text-tertiary);
+    font-style: normal
+}
+
+.rail {
+    display: flex;
+    flex-direction: column;
+    gap: 12px
+}
+
+.railPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 13px
+}
+
+.railPanel>a {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 9px;
+    border-top: 1px solid var(--nexus-border-subtle)
+}
+
+.resource {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    color: var(--nexus-text-tertiary)
+}
+
+.resource strong {
+    font-weight: 500;
+    color: var(--nexus-text-secondary);
+    text-align: right
+}
+
+.activity li {
+    display: grid;
+    grid-template-columns: 8px 1fr;
+    gap: 7px;
+    align-items: center;
+    font-size: var(--nexus-type-caption-font-size, 13px)
+}
+
+/* X V3-3b: кликабельный проект памяти — та же сетка, кнопка внутри li. */
+.activity li:has(> .projectPick) {
+    display: block;
+}
+
+.projectPick {
+    display: grid;
+    grid-template-columns: 8px 1fr;
+    gap: 7px;
+    align-items: center;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--nexus-text-primary);
+    font: inherit;
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    text-align: left;
+    cursor: pointer;
+}
+
+.projectPick[aria-pressed="true"] {
+    color: var(--nexus-accent-primary);
+    font-weight: 600;
+}
+
+.activity i {
+    width: 6px;
+    height: 6px
+}
+
+.activity small {
+    grid-column: 2;
+    color: var(--nexus-text-tertiary);
+    font-size: var(--nexus-type-caption-font-size, 13px)
+}
+
+.railNote {
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    line-height: 1.5;
+    color: var(--nexus-text-tertiary);
+    padding: 0 4px
+}
+
+.visuallyHidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0
+}
+
+@container (max-width:1000px) {
+    .layout {
+        grid-template-columns: 1fr
+    }
+
+    .rail {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+    }
+
+    .railNote {
+        grid-column: 1/-1
+    }
+}
+
+@container (max-width:560px) {
+    .home {
+        padding: 16px;
+        gap: 14px
+    }
+
+    .header {
+        align-items: flex-start;
+        flex-direction: column
+    }
+
+    .tabs {
+        max-width: 100%;
+        overflow: auto;
+        scrollbar-gutter: stable;
+    }
+
+    .hero {
+        grid-template-columns: 120px 1fr;
+        gap: 12px;
+        padding: 12px
+    }
+
+    .portrait {
+        height: 150px
+    }
+
+    .portrait:before {
+        width: 130px;
+        height: 130px
+    }
+
+    .portrait:after {
+        width: 108px;
+        height: 108px
+    }
+
+    .portrait img {
+        width: 98px;
+        height: 98px
+    }
+
+    .motto {
+        font-size: 16px
+    }
+
+    .shortcutGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+    }
+
+    .lowerGrid {
+        grid-template-columns: 1fr
+    }
+
+    .rail {
+        grid-template-columns: 1fr
+    }
+}
+
+.listenPanel {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px !important;
+    border-radius: 16px !important
+}
+
+.listenBtn {
+    width: 52px;
+    height: 52px;
+    flex: none;
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
+    background: color-mix(in srgb, var(--gold) 14%, transparent);
+    color: var(--gold);
+    font-size: 20px;
+    cursor: pointer;
+    display: grid;
+    place-items: center
+}
+
+.listenBtn:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--gold) 24%, transparent)
+}
+
+.listenBtn:disabled {
+    opacity: var(--nexus-disabled-opacity, 0.45);
+    cursor: not-allowed
+}
+
+.listenBtn[aria-pressed=true] {
+    background: var(--gold);
+    color: #17140d
+}
+
+.listenBody {
+    flex: 1;
+    min-width: 0
+}
+
+.listenLabel {
+    margin: 0;
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    color: var(--nexus-text-secondary)
+}
+
+.wave {
+    display: block;
+    width: 100%;
+    height: 44px;
+    color: var(--gold)
+}
+
+.railTask {
+    margin: 0;
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    color: var(--nexus-text-primary);
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden
+}
+
+/* R-0: empty-слот портрета — монограмма на подложке вместо орба-подмены */
+.portraitEmpty {
+    position: relative;
+    z-index: 1;
+    width: 148px;
+    height: 148px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: radial-gradient(circle at 40% 35%, color-mix(in srgb, var(--gold) 22%, transparent), transparent 70%), color-mix(in srgb, var(--nexus-surface-elevated) 88%, transparent);
+    border: 2px solid color-mix(in srgb, var(--gold) 40%, transparent);
+    font: 600 34px Georgia, serif;
+    color: var(--gold)
+}
+
+.portraitEmpty small {
+    font: var(--nexus-type-caption-font-size, 13px) var(--nexus-font-mono, monospace);
+    color: var(--nexus-text-tertiary);
+    letter-spacing: .04em;
+    text-align: center;
+    max-width: 110px
+}
+
+/* A.2: чипы-стартеры промптов под композитором */
+.starterChips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px
+}
+
+.starterChip {
+    padding: 6px 11px;
+    border-radius: 999px;
+    border: 1px solid var(--nexus-border-subtle);
+    background: transparent;
+    color: var(--nexus-text-primary);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    cursor: pointer;
+    text-align: left;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
+}
+
+.starterChip:hover {
+    border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+    color: var(--nexus-text-primary)
+}
+
+.starterChip:focus-visible {
+    outline: 2px solid var(--nexus-focus-ring, #d8b45a);
+    outline-offset: 2px
+}
+
+.starterChip:disabled {
+    color: var(--nexus-text-primary);
+    border-color: var(--nexus-border-subtle);
+    cursor: not-allowed
+}
+
+/* A.6: sparkline cpu% из клиентского накопителя */
+.sparkline {
+    display: block;
+    width: 100%;
+    height: 28px;
+    margin-top: 10px;
+    color: var(--gold)
+}
+
+/* VII V1.2 (NUE1): KPI-полоса — четыре плитки показателей */
+.kpiBand {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px
+}
+
+.kpi {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 13px 15px;
+    border: 1px solid var(--nexus-border-subtle);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--nexus-surface-elevated) 55%, transparent)
+}
+
+.kpiLabel {
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--nexus-text-tertiary)
+}
+
+.kpi strong {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--nexus-text-primary)
+}
+
+.kpi[data-state="error"] strong,
+.kpi[data-state="unavailable"] strong {
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    font-weight: 400;
+    color: var(--nexus-text-tertiary)
+}
+
+@container (max-width:1000px) {
+    .kpiBand {
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+    }
+}
+
+@container (max-width:560px) {
+    .kpiBand {
+        grid-template-columns: 1fr 1fr
+    }
+}
+
+/* XIV W3 — панель «Сессии агента» (sdk-sessions-contract, draft). */
+.sessionRow {
+    display: grid;
+    grid-template-columns: 8px 1fr;
+    gap: 7px;
+    align-items: start;
+    font-size: var(--nexus-type-caption-font-size, 13px)
+}
+
+.sessionRow>i {
+    width: 6px;
+    height: 6px;
+    margin-top: 6px
+}
+
+.sessionMain {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0
+}
+
+.sessionTitle {
+    color: var(--nexus-text-primary);
+    overflow-wrap: anywhere
+}
+
+.sessionTitle small {
+    color: var(--nexus-text-tertiary);
+    font-size: var(--nexus-type-caption-font-size, 13px)
+}
+
+.sessionActions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 2px
+}
+
+.sessionActions .projectPick {
+    display: inline;
+    width: auto;
+    color: var(--nexus-text-link, var(--nexus-accent-primary));
+    padding: 0
+}
+
+.sessionForm {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 6px
+}
+
+.sessionInput {
+    font: inherit;
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    color: var(--nexus-text-primary);
+    background: var(--nexus-surface-panel, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--nexus-border-subtle);
+    border-radius: var(--nexus-radius-sm, 4px);
+    padding: 6px 10px;
+    width: 100%;
+    box-sizing: border-box
+}
+
+.sessionInput:focus-visible {
+    outline: 2px solid var(--nexus-focus-ring, var(--nexus-accent-primary));
+    outline-offset: 1px
+}
+
+.sessionResult {
+    color: var(--nexus-text-secondary);
+    font-family: var(--nexus-font-mono, monospace);
+    font-size: var(--nexus-type-caption-font-size, 13px)
+}
+
+/* XV W3 — фильтры списка сессий: три поля в одну строку, перенос на узком. */
+.sessionFilters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px
+}
+
+.sessionFilters .sessionInput {
+    flex: 1 1 120px;
+    width: auto;
+    min-width: 0
+}
+
+/* #53 W3 — оболочка рабочего окна ALICE (лист «Главная» 18_37_58-10).
+   Чипы ассистентов, орб состояния, мини-бары, тёмные поиск/композер/плеер. */
+
+/* AI-агенты: стеклянные чипы персон; точка — реальное состояние процесса. */
+.agentChips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px
+}
+
+.agentChip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 13px;
+    border-radius: 999px;
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, .4));
+    background: var(--glass-fill, rgba(255, 255, 255, .34));
+    color: var(--nexus-text-primary);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    text-decoration: none
+}
+
+.agentChip>i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--nexus-text-disabled, #9aa)
+}
+
+.agentChip>i[data-state='running'] {
+    background: var(--nexus-state-success, #3d9a50)
+}
+
+.agentChip>i[data-state='ready'],
+.agentChip>i[data-state='new'] {
+    background: var(--gold, #c9a45c)
+}
+
+.agentChip>i[data-state='blocked'],
+.agentChip>i[data-state='failed'] {
+    background: var(--nexus-state-error, #c0504d)
+}
+
+.agentChip small {
+    color: var(--nexus-text-tertiary)
+}
+
+.agentChip:hover {
+    border-color: color-mix(in srgb, var(--gold) 60%, transparent)
+}
+
+.agentChip:focus-visible {
+    outline: 2px solid var(--nexus-focus-ring, #d8b45a);
+    outline-offset: 2px
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .agentChip {
+        background: var(--nexus-surface-elevated, #fff)
+    }
+}
+
+/* SYSTEM STATUS: орб — декоративные концентрические кольца (aria-hidden). */
+.statusOrbWrap {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    margin: 4px auto 10px
+}
+
+.statusOrb {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--gold) 55%, transparent)
+}
+
+.statusOrb:nth-child(2) {
+    inset: 10px;
+    opacity: .7
+}
+
+.statusOrb:nth-child(3) {
+    inset: 22px;
+    background: radial-gradient(circle at 35% 30%,
+            color-mix(in srgb, var(--gold) 60%, transparent),
+            transparent 70%)
+}
+
+/* Мини-бары: полупрозрачный трек + заливка по реальному проценту. */
+.miniBar {
+    display: grid;
+    grid-template-columns: 52px 1fr auto;
+    gap: 8px;
+    align-items: center;
+    margin-top: 7px;
+    font-size: var(--nexus-type-caption-font-size, 13px)
+}
+
+.miniBar>span {
+    color: var(--nexus-text-tertiary)
+}
+
+.miniBar>strong {
+    font-weight: 500;
+    color: var(--nexus-text-primary)
+}
+
+.miniTrack {
+    display: block;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--glass-track, rgba(255, 255, 255, .3));
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, .25));
+    overflow: hidden
+}
+
+.miniTrack>i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg,
+            color-mix(in srgb, var(--gold) 75%, transparent), var(--gold))
+}
+
+/* main7: жемчужное стекло композитора на фоне backalice. Более высокая
+   специфичность + !important нужна из-за !important на базовом .composerPanel. */
+[data-theme='alice'] .composerPanel {
+    background: color-mix(in srgb, var(--nexus-surface-panel, #FBF8F1) 82%, transparent) !important;
+    border-color: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 32%, transparent);
+    color: var(--nexus-text-primary, #33291D)
+}
+
+[data-theme='alice'] .composerPanel input,
+[data-theme='alice'] .composerPanel textarea {
+    color: var(--nexus-text-primary, #33291D)
+}
+
+[data-theme='alice'] .composerPanel input::placeholder,
+[data-theme='alice'] .composerPanel textarea::placeholder {
+    color: color-mix(in srgb, var(--nexus-text-secondary, #665943) 78%, transparent)
+}
+
+/* Чипы-стартеры — стеклянные «пилюли» (в т.ч. режимы композера). */
+.starterChip {
+    background: var(--nexus-surface-elevated, var(--glass-fill, rgba(255, 255, 255, .34)));
+}
+
+[data-theme='alice'] .composerPanel .starterChip {
+    background: rgba(255, 255, 255, .72);
+    border-color: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 34%, transparent);
+    color: var(--nexus-text-primary, #33291D)
+}
+
+[data-theme='alice'] .composerPanel .starterChip:disabled {
+    color: var(--nexus-text-secondary, #54545F);
+    background: rgba(255, 255, 255, .84)
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .starterChip {
+        background: var(--nexus-surface-elevated, #fff)
+    }
+}
+
+/* ===== main7 (W3, 18.10): hero ALICE + орбитальные подписи + чипы
+   композитора + «Предложено для вас» + нижний trio-ряд ===== */
+
+/* Текст слева, фигурная героиня справа: в AssistantHero портрет идёт
+   первым в DOM — на /home переворачиваем колонки через rtl. */
+.home [data-variant='figure'] {
+    direction: rtl;
+    position: relative;
+    /* Контейнер для cqi-размеров hero: кегль «AGENT-A» масштабируется
+       от ширины карточки, а не окна — иначе на узком окне фолбэк cqi→vw
+       давал обрезку (дефект 18.10). */
+    container-type: inline-size;
+    padding: 0 0 0 24px;
+    grid-template-columns: 1fr minmax(240px, 38%);
+    /* AssistantHero is authored-dark for other assistant screens. The
+       main7 home hero is an open pearl scene, not a dark modal card. */
+    --nexus-text-on-art: #33291D;
+    --nexus-text-on-art-dim: #5B4D3A;
+    --nexus-text-on-art-muted: #766A58;
+    background:
+        linear-gradient(90deg, rgba(251, 248, 241, .40), rgba(251, 248, 241, .22) 58%, rgba(251, 248, 241, .02)) !important;
+    border-color: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 30%, transparent)
+}
+
+.home [data-variant='figure']>* {
+    direction: ltr
+}
+
+.heroTitle {
+    display: block;
+    font-family: var(--nexus-type-hero-font-family, Georgia, serif);
+    /* Кегль — от ширины контейнера-карточки (container-type выше); нижний
+       порог не должен мешать заголовку влезать — заголовок не переносится
+       и не обрезается (overflow visible), в крайнем случае выходит за край
+       без клипа. */
+    font-size: clamp(20px, 8cqi, 84px);
+    font-weight: 500;
+    line-height: 1.02;
+    letter-spacing: .04em;
+    text-wrap: nowrap;
+    overflow: visible;
+    color: var(--nexus-text-primary, #F6F0E4);
+    text-shadow: 0 1px 10px rgba(20,16,8,.55)
+}
+
+.heroSub {
+    font-size: clamp(15px, 1.6vw, 19px);
+    color: var(--nexus-text-primary);
+    margin: 4px 0 8px
+}
+
+.greeting .greetingH {
+    font-family: inherit;
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    font-weight: 400;
+    color: var(--nexus-text-secondary);
+    margin: 0 0 4px
+}
+
+.orbitLabels {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: grid;
+    gap: 13px;
+    text-align: right;
+    z-index: 2
+}
+
+.orbitLabels span {
+    font-size: var(--nexus-type-caption-font-size);
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: #5c4826;
+    text-shadow: 0 1px 3px rgba(255, 255, 255, .88)
+}
+
+/* Чипы-действия над полем ввода (Research/Analyze/Plan/Create/
+   Automate/Explore референса — по-русски, стеклянные пилюли). */
+.actionChips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px
+}
+
+.actionChip {
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+    background: var(--glass-fill, rgba(255, 255, 255, .08));
+    color: inherit;
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    cursor: pointer
+}
+
+.actionChip:hover {
+    border-color: var(--gold)
+}
+
+.actionChip:disabled {
+    opacity: var(--nexus-disabled-opacity, 0.45);
+    cursor: default
+}
+
+/* «Предложено для вас» — четыре сценарные карточки. */
+.suggestGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px
+}
+
+.suggestCard {
+    position: relative;
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    grid-template-rows: auto auto;
+    column-gap: 12px;
+    text-align: left;
+    padding: 14px;
+    border-radius: 14px;
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, .25));
+    background: var(--glass-fill, rgba(255, 255, 255, .34));
+    color: inherit;
+    cursor: pointer
+}
+
+.suggestCard:hover {
+    border-color: color-mix(in srgb, var(--gold) 55%, transparent)
+}
+
+.suggestCard:disabled {
+    opacity: var(--nexus-disabled-opacity, 0.45);
+    cursor: default
+}
+
+.suggestCard strong {
+    font-size: var(--nexus-type-caption-font-size, 13px)
+}
+
+.suggestCard small {
+    grid-column: 2;
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    color: var(--nexus-text-tertiary);
+    margin-top: 3px
+}
+
+.suggestArrow {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-style: normal;
+    color: var(--gold)
+}
+
+/* Нижний trio-ряд: граф знаний / диалоги / память. */
+.trioGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px
+}
+
+.kgOrb {
+    position: relative;
+    width: 92px;
+    height: 92px;
+    margin: 8px auto 4px
+}
+
+.kgOrb i {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--gold) 55%, transparent)
+}
+
+.kgOrb i:nth-child(2) {
+    inset: 12px;
+    opacity: .7
+}
+
+.kgOrb i:nth-child(3) {
+    inset: 26px;
+    background: radial-gradient(circle at 35% 30%,
+            color-mix(in srgb, var(--gold) 60%, transparent), transparent 70%)
+}
+
+.convoList {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 8px
+}
+
+.convoList a {
+    display: grid;
+    gap: 2px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, .2));
+    background: var(--glass-fill, rgba(255, 255, 255, .22));
+    text-decoration: none;
+    color: inherit
+}
+
+.convoList a:hover {
+    border-color: color-mix(in srgb, var(--gold) 55%, transparent)
+}
+
+.convoList span {
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
+}
+
+.convoList small {
+    color: var(--nexus-text-tertiary);
+    font-size: var(--nexus-type-caption-font-size)
+}
+
+/* Keep the first viewport close to main7: hero → composer → suggestions →
+   recent-data trio. Runtime KPIs and legacy widgets remain below, not lost. */
+.mainColumn>* {
+    order: 5
+}
+
+.mainColumn>[data-variant='figure'] {
+    order: 1
+}
+
+.mainColumn>.composerPanel {
+    order: 2
+}
+
+.mainColumn>.suggestGrid {
+    order: 3
+}
+
+.mainColumn>.trioGrid {
+    order: 4
+}
+
+.mainColumn>.kpiDetails {
+    order: 6
+}
+
+.mainColumn>[data-testid='listen-card'] {
+    order: 7
+}
+
+.mainColumn>.lowerGrid {
+    order: 8
+}
+
+/* main7 calls attention to system status and today before secondary cards. */
+.rail>* {
+    order: 3
+}
+
+.rail>[data-testid='home-sysstatus'] {
+    order: 1
+}
+
+.rail>[data-testid='home-today'] {
+    order: 2
+}
+
+.composerExtras {
+    margin-top: 10px;
+    border-top: 1px solid var(--nexus-border-subtle);
+    padding-top: 8px
+}
+
+.composerExtras summary {
+    width: fit-content;
+    color: var(--nexus-text-secondary);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    cursor: pointer;
+    list-style-position: inside
+}
+
+.composerExtras[open] summary {
+    margin-bottom: 8px
+}
+
+/* После отправки домашний пресет собирается в компактную верхнюю полосу:
+   герой/композитор уходят к началу, а диалог получает основную высоту. */
+.home[data-chat-active='true'] {
+    gap: 12px;
+    padding-top: 12px;
+}
+
+.home[data-chat-active='true'] .mainColumn {
+    gap: 10px;
+}
+
+.home[data-chat-active='true'] .mainColumn>[data-variant='figure'] {
+    direction: ltr;
+    grid-template-columns: 1fr;
+    min-height: 76px !important;
+    padding: 10px 18px;
+    background: linear-gradient(100deg, rgba(251, 248, 241, .74), rgba(251, 248, 241, .38)) !important;
+    transition: min-height var(--nexus-motion-fly, .28s) var(--nexus-easing-standard), padding var(--nexus-motion-fly, .28s) var(--nexus-easing-standard);
+}
+
+.home[data-chat-active='true'] .mainColumn>[data-variant='figure']>[data-portrait] {
+    display: none;
+}
+
+.home[data-chat-active='true'] .mainColumn>[data-variant='figure'] .body {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.home[data-chat-active='true'] .mainColumn>[data-variant='figure'] .modePill,
+.home[data-chat-active='true'] .heroSub {
+    display: none;
+}
+
+.home[data-chat-active='true'] .heroTitle {
+    font-size: clamp(22px, 2vw, 30px) !important;
+}
+
+.chatIdentity {
+    color: var(--nexus-text-secondary);
+    font-size: 14px;
+    letter-spacing: .02em;
+}
+
+.home[data-chat-active='true'] .mainColumn>.composerPanel {
+    order: 2;
+    padding-block: 8px !important;
+    transition: padding var(--nexus-duration-normal, .24s) var(--nexus-easing-standard);
+}
+
+.home[data-chat-active='true'] .mainColumn>.composerPanel .actionChips {
+    margin-bottom: 4px;
+}
+
+.home[data-chat-active='true'] .mainColumn>.composerPanel textarea {
+    min-height: 38px;
+}
+
+.home[data-chat-active='true'] .mainColumn>.echo {
+    order: 3;
+}
+
+.home[data-chat-active='true'] .mainColumn>.suggestGrid,
+.home[data-chat-active='true'] .mainColumn>.trioGrid,
+.home[data-chat-active='true'] .mainColumn>.kpiDetails,
+.home[data-chat-active='true'] .mainColumn>.lowerGrid,
+.home[data-chat-active='true'] .mainColumn>[data-testid='listen-card'] {
+    display: none;
+}
+
+@media (max-width: 720px) {
+
+    .echoFeed[data-side='left'],
+    .echoQuestion[data-side='right'] {
+        grid-column: 1;
+    }
+
+    .echoQuestion {
+        order: 2;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .home[data-chat-active='true'] .mainColumn>[data-variant='figure'],
+    .home[data-chat-active='true'] .mainColumn>.composerPanel {
+        transition: none;
+    }
+}
+
+/* XXI: полоса KPI вне первого вьюпорта — details до trio, не перед
+   композитором (main7). */
+.kpiDetails {
+    border: 1px solid var(--nexus-border-subtle);
+    border-radius: 12px;
+    padding: 10px 14px;
+    background: color-mix(in srgb, var(--nexus-surface-elevated) 40%, transparent)
+}
+
+.kpiDetails summary {
+    width: fit-content;
+    color: var(--nexus-text-secondary);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    cursor: pointer;
+    list-style-position: inside
+}
+
+.kpiDetails[open] summary {
+    margin-bottom: 10px
+}
+
+.composerFooter button[type='submit'] {
+    background: linear-gradient(135deg, #D7B768, #B88A36) !important;
+    border: 1px solid color-mix(in srgb, #74531F 36%, transparent) !important;
+    color: #2F2618 !important;
+    box-shadow: 0 5px 18px rgba(139, 99, 29, .22)
+}
+
+.composerFooter button[type='submit']:disabled {
+    opacity: var(--nexus-disabled-opacity, 0.45)
+}
+
+@container (max-width:1000px) {
+    .suggestGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+    }
+
+    .trioGrid {
+        grid-template-columns: 1fr
+    }
+}
+
+@container (max-width:560px) {
+    .home [data-variant='figure'] {
+        grid-template-columns: 1fr minmax(140px, 36%)
+    }
+
+    .orbitLabels {
+        display: none
+    }
+
+    .suggestGrid {
+        grid-template-columns: 1fr
+    }
+}

@@ -1,0 +1,26 @@
+{
+  "$description": "W2-135 · шкала elevation 0–4: пронумерованные уровни подъёма поверхности — алиасы канонического shadow.* рампа. Маппинг паттернов: card=1, panel/popover=2, drawer=3, modal/overlay/tooltip=4. z-порядок — layer.* (dropdown 50 → tooltip 120).",
+  "elevation": {
+    "$type": "shadow",
+    "0": {
+      "$value": "none",
+      "$comment": "вровень с поверхностью — environment/surface"
+    },
+    "1": {
+      "$value": "{shadow.sm}",
+      "$comment": "card, chip, nav-item — лёгкий отрыв"
+    },
+    "2": {
+      "$value": "{shadow.md}",
+      "$comment": "panel, popover, anchored dropdown — плавающая панель"
+    },
+    "3": {
+      "$value": "{shadow.lg}",
+      "$comment": "drawer, floating panel — сдвинутая поверхность"
+    },
+    "4": {
+      "$value": "{shadow.xl}",
+      "$comment": "modal, overlay, tooltip — верхний глобальный слой"
+    }
+  }
+}

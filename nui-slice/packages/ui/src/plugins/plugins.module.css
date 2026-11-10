@@ -1,0 +1,218 @@
+/* plugins — докинг-панели и менеджер плагинов NEU (wave-XVI W2).
+   Ширины/длительности/статусы — только токены plugin-panels.tokens.json. */
+
+/* --- card --- */
+.card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nexus-space-3, 12px);
+  padding: var(--nexus-space-3, 12px);
+  background: var(--nexus-plugin-card-bg, #1B1B21);
+  border: 1px solid var(--nexus-plugin-card-border, rgba(246, 240, 228, 0.08));
+  border-radius: var(--nexus-plugin-card-radius, 12px);
+  min-height: 56px;
+  min-width: 0;
+}
+
+.cardOpen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nexus-space-3, 12px);
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+}
+
+.cardOpen:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, #539EFF);
+  outline-offset: 2px;
+  border-radius: var(--nexus-plugin-card-radius, 12px);
+}
+
+.cardIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--nexus-plugin-card-icon-frame, 40px);
+  height: var(--nexus-plugin-card-icon-frame, 40px);
+  border-radius: var(--nexus-radius-md, 8px);
+  background: var(--nexus-accent-primary-soft, rgba(201, 164, 92, 0.12));
+  color: var(--nexus-text-accent, #D8BC76);
+  flex: none;
+}
+
+.cardMain {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 8rem;
+}
+
+.cardTitle {
+  font-size: var(--nexus-type-body-font-size, 15px);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  font-weight: 500;
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.cardDesc {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+.cardSide {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  flex: 0 1 auto;
+  min-width: 0;
+  margin-left: auto;
+}
+
+/* --- group --- */
+.group { display: flex; flex-direction: column; gap: var(--nexus-space-2, 8px); min-width: 0; }
+
+.groupTitle {
+  display: flex;
+  align-items: baseline;
+  gap: var(--nexus-space-2, 8px);
+  margin: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+.groupCount { color: var(--nexus-text-tertiary, #8E97A5); font-weight: 400; }
+
+.groupList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-2, 8px);
+  min-width: 0;
+}
+
+/* --- right panel tab bar --- */
+.tabBar {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  border-bottom: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.08));
+  transition: width var(--nexus-right-panel-push-duration, 240ms)
+    var(--nexus-right-panel-easing, cubic-bezier(0.2, 0, 0, 1));
+}
+
+.tabBar[data-mode='fullscreen'] {
+  transition-duration: var(--nexus-right-panel-fullscreen-duration, 420ms);
+}
+
+.tabList {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  min-width: 0;
+  overflow-x: auto;
+  flex: 1;
+  scrollbar-width: thin;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  border-bottom: 2px solid transparent;
+}
+
+.tab[data-active] { border-bottom-color: var(--nexus-accent-primary, #C9A45C); }
+
+.tabBtn {
+  min-height: 40px;
+  padding: 0 var(--nexus-space-3, 12px) 0 var(--nexus-space-3, 12px);
+  border: 0;
+  background: transparent;
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font: inherit;
+  font-size: var(--nexus-type-body-font-size, 15px);
+  cursor: pointer;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tab:hover .tabBtn,
+.tab[data-active] .tabBtn { color: var(--nexus-text-primary, #F6F0E4); }
+
+.tabBtn:focus-visible,
+.tabClose:focus-visible,
+.tabAction:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, #539EFF);
+  outline-offset: -2px;
+}
+
+.tabClose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: var(--nexus-radius-sm, 4px);
+  background: transparent;
+  color: var(--nexus-text-tertiary, #8E97A5);
+  font-size: var(--nexus-type-body-font-size, 15px);
+  cursor: pointer;
+}
+
+.tabClose:hover {
+  background: var(--nexus-nav-item-bg-hover, rgba(246, 240, 228, 0.06));
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.tabActions {
+  display: inline-flex;
+  gap: 2px;
+  flex: none;
+  padding: 0 var(--nexus-space-2, 8px);
+}
+
+.tabAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: var(--nexus-radius-sm, 4px);
+  background: transparent;
+  color: var(--nexus-text-tertiary, #8E97A5);
+  font-size: var(--nexus-type-body-font-size, 15px);
+  cursor: pointer;
+}
+
+.tabAction:hover,
+.tabAction[aria-pressed='true'] {
+  background: var(--nexus-nav-item-bg-hover, rgba(246, 240, 228, 0.06));
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tabBar {
+    transition: none;
+    transition-delay: 0ms;
+  }
+}

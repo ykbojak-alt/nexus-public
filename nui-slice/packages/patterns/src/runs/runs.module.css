@@ -1,0 +1,155 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+    color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: .02em;
+}
+
+.muted {
+    margin: 0;
+    color: var(--nexus-text-secondary, #B0B7C2);
+    font-size: 13px;
+}
+
+.task {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.mono {
+    font-family: var(--nexus-font-mono, ui-monospace, monospace);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.facts {
+    display: grid;
+    grid-template-columns: minmax(120px, auto) 1fr;
+    gap: 4px 14px;
+    margin: 0;
+    font-size: 13px;
+}
+
+.facts dt {
+    color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+.facts dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.sectionLabel {
+    margin: 6px 0 0;
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+.srcNote {
+    font-weight: 400;
+    letter-spacing: .02em;
+    text-transform: none;
+    color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.backBtn,
+.linkBtn {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--nexus-accent-primary, #C9A45C);
+    font: inherit;
+    cursor: pointer;
+    text-align: left;
+}
+
+.backBtn:hover,
+.linkBtn:hover {
+    text-decoration: underline;
+}
+
+.cancelBtn {
+    align-self: flex-start;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--nexus-state-error, #F97F66);
+    background: none;
+    color: var(--nexus-state-error, #F97F66);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.cancelBtn:hover {
+    background: color-mix(in srgb, var(--nexus-state-error, #F97F66) 14%, transparent);
+}
+
+.events,
+.planList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.event,
+.planItem {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.eventSeq {
+    flex: none;
+    width: 34px;
+    color: var(--nexus-text-secondary, #B0B7C2);
+    font-family: var(--nexus-font-mono, ui-monospace, monospace);
+}
+
+.eventMain {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.eventType {
+    font-weight: 600;
+}
+
+.eventBody {
+    color: var(--nexus-text-secondary, #B0B7C2);
+    overflow-wrap: anywhere;
+    font-family: var(--nexus-font-mono, ui-monospace, monospace);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.eventTs {
+    flex: none;
+    color: var(--nexus-text-secondary, #B0B7C2);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.planItem .eventSeq {
+    width: 56px;
+}

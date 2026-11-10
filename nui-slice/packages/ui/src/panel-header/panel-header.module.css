@@ -1,0 +1,96 @@
+/* PanelHeader — единая шапка панели/секции (wave-XXVI W2-126).
+   Типографика: --nexus-title-{panel|section|screen}-* (алиасы type-шкалы);
+   хром: --nexus-title-{color,subtitle-color,icon-color,divider,gap,…}.
+   Длинный текст переносится целиком — ellipsis не используется. */
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-title-gap, var(--nexus-space-2, 8px));
+  padding: var(--nexus-title-padding-block, var(--nexus-space-1, 4px))
+    var(--nexus-title-padding-inline, var(--nexus-space-2, 8px));
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.panelHeader[data-divider='true'] {
+  border-bottom: 1px solid var(--nexus-title-divider, var(--nexus-border-subtle, rgba(246, 240, 228, 0.1)));
+}
+
+.icon {
+  flex: none;
+  inline-size: var(--nexus-title-icon-size, var(--nexus-space-5, 20px));
+  block-size: var(--nexus-title-icon-size, var(--nexus-space-5, 20px));
+  display: grid;
+  place-items: center;
+  color: var(--nexus-title-icon-color, var(--nexus-accent-primary, #C9A45C));
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.title {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--nexus-title-color, var(--nexus-text-primary, #F6F0E4));
+}
+
+.levelPanel .title {
+  font: var(--nexus-title-panel-font-weight, 500)
+    var(--nexus-title-panel-font-size, 18px) /
+    var(--nexus-title-panel-line-height, 26px)
+    var(--nexus-title-panel-font-family, 'Inter Tight', Inter, system-ui, sans-serif);
+  letter-spacing: var(--nexus-title-panel-letter-spacing, 0.01em);
+}
+
+.levelSection .title {
+  font: var(--nexus-title-section-font-weight, 400)
+    var(--nexus-title-section-font-size, 28px) /
+    var(--nexus-title-section-line-height, 36px)
+    var(--nexus-title-section-font-family, 'Inter Tight', Inter, system-ui, sans-serif);
+  letter-spacing: var(--nexus-title-section-letter-spacing, 0);
+}
+
+.levelScreen .title {
+  font: var(--nexus-title-screen-font-weight, 300)
+    var(--nexus-title-screen-font-size, 40px) /
+    var(--nexus-title-screen-line-height, 48px)
+    var(--nexus-title-screen-font-family, 'Inter Tight', Inter, system-ui, sans-serif);
+  letter-spacing: var(--nexus-title-screen-letter-spacing, -0.01em);
+}
+
+.subtitle {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font: var(--nexus-type-caption-font-weight, 500)
+    var(--nexus-type-caption-font-size, 13px) /
+    var(--nexus-type-caption-line-height, 18px)
+    var(--nexus-type-caption-font-family, 'Inter Tight', Inter, system-ui, sans-serif);
+  letter-spacing: var(--nexus-type-caption-letter-spacing, 0.01em);
+  color: var(--nexus-title-subtitle-color, var(--nexus-text-secondary, #B0B7C2));
+}
+
+.actions {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-title-gap, var(--nexus-space-2, 8px));
+  margin-inline-start: auto;
+}
+
+@media (forced-colors: active) {
+  .panelHeader[data-divider='true'] {
+    border-bottom-color: CanvasText;
+  }
+
+  .icon {
+    color: CanvasText;
+  }
+}

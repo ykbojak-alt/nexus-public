@@ -1,0 +1,32 @@
+{
+  "title": "Атрибуция сторонних ассетов",
+  "notice": "Сцены NEU используют модели третьих лиц по лицензии CC BY 4.0.",
+  "generated": "2026-10-16",
+  "register": "docs/product/asset-license-register.md",
+  "items": [
+    {
+      "asset": "Sci Fi Box Crate",
+      "author": "Gerardo Justel (re1monsen)",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "sourceUrl": "https://sketchfab.com/3d-models/sci-fi-box-crate-1ecd6f2521e64abdbbc40f24a3356b07",
+      "usedIn": "MECH (scifi-реквизит)"
+    },
+    {
+      "asset": "Hanging Monitor",
+      "author": "MaX3Dd",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "sourceUrl": "https://sketchfab.com/3d-models/hanging-monitor-1bcb147db4914410a02e4a134f9bf870",
+      "usedIn": "MECH, CODEX (голо-панели)"
+    },
+    {
+      "asset": "The Techno-Planet of The Techno-Technos",
+      "author": "SebastianSosnowski",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "sourceUrl": "https://sketchfab.com/3d-models/the-techno-planet-of-the-techno-technos-33a0c939f7e8461a9a61aa6c32cb4b8b",
+      "usedIn": "MECH (космический фон)"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "tokens",
+  "projectType": "library",
+  "sourceRoot": "packages/tokens/src",
+  "tags": [
+    "scope:foundation",
+    "runtime:dom"
+  ],
+  "targets": {
+    "build": {
+      "command": "tsx packages/tokens/scripts/build-tokens.ts"
+    },
+    "test": {
+      "command": "vitest run packages/tokens --passWithNoTests"
+    },
+    "lint": {
+      "command": "tsc --noEmit -p packages/tokens/tsconfig.json"
+    }
+  }
+}

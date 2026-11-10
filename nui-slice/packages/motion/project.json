@@ -1,0 +1,17 @@
+{
+  "name": "motion",
+  "projectType": "library",
+  "sourceRoot": "packages/motion/src",
+  "tags": [
+    "scope:foundation",
+    "runtime:dom"
+  ],
+  "targets": {
+    "test": {
+      "command": "vitest run packages/motion --passWithNoTests"
+    },
+    "lint": {
+      "command": "tsc --noEmit -p packages/motion/tsconfig.json"
+    }
+  }
+}

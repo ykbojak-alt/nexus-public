@@ -1,0 +1,65 @@
+/**
+ * SEC-03: прокси не должен отправлять Bearer-токен на не-loopback upstream.
+ * CRAFT_BRIDGE_URL=https://evil.com → HTTP 403, исходящий fetch не выполняется.
+ */
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { NextRequest } from 'next/server';
+import { GET } from './route';
+
+const ctx = { params: Promise.resolve({ path: ['health'] }) };
+
+function makeRequest(): NextRequest {
+  return new NextRequest('http://localhost/api/craft/health');
+}
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+  vi.unstubAllEnvs();
+});
+
+describe('craft proxy — SEC-03 upstream validation', () => {
+  it('returns 403 and never fetches when CRAFT_BRIDGE_URL is external', async () => {
+    vi.stubEnv('CRAFT_BRIDGE_TOKEN', 'secret-token');
+    vi.stubEnv('CRAFT_BRIDGE_URL', 'https://evil.com');
+    const fetchSpy = vi.fn();
+    vi.stubGlobal('fetch', fetchSpy);
+
+    const res = await GET(makeRequest(), ctx);
+
+    expect(res.status).toBe(403);
+    expect(await res.json()).toMatchObject({ ok: false, error: 'upstream_forbidden' });
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it('returns 403 for non-http loopback schemes', async () => {
+    vi.stubEnv('CRAFT_BRIDGE_TOKEN', 'secret-token');
+    vi.stubEnv('CRAFT_BRIDGE_URL', 'file://127.0.0.1/etc/passwd');
+    const fetchSpy = vi.fn();
+    vi.stubGlobal('fetch', fetchSpy);
+
+    const res = await GET(makeRequest(), ctx);
+
+    expect(res.status).toBe(403);
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it('allows the default loopback upstream', async () => {
+    vi.stubEnv('CRAFT_BRIDGE_TOKEN', 'secret-token');
+    vi.stubEnv('CRAFT_BRIDGE_URL', 'http://127.0.0.1:47878');
+    const fetchSpy = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      }),
+    );
+    vi.stubGlobal('fetch', fetchSpy);
+
+    const res = await GET(makeRequest(), ctx);
+
+    expect(res.status).toBe(200);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    const [url, init] = fetchSpy.mock.calls[0] as [string, RequestInit];
+    expect(url).toMatch(/^http:\/\/127\.0\.0\.1:47878\//);
+    expect(new Headers(init.headers).get('authorization')).toBe('Bearer secret-token');
+  });
+});

@@ -1,0 +1,64 @@
+{
+  "$description": "Tool-confirmation card contract (wave-XII W2, Claude SDK canUseTool → NEU UI) — pending tool permission shown as a card in the run feed instead of a terminal prompt. Awaiting = needs-attention warning hairline (not a red frame); resolved outcomes collapse to a meta line. Status colors only via state.* dictionary.",
+  "toolConfirm": {
+    "bg": {
+      "$type": "color",
+      "$value": "{surface.elevated}",
+      "$description": "Card ground — same chrome level as ToolCallCard."
+    },
+    "border": {
+      "$type": "color",
+      "$value": "{border.subtle}"
+    },
+    "edge": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {state.warning} 55%, transparent)",
+      "$description": "Left hairline while awaiting — amber 'needs decision', never the red selection frame."
+    },
+    "resolvedEdge": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {text.tertiary} 35%, transparent)",
+      "$description": "Left hairline once resolved (allowed/denied/timeout) — muted, the decision itself is told by the status dot + label."
+    },
+    "meta": {
+      "$type": "color",
+      "$value": "{text.tertiary}",
+      "$description": "Tool name echo / requested-at timestamp / resolved-by — mono meta."
+    },
+    "fontMono": {
+      "$type": "fontFamily",
+      "$value": "{font.mono}",
+      "$description": "Tool name and args preview — IBM Plex Mono."
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.md}"
+    },
+    "allowBg": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {accent.primary} 14%, transparent)",
+      "$description": "«Разрешить» — affirmative accent wash, same language as handoffBar buttons."
+    },
+    "allowText": {
+      "$type": "color",
+      "$value": "{accent.primary}"
+    },
+    "allowBorder": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {accent.primary} 45%, transparent)"
+    },
+    "denyBg": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {surface.elevated} 0%, transparent)",
+      "$description": "«Отклонить» — neutral ghost (transparent fill); denying is a normal action, not an error state."
+    },
+    "denyText": {
+      "$type": "color",
+      "$value": "{text.secondary}"
+    },
+    "denyBorder": {
+      "$type": "color",
+      "$value": "{border.subtle}"
+    }
+  }
+}

@@ -1,0 +1,429 @@
+/* Canonical shell geometry — spec §8: topbar 72, sidebar 272, inspector
+   340–380, safe area 32, 12-col grid, gaps 16/24/32. Grid/Flex only;
+   absolute positioning is for decorative overlays, not page layout. */
+
+.shell {
+  display: grid;
+  grid-template-rows: var(--nexus-layout-topbar, 72px) 1fr auto;
+  grid-template-columns: var(--nexus-layout-sidebar, 272px) 1fr minmax(var(--nexus-layout-inspector-min, 340px), var(--nexus-layout-inspector-max, 380px));
+  grid-template-areas:
+    'topbar topbar topbar'
+    'sidebar workspace inspector'
+    'rail rail rail';
+  height: 100%;
+  min-height: 0;
+  background: var(--nexus-surface-root, #0A0A0C);
+  color: var(--nexus-text-primary, #F6F0E4);
+  font-family: var(--nexus-type-body-font-family, 'Inter Tight', system-ui, sans-serif);
+}
+
+.topbar {
+  grid-area: topbar;
+}
+
+.sidebar {
+  grid-area: sidebar;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
+.workspace {
+  grid-area: workspace;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-gutter: stable;
+  padding: var(--nexus-layout-safe-area, 32px);
+}
+
+.inspector {
+  grid-area: inspector;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-gutter: stable;
+  border-left: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.06));
+}
+
+.rail {
+  grid-area: rail;
+}
+
+/* Reference geometry: bottom strips (events/provenance timelines) end at the
+   inspector column; the inspector runs full height. Without an inspector the
+   rail keeps its full-width 'rail rail rail' span. */
+.shell:not([data-no-inspector='true']) .rail {
+  grid-column: 1 / 3;
+}
+
+.shell[data-no-sidebar] {
+  grid-template-columns: 0 1fr minmax(var(--nexus-layout-inspector-min, 340px), var(--nexus-layout-inspector-max, 380px));
+}
+
+.shell[data-no-inspector] {
+  grid-template-columns: var(--nexus-layout-sidebar, 272px) 1fr 0;
+}
+
+.shell[data-no-sidebar][data-no-inspector] {
+  grid-template-columns: 0 1fr 0;
+}
+
+.shell[data-no-sidebar] .sidebar,
+.shell[data-no-inspector] .inspector {
+  display: none;
+}
+
+/* Inner workspace grid: 12 columns, density-aware gap. */
+.grid12 {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--nexus-layout-gap, 16px);
+}
+
+/* Density: calm | standard | dense shifts the working unit, not geometry.
+   --nexus-density-scale and the scaled --nexus-space-* ramp are emitted by
+   tokens.css [data-density] blocks (single generated source). */
+
+/* Layout archetypes (spec §8): command / intelligence / studio differ in
+   how the 12-col workspace splits its primary region. */
+.commandPrimary {
+  grid-column: span 8;
+}
+
+.commandSecondary {
+  grid-column: span 4;
+}
+
+.intelligencePrimary {
+  grid-column: span 7;
+}
+
+.intelligenceSecondary {
+  grid-column: span 5;
+}
+
+.studioPrimary {
+  grid-column: span 9;
+}
+
+.studioSecondary {
+  grid-column: span 3;
+}
+
+/* WindowFrame (reference reconciliation, MAIN/NUE1): floating rounded panel
+ * + accent hairline. The outer radius includes the 1px edge; the inner panel
+ * radius is inset by the same amount. Drop-shadow lives on the wrapper.
+ * No assistant-style params — palette tracks accent.* tokens (per-assistant
+ * themes resolve the same geometry to a different color story). */
+.frameShadow {
+  height: 100%;
+  position: relative;
+  isolation: isolate;
+}
+
+/* Амбиент-свечение рамки — статический градиент на ::before вместо
+   drop-shadow/box-shadow: любая тень на полноэкранной обёртке растеризуется
+   заново при каждом repaint детей (shimmer/данные) и на software-raster
+   давала ~1.5fps; градиент пишется в слой один раз и блитится бесплатно. */
+.frameShadow::before {
+  content: "";
+  position: absolute;
+  inset: -34px;
+  border-radius: calc(var(--nexus-window-frame-radius, 24px) * 2);
+  background: radial-gradient(ellipse at 50% 42%,
+      color-mix(in srgb, var(--nexus-accent-glow-color, rgba(201, 164, 92, 0.45)) 67%, transparent),
+      transparent 68%);
+  pointer-events: none;
+  z-index: -1; /* tokenlint-ignore: амбиентное свечение за фоном рамки — порядок отрисовки, не слой */
+}
+
+/* Цвет волосины — по ассистенту: ближайший предок с data-persona
+   переписывает --nexus-window-frame-hairline на personaEdge.<id>
+   (≥3:1 на панели собственного блока темы; на светлой оболочке alice
+   personaEdge.* уже переступлены темнее — NQ-081). */
+.frameEdge[data-persona='alice'] {
+  --nexus-window-frame-hairline: var(--nexus-persona-edge-alice);
+}
+
+.frameEdge[data-persona='mech'] {
+  --nexus-window-frame-hairline: var(--nexus-persona-edge-mech);
+}
+
+.frameEdge[data-persona='forge'] {
+  --nexus-window-frame-hairline: var(--nexus-persona-edge-forge);
+}
+
+.frameEdge[data-persona='codex'] {
+  --nexus-window-frame-hairline: var(--nexus-persona-edge-codex);
+}
+
+.frameEdge[data-persona='arch'] {
+  --nexus-window-frame-hairline: var(--nexus-persona-edge-arch);
+}
+
+.frameEdge[data-persona='nexus'] {
+  --nexus-window-frame-hairline: var(--nexus-persona-edge-nexus);
+}
+
+.frameEdge {
+  box-sizing: border-box;
+  --wf-radius: var(--nexus-window-frame-radius, 24px);
+  height: 100%;
+  padding: 1px;
+  background: linear-gradient(135deg,
+      color-mix(in srgb, var(--nexus-window-frame-hairline, #C9A45C) 78%, transparent),
+      color-mix(in srgb, var(--nexus-window-frame-hairline, #C9A45C) 28%, transparent) 55%,
+      color-mix(in srgb, var(--nexus-window-frame-hairline, #C9A45C) 62%, transparent));
+  border-radius: var(--wf-radius);
+}
+
+.frame {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: var(--nexus-surface-panel, #14161c);
+  color: var(--nexus-text-primary, #F6F0E4);
+  font-family: var(--nexus-type-body-font-family, 'Inter Tight', system-ui, sans-serif);
+  border-radius: var(--wf-radius);
+  overflow: hidden;
+}
+
+.frameTop {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--nexus-space-4, 16px);
+  height: var(--nexus-window-frame-header-height, 72px);
+  min-height: var(--nexus-window-frame-header-height, 72px);
+  padding: var(--nexus-space-3, 12px) var(--nexus-space-6, 24px);
+  border-bottom: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.1));
+  background: var(--nexus-surface-elevated, #1c1c22);
+}
+
+.frameBrand {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-3, 12px);
+  min-width: 0;
+}
+
+.frameTabs {
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  min-width: 0;
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
+.frameTools {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--nexus-space-2, 8px);
+  min-width: 0;
+}
+
+.windowControls {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nexus-space-1, 4px);
+  margin-left: var(--nexus-space-2, 8px);
+  padding-left: var(--nexus-space-2, 8px);
+  border-left: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.1));
+}
+
+.windowControl {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--nexus-radius-sm, 4px);
+  background: transparent;
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font-family: inherit;
+  font-size: var(--nexus-type-body-font-size, 15px);
+  cursor: pointer;
+}
+
+.windowControl:hover {
+  border-color: var(--nexus-border-subtle, rgba(246, 240, 228, 0.1));
+  background: var(--nexus-nav-item-bg-hover, rgba(246, 240, 228, 0.04));
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.windowControl:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, #539EFF);
+  outline-offset: 1px;
+}
+
+.windowControlClose:hover {
+  border-color: var(--nexus-state-error, #F97F66);
+  background: color-mix(in srgb, var(--nexus-state-error, #F97F66) 14%, transparent);
+  color: var(--nexus-state-error, #F97F66);
+}
+
+.frameBody {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 0;
+}
+
+/* Рейл — три состояния по канону: full (ширина рейла), strip (56px
+   иконострип), hidden (0, колонка схлопывается). Одна и та же колонка —
+   ширина анимируется, контент справа не прыгает. */
+.frameLeft {
+  box-sizing: border-box;
+  width: var(--nexus-window-frame-rail-width, var(--nexus-icon-rail-width, 240px));
+  overflow: auto;
+  scrollbar-gutter: stable;
+  background: var(--nexus-surface-root, #0a0a0c);
+  border-right: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.1));
+  transition: width var(--nexus-duration-normal, 240ms) var(--nexus-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+}
+
+.frameLeft[data-nav='strip'] {
+  width: var(--nexus-window-frame-strip-width, 56px);
+}
+
+.frameLeft[data-nav='hidden'] {
+  width: 0;
+  border-right: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frameLeft {
+    transition: none;
+  }
+}
+
+/* Фокус/активное окно: волосина поднимается до focusEdge — сигнал без
+   второй рамки и без сдвига геометрии. */
+.frameEdge:focus-within {
+  background: linear-gradient(135deg,
+      var(--nexus-window-frame-focus-edge, rgba(201, 164, 92, 0.55)),
+      var(--nexus-window-frame-hairline-soft, rgba(201, 164, 92, 0.34)) 55%,
+      var(--nexus-window-frame-focus-edge, rgba(201, 164, 92, 0.55)));
+}
+
+@media (forced-colors: active) {
+  .frameShadow::before {
+    content: none;
+  }
+
+  .frameEdge {
+    padding: 0;
+    border: 1px solid CanvasText;
+    background: Canvas;
+  }
+
+  .frame {
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .frameTop,
+  .frameBelowTop,
+  .frameBottom {
+    border-color: CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .frameLeft,
+  .frameRight {
+    border-color: CanvasText;
+    background: Canvas;
+  }
+
+  .windowControls {
+    border-color: ButtonText;
+  }
+
+  .windowControl {
+    border-color: ButtonText;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+
+  .windowControl:hover {
+    border-color: Highlight;
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .windowControl:focus-visible,
+  .frameEdge:focus-within {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+
+  .frameEdge:focus-within {
+    background: Canvas;
+  }
+}
+
+.frameMain {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
+.frameRight {
+  box-sizing: border-box;
+  width: var(--nexus-window-frame-right-width, var(--nexus-layout-inspector-min, 340px));
+  overflow: auto;
+  scrollbar-gutter: stable;
+  background: var(--nexus-surface-elevated, #1c1c22);
+  border-left: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.1));
+}
+
+/* Модульные бары NUE: рейл разделов может стоять справа (navSide='right').
+   Те же три состояния, что у frameLeft — анимация только когда колонка
+   несёт рейл (data-nav), чтобы drag-ресайз док-панели не «резинил». */
+.frameRight[data-nav] {
+  transition: width var(--nexus-duration-normal, 240ms) var(--nexus-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+}
+
+.frameRight[data-nav='strip'] {
+  width: var(--nexus-window-frame-strip-width, 56px);
+}
+
+.frameRight[data-nav='hidden'] {
+  width: 0;
+  border-left: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frameRight[data-nav] {
+    transition: none;
+  }
+}
+
+/* Модульные бары NUE: тонкая полоса под шапкой — слот для нижнего бара,
+   перенесённого наверх (пустой не рендерится вовсе). */
+.frameBelowTop {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-4, 16px);
+  padding: var(--nexus-space-1, 4px) var(--nexus-space-5, 20px);
+  border-bottom: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.1));
+  background: var(--nexus-surface-elevated, #1c1c22);
+}
+
+.frameBottom {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-4, 16px);
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-5, 20px);
+  border-top: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.1));
+  background: var(--nexus-surface-elevated, #1c1c22);
+}

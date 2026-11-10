@@ -1,0 +1,44 @@
+{
+  "$description": "Semantic text roles — nexus defaults (ivory on obsidian).",
+  "text": {
+    "$type": "color",
+    "primary": {
+      "$value": "{color.ivory.100}"
+    },
+    "secondary": {
+      "$value": "{color.titanium.300}"
+    },
+    "tertiary": {
+      "$value": "{color.titanium.400}"
+    },
+    "disabled": {
+      "$value": "{color.graphite.300}",
+      "$description": "Disabled/inactive text. WCAG 1.4.3-exempt but held to the project floor ≥3:1 on every surface and ≥4.5:1 on surface.panel (NQ-091)."
+    },
+    "inverse": {
+      "$value": "{color.obsidian.900}"
+    },
+    "accent": {
+      "$value": "{color.gold.300}"
+    },
+    "link": {
+      "$value": "{accent.primary}",
+      "$description": "AA link text; follows the active assistant accent, which themes tune for their shell polarity."
+    },
+    "onAccent": {
+      "$value": "{color.obsidian.950}"
+    },
+    "onArt": {
+      "$value": "{color.ivory.100}",
+      "$description": "Pinned-light text for always-dark authored surfaces (game felt/cloth/log). No theme may override — art is theme-invariant."
+    },
+    "onArtDim": {
+      "$value": "{color.titanium.300}",
+      "$description": "Secondary text on authored-dark surfaces — same pin rule as text.onArt."
+    },
+    "onArtMuted": {
+      "$value": "{color.titanium.400}",
+      "$description": "Tertiary/caption text on authored-dark surfaces — same pin rule as text.onArt."
+    }
+  }
+}

@@ -1,0 +1,1252 @@
+/* ALICE_HOME_01 — workspace + right rail template.
+   AppShell owns topbar/sidebar/WindowFrame; this module owns only the
+   content regions. Semantic values come from --nexus-* tokens; the
+   champagne/cyan pair is scoped on .root because the token ramp carries
+   gold (accent.*) but no cyan alias yet (seam: tokens). */
+
+.root {
+  position: relative;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 356px;
+  gap: var(--nexus-layout-gap-major, 24px);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: var(--nexus-space-6, 24px);
+  overflow: hidden;
+  border-radius: inherit;
+  color: var(--nexus-text-on-art, #F6F0E4);
+  font-family: var(--nexus-type-body-font-family, 'Inter Tight', system-ui, sans-serif);
+  /* --- единая стеклянная рецептура -------------------------------------
+     Одна примитивная пара (fill / hairline / edge / blur / radius) кормит
+     и GlassPanel (--nexus-depth-*, --nexus-glass-panel-*), и плитки
+     капабилити, и композер. Пластины рейла, ряд чипов и поле ввода —
+     один материал на одной заливке, а не три разных прямоугольника
+     (аннотация владельца 2026-10-29: «элементы не выглядят разрозненны-
+     ми»). Стекло светлее эталонного не на много: под пластинами лежит
+     резкая сцена, и её свет должен держать порог читаемости 4.5:1. */
+  --ah-glass-tint: #10171C;
+  --ah-glass-radius: 26px;
+  --ah-glass-blur: 26px;
+  --ah-glass-top-light: linear-gradient(168deg, rgba(255, 251, 243, 0.075), rgba(255, 251, 243, 0) 46%);
+  /* --ah-glass-fill* — готовые стеки для `background`, а не цвета: вложенный
+     linear-gradient в linear-gradient невалиден и обнулял заливку плиток. */
+  --ah-glass-fill: var(--ah-glass-top-light),
+    color-mix(in srgb, var(--ah-glass-tint) 52%, transparent);
+  --ah-glass-fill-raised: var(--ah-glass-top-light),
+    color-mix(in srgb, #161F25 58%, transparent);
+  --ah-glass-fill-sunk: color-mix(in srgb, #0A1014 74%, transparent);
+  --ah-glass-border: color-mix(in srgb, #E8C88A 18%, transparent);
+  --ah-glass-edge: inset 0 1px 0 rgba(255, 253, 248, 0.14), inset 0 -1px 0 rgba(0, 0, 0, 0.26);
+  --ah-glass-shadow: 0 18px 48px rgba(0, 0, 0, 0.42);
+  --ah-glass-shadow-raised: 0 22px 60px rgba(0, 0, 0, 0.48);
+  --ah-chip-fill: rgba(246, 240, 228, 0.05);
+  --ah-chip-border: rgba(246, 240, 228, 0.14);
+  --ah-chip-border-hover: rgba(246, 240, 228, 0.28);
+  --nexus-depth-panel-bg: var(--ah-glass-fill);
+  --nexus-depth-elevated-bg: var(--ah-glass-fill-raised);
+  --nexus-depth-overlay-bg: var(--ah-glass-fill-sunk);
+  --nexus-depth-panel-shadow: var(--ah-glass-shadow);
+  --nexus-depth-elevated-shadow: var(--ah-glass-shadow-raised);
+  --nexus-glass-panel-border: var(--ah-glass-border);
+  --nexus-glass-panel-radius: var(--ah-glass-radius);
+  --nexus-glass-panel-padding: 20px;
+  --nexus-glass-panel-edge: var(--ah-glass-edge);
+  --nexus-text-primary: #F6F0E4;
+  --nexus-text-secondary: rgba(246, 243, 236, 0.76);
+  --nexus-text-tertiary: rgba(246, 243, 236, 0.55);
+  --nexus-text-on-art: #F6F0E4;
+  --nexus-text-on-art-dim: rgba(246, 243, 236, 0.74);
+  --nexus-text-on-art-muted: rgba(237, 238, 238, 0.5);
+  --nexus-border-subtle: rgba(246, 240, 228, 0.10);
+  --nexus-border-default: rgba(246, 240, 228, 0.18);
+  --nexus-border-strong: rgba(246, 240, 228, 0.30);
+  --nexus-border-active: #D9B269;
+  --nexus-border-focus: #8DEEF5;
+  /* Кольцо фокуса: тема alice несёт #1E68D6 — вне палитры NEXUS и на
+     золотом стекле читается чужим. Shell переопределяет его на сцене,
+     но .root перескоупит токены сам, поэтому шампанское дублируется
+     здесь (аналог app-shell .shellWrap[data-scene='alice-home']). */
+  --nexus-focus-ring: #E8C88A;
+  --nexus-accent-primary: #D9B269;
+  --nexus-accent-primary-hover: #E8C985;
+  --nexus-accent-primary-active: #B9924C;
+  --nexus-accent-primary-soft: color-mix(in srgb, #D9B269 18%, transparent);
+  --nexus-accent-on-primary: #14100A;
+  --nexus-state-online: #69D8AE;
+  --nexus-state-success: #69D8AE;
+  --nexus-state-warning: #E5BD69;
+  --nexus-state-error: #DD746C;
+  --nexus-state-thinking: #7CE7EF;
+  --nexus-state-syncing: #72DBE9;
+  --nexus-state-executing: #E0BA68;
+  --nexus-state-paused: #AFA89D;
+  --nexus-state-offline: #AFA89D;
+  --ah-gold: var(--nexus-accent-primary, #C9A45C);
+  --ah-gold-bright: var(--nexus-accent-primary-hover, #D0B169);
+  --ah-gold-deep: var(--nexus-accent-primary-active, #A98848);
+  --ah-cyan: #5CE2EE;
+  --ah-cyan-bright: #8DEEF5;
+  --ah-ink: var(--nexus-text-on-art, rgba(255, 253, 248, 0.96));
+  --ah-ink-dim: var(--nexus-text-on-art-dim, rgba(246, 243, 236, 0.74));
+  --ah-ink-muted: var(--nexus-text-on-art-muted, rgba(237, 238, 238, 0.5));
+}
+
+/* Модуль фиксирует тёмное стекло для всех тем: --ah-glass-fill — тёмная
+   заливка поверх резкой сцены, поэтому тушь здесь всегда светлая, как в
+   эталоне (дымчатые пластины + белые подписи). Тёмную тушь на alice-тему
+   ставить нельзя: поверхность панелей не светлеет, и заголовки/подписи
+   проваливались в 1.5–2:1. */
+
+/* arch/codex/mech/forge/nexus: яркий акцент (фиолетовый, золотой, циан)
+   — на нём тёмный текст #0A0A0C даёт 8–12:1; --ah-ink остаётся светлым
+   чернилами (default, --nexus-text-on-art) — на тёмном стекле панелей
+   светлые чернила ≥4.5:1. */
+[data-theme='nexus'] .root,
+[data-theme='arch'] .root,
+[data-theme='codex'] .root,
+[data-theme='mech'] .root,
+[data-theme='forge'] .root {
+  --nexus-accent-on-primary: #0A0A0C;
+}
+
+/* ALICE: сцена светлая (frameEdge backalice), но стекло панелей по
+   умолчанию тёмное → светлые чернила на нём дают 3.82:1 (ниже пола
+   4.5). Инвертируем рецептуру под alice: светлое стекло + тёмные
+   чернила — по образцу app-shell [data-theme='alice']-патчей. */
+[data-theme='alice'] .root {
+  --ah-glass-tint: #EDE7DA;
+  --ah-glass-fill: var(--ah-glass-top-light),
+    color-mix(in srgb, var(--ah-glass-tint) 62%, transparent);
+  --ah-glass-fill-raised: var(--ah-glass-top-light),
+    color-mix(in srgb, #F1ECDF 66%, transparent);
+  --ah-glass-fill-sunk: color-mix(in srgb, #E3DCCB 74%, transparent);
+  --ah-glass-border: color-mix(in srgb, #4C4233 18%, transparent);
+  --ah-glass-edge: inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 -1px 0 rgba(76, 66, 51, 0.18);
+  --ah-glass-shadow: 0 18px 48px rgba(76, 66, 51, 0.18);
+  --ah-glass-shadow-raised: 0 22px 60px rgba(76, 66, 51, 0.22);
+  --ah-chip-fill: rgba(15, 15, 19, 0.04);
+  --ah-chip-border: rgba(15, 15, 19, 0.14);
+  --ah-chip-border-hover: rgba(15, 15, 19, 0.30);
+  --nexus-text-primary: #0F0F13;
+  --nexus-text-secondary: rgba(15, 15, 19, 0.76);
+  --nexus-text-tertiary: rgba(15, 15, 19, 0.55);
+  --nexus-text-on-art: #0F0F13;
+  --nexus-text-on-art-dim: rgba(15, 15, 19, 0.74);
+  --nexus-text-on-art-muted: rgba(15, 15, 19, 0.5);
+  --nexus-border-subtle: rgba(15, 15, 19, 0.10);
+  --nexus-border-default: rgba(15, 15, 19, 0.18);
+  --nexus-border-strong: rgba(15, 15, 19, 0.30);
+  --ah-ink: var(--nexus-text-on-art, #0F0F13);
+  --ah-ink-dim: var(--nexus-text-on-art-dim, rgba(15, 15, 19, 0.74));
+  --ah-ink-muted: var(--nexus-text-on-art-muted, rgba(15, 15, 19, 0.5));
+}
+
+/* Пластины материала frosting-ся над единой сценой: три панели рейла и
+   композер делят один blur, поэтому их край воспринимается как стекло, а не
+   как закрашенная плашка. Замер на GPU (app-shell: Ken Burns + backdrop-filter)
+   дал vsync-кап — слой дешёв на железе. */
+.statusPanel,
+.activityPanel,
+.todayPanel,
+.composer {
+  -webkit-backdrop-filter: blur(var(--ah-glass-blur)) saturate(1.06);
+  backdrop-filter: blur(var(--ah-glass-blur)) saturate(1.06);
+}
+
+/* --- environment layers (decorative, behind content) --- */
+
+.environment {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.environmentImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.environmentGrade {
+  position: absolute;
+  inset: 0;
+}
+
+/* Тон-скрим относится к собственной пластине: на /home сцену несёт окно
+   (единая заливка под рейлом, шапкой и контентом), и второй затемняющий
+   слой дал бы тёмное пятно ровно в границах main — тот самый шов, из-за
+   которого панели читались разрозненными. */
+.environment:has(.environmentImage) .environmentGrade {
+  background:
+    radial-gradient(120% 90% at 18% 8%, rgba(255, 236, 196, 0.16), transparent 55%),
+    radial-gradient(90% 110% at 88% 30%, rgba(92, 226, 238, 0.08), transparent 60%),
+    linear-gradient(160deg, rgba(11, 16, 20, 0.28), rgba(5, 8, 10, 0.55) 68%, rgba(5, 8, 10, 0.72));
+}
+
+/* Без собственной пластины (маршрут /home) шаблон добавляет только мягкие
+   блики: непрозрачная подложка закрыла бы единственную сцену окна. */
+.root:not(:has(.environmentImage)) .environment {
+  background:
+    radial-gradient(110% 85% at 20% 0%, rgba(216, 179, 106, 0.14), transparent 58%),
+    radial-gradient(80% 100% at 90% 25%, rgba(92, 226, 238, 0.07), transparent 62%);
+}
+
+.ambient {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: var(--ah-cyan);
+  stroke-width: 1;
+  opacity: 0.14;
+}
+
+.workspace,
+.rightRail {
+  position: relative;
+  z-index: 1;
+  min-height: 0;
+}
+
+/* --- main workspace: hero / capability rail / composer --- */
+
+.workspace {
+  display: grid;
+  grid-template-rows: minmax(440px, 1fr) 84px 264px;
+  gap: var(--nexus-layout-gap, 16px);
+}
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 0;
+  padding: var(--nexus-space-4, 16px) var(--nexus-space-3, 12px) var(--nexus-space-4, 16px) var(--nexus-space-2, 8px);
+}
+
+/* Reference hero is not a card: the plate stays visible edge to edge. Only
+   a soft left scrim protects the copy from the bright arch in the art.
+   Края скрима размыты: прямоугольник с резкой ступенью альфы читался как
+   «побочная рамка» вокруг hero (аннотация владельца 2026-10-29). */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 6px -8px 6px -14px;
+  background: linear-gradient(90deg, rgba(4, 7, 9, 0.46) 0%, rgba(4, 7, 9, 0.22) 40%, rgba(4, 7, 9, 0.06) 58%, transparent 72%);
+  filter: blur(18px);
+  pointer-events: none;
+}
+
+.heroPortrait {
+  position: absolute;
+  top: 0;
+  right: min(20%, 250px);
+  height: 100%;
+  width: auto;
+  max-width: min(780px, 46%);
+  object-fit: contain;
+  object-position: top right;
+  filter: drop-shadow(0 18px 42px rgba(0, 0, 0, 0.38));
+  pointer-events: none;
+  user-select: none;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  max-width: 56%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-3, 12px);
+}
+
+.heroEyebrow {
+  margin: 0;
+  font-size: 12px;
+  font-weight: var(--nexus-weight-medium, 500);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(246, 243, 236, 0.72);
+}
+
+.heroTitle {
+  margin: 0;
+  font-family: 'Cormorant Garamond', var(--nexus-font-display, 'Playfair Display'), Georgia, serif;
+  font-size: clamp(56px, 5.2vw, 100px);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: 0.08em;
+  /* ALICE-WHITE: надпись AGENT-A — чистый белый (--ah-ink тёплый,
+     оставлен для остальных элементов). */
+  color: #FFFFFF;
+  text-shadow: 0 2px 28px rgba(0, 0, 0, 0.34);
+}
+
+.heroDescription {
+  margin: var(--nexus-space-2, 8px) 0 0;
+  max-width: 50ch;
+  font-size: var(--nexus-type-body-font-size, 15px);
+  line-height: 1.62;
+  color: rgba(246, 243, 236, 0.8);
+  white-space: pre-line;
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.38);
+}
+
+.heroStatement {
+  margin: var(--nexus-space-2, 8px) 0 0;
+  font-family: 'Cormorant Garamond', var(--nexus-font-display, 'Playfair Display'), Georgia, serif;
+  font-size: clamp(22px, 2vw, 34px);
+  font-weight: 400;
+  line-height: 1.06;
+  color: var(--ah-ink);
+}
+
+.heroSignature {
+  position: absolute;
+  /* contract §9: top ≈ 92px = space-24 − space-1, token-backed. */
+  top: calc(var(--nexus-space-24, 96px) - var(--nexus-space-1, 4px));
+  right: var(--nexus-space-7, 28px);
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--nexus-space-5, 20px);
+  list-style: none;
+  text-align: right;
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(246, 243, 236, 0.86);
+}
+
+/* The signature sits over the brightest part of the plate; the soft local
+   scrim keeps the 12px caps readable without dimming the whole hero. */
+.heroSignature::before {
+  content: '';
+  position: absolute;
+  inset: calc(-1 * var(--nexus-space-8, 32px)) calc(-1 * var(--nexus-space-6, 24px));
+  z-index: -1;
+  border-radius: var(--nexus-radius-xl, 16px);
+  background: radial-gradient(ellipse 72% 62% at 62% 50%, rgba(4, 7, 10, 0.52), rgba(4, 7, 10, 0.24) 58%, transparent 82%);
+  pointer-events: none;
+}
+
+.heroSignature li {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.72), 0 4px 16px rgba(0, 0, 0, 0.55);
+}
+
+/* --- capability rail (84px target row) --- */
+
+.capabilityRail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: var(--nexus-layout-gap, 16px);
+}
+
+.capability {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nexus-space-2, 8px);
+  min-width: 0;
+  padding: var(--nexus-space-3, 12px) var(--nexus-space-4, 16px);
+  border: 1px solid var(--ah-chip-border);
+  border-radius: var(--nexus-radius-xl, 16px);
+  /* Тот же материал, что у пластин рейла: плотность и frost свои, но цвет,
+     волосина и внутренний блик общие — ряд чипов не спорит с панелями. */
+  background: var(--ah-glass-fill-raised);
+  backdrop-filter: blur(var(--ah-glass-blur)) saturate(1.06);
+  box-shadow: var(--ah-glass-edge), 0 10px 28px rgba(0, 0, 0, 0.28);
+  color: var(--ah-ink);
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-weight: var(--nexus-weight-medium, 500);
+  cursor: pointer;
+  transition: transform var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1)),
+    border-color var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1)),
+    box-shadow var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+.capability:hover:not(:disabled) {
+  transform: translateY(-1px) scale(1.012);
+  border-color: var(--ah-chip-border-hover);
+}
+
+.capability[data-state='active'] {
+  border-color: color-mix(in srgb, var(--ah-cyan) 58%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ah-cyan) 32%, transparent),
+    0 0 22px color-mix(in srgb, var(--ah-cyan) 22%, transparent),
+    var(--ah-glass-edge);
+}
+
+.capability[data-state='active'] .capabilityIcon {
+  color: var(--ah-gold-bright);
+}
+
+.capability:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.capabilityIcon {
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
+  color: rgba(255, 253, 248, 0.82);
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
+}
+
+.capabilityIcon svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.capabilityLabel {
+  overflow: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+/* --- command composer --- */
+
+/* GlassPanel supplies the 22px interior padding from --nexus-glass-panel-*. */
+.composer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-2, 8px);
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.composerForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-2, 8px);
+}
+
+.composerField {
+  position: relative;
+}
+
+.composerInput {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 88px;
+  resize: none;
+  padding: var(--nexus-space-3, 12px) var(--nexus-space-10, 40px) var(--nexus-space-3, 12px) var(--nexus-space-4, 16px);
+  border: 1px solid transparent;
+  border-radius: var(--nexus-radius-lg, 12px);
+  background: transparent;
+  color: var(--ah-ink);
+  font: inherit;
+  font-size: var(--nexus-type-body-font-size, 15px);
+  line-height: 1.62;
+}
+
+.composerInput::placeholder {
+  color: var(--ah-ink-muted);
+}
+
+.composerInput:focus-visible {
+  outline: none;
+  background: rgba(8, 12, 15, 0.34);
+  border-color: color-mix(in srgb, var(--nexus-border-focus, var(--ah-cyan)) 46%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--nexus-border-focus, var(--ah-cyan)) 16%, transparent);
+}
+
+.composerInput[data-state='error'] {
+  border-color: var(--nexus-border-error, #EE5B3F);
+}
+
+.attachButton {
+  position: absolute;
+  right: var(--nexus-space-2, 8px);
+  bottom: var(--nexus-space-2, 8px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--nexus-radius-full, 9999px);
+  background: transparent;
+  color: rgba(246, 240, 228, 0.68);
+  cursor: pointer;
+}
+
+.attachButton svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.attachButton:hover:not(:disabled) {
+  color: var(--ah-ink);
+  border-color: var(--nexus-border-subtle, rgba(246, 240, 228, 0.1));
+}
+
+.attachButton:disabled {
+  opacity: 0.68;
+  cursor: not-allowed;
+}
+
+.composerFooter {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  flex-wrap: wrap;
+}
+
+.modeGroup {
+  display: inline-flex;
+  gap: var(--nexus-space-2, 8px);
+}
+
+.modeChip,
+.modeStatic {
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-4, 16px);
+  border: 1px solid var(--ah-chip-border);
+  border-radius: var(--nexus-radius-full, 9999px);
+  background: var(--ah-chip-fill);
+  color: var(--ah-ink-dim);
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-weight: var(--nexus-weight-medium, 500);
+}
+
+.modeChip {
+  cursor: pointer;
+}
+
+.modeChip[data-active] {
+  border-color: color-mix(in srgb, var(--ah-gold) 72%, transparent);
+  background: color-mix(in srgb, var(--ah-gold) 20%, transparent);
+  color: var(--ah-gold-bright);
+}
+
+.modeChip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.modeStatic {
+  cursor: default;
+}
+
+.agentSelect {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nexus-space-3, 12px);
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-3, 12px) var(--nexus-space-2, 8px) var(--nexus-space-4, 16px);
+  border: 1px solid var(--ah-chip-border);
+  border-radius: var(--nexus-radius-full, 9999px);
+  color: var(--ah-ink-dim);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  white-space: nowrap;
+}
+
+.agentSelect svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.8;
+}
+
+.voiceButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-4, 16px);
+  border: 1px solid var(--ah-chip-border);
+  border-radius: var(--nexus-radius-full, 9999px);
+  background: var(--ah-chip-fill);
+  color: var(--ah-ink-dim);
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  cursor: pointer;
+}
+
+.voiceButton svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.voiceButton[aria-pressed='true'] {
+  color: var(--ah-cyan);
+  border-color: color-mix(in srgb, var(--ah-cyan) 46%, transparent);
+}
+
+.voiceButton:hover:not(:disabled) {
+  color: var(--ah-ink);
+  border-color: var(--ah-chip-border-hover);
+}
+
+.voiceButton:disabled {
+  opacity: 0.62;
+  cursor: not-allowed;
+}
+
+.submit {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  padding: var(--nexus-space-3, 12px) var(--nexus-space-6, 24px);
+  border: 1px solid color-mix(in srgb, var(--ah-gold-bright) 66%, transparent);
+  border-radius: var(--nexus-radius-full, 9999px);
+  /* background-color — непрозрачная база тем же золотом: градиент поверх
+     (background-image) не меняет вид, но мера контраста видит реальный
+     фон кнопки, а не стекло панели под ней. */
+  background-color: var(--ah-gold-bright);
+  background-image: linear-gradient(135deg, var(--ah-gold-bright), var(--ah-gold));
+  color: var(--nexus-accent-on-primary, #0A0A0C);
+  font: inherit;
+  font-size: var(--nexus-type-body-font-size, 15px);
+  font-weight: var(--nexus-weight-semibold, 600);
+  cursor: pointer;
+  transition: filter var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1)),
+    box-shadow var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+.submit:hover:not(:disabled) {
+  filter: brightness(1.06);
+  box-shadow: var(--nexus-glow-soft, 0 0 16px rgba(201, 164, 92, 0.18));
+}
+
+.submit:disabled {
+  /* Инвалидность читается приглушением, а не прозрачностью: на opacity .45
+     золотая плашка давала 3.67:1 под тёмной подписью (гейт W14), а отключён-
+     ное состояние это не отменяет — золото просто теряет насыщенность. */
+  filter: saturate(.55) brightness(.86);
+  cursor: not-allowed;
+}
+
+.composer[data-state='executing'] .submit {
+  background: linear-gradient(135deg, var(--ah-gold-bright), var(--ah-cyan));
+  animation: ah-composer-pulse var(--nexus-duration-slow, 420ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1)) infinite alternate;
+}
+
+@keyframes ah-composer-pulse {
+  from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ah-cyan) 30%, transparent); }
+  to { box-shadow: 0 0 18px 2px color-mix(in srgb, var(--ah-cyan) 34%, transparent); }
+}
+
+.composerError {
+  margin: 0;
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-3, 12px);
+  border: 1px solid var(--nexus-border-error, #EE5B3F);
+  border-radius: var(--nexus-radius-md, 8px);
+  background: var(--nexus-state-surface-error, rgba(238, 91, 63, 0.14));
+  color: var(--nexus-state-error, #F97F66);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.composerTools {
+  border-top: 1px solid rgba(255, 253, 248, 0.08);
+  padding-top: var(--nexus-space-2, 8px);
+}
+
+.composerTools summary {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  cursor: pointer;
+  color: var(--ah-ink-dim);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  list-style: none;
+}
+
+.composerTools summary::-webkit-details-marker {
+  display: none;
+}
+
+.composerTools[open] summary {
+  color: var(--ah-ink);
+}
+
+.toolsChevron {
+  color: var(--ah-gold);
+  font-size: 15px;
+  line-height: 1;
+}
+
+.toolRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nexus-space-2, 8px);
+  margin-top: var(--nexus-space-3, 12px);
+}
+
+.tool {
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-3, 12px);
+  border: 1px solid var(--ah-chip-border);
+  border-radius: var(--nexus-radius-full, 9999px);
+  background: var(--ah-chip-fill);
+  color: var(--ah-ink-dim);
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+button.tool {
+  cursor: pointer;
+}
+
+button.tool:hover {
+  color: var(--ah-ink);
+  border-color: var(--nexus-border-strong, rgba(255, 255, 255, 0.2));
+}
+
+/* --- right rail --- */
+
+.rightRail {
+  display: grid;
+  grid-template-rows: auto 112px minmax(0, 1fr);
+  gap: var(--nexus-layout-gap, 14px);
+  align-content: start;
+  min-height: 0;
+}
+
+.statusPanel,
+.activityPanel,
+.todayPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-3, 12px);
+}
+
+.activityPanel {
+  /* Reference activity card is a slim chart strip: local padding keeps the
+     48px sparkline inside the 112px rail row instead of clipping it. */
+  --nexus-glass-panel-padding: 16px 20px;
+  min-height: 0;
+  justify-content: center;
+  gap: var(--nexus-space-2, 8px);
+  overflow: hidden;
+}
+
+.activityPanel svg {
+  width: 100%;
+  height: 48px;
+}
+
+/* «Поток активности» — три светящиеся гряды по референсу: CPU циан,
+   Память золото, Диск смешанный тон. Домен фиксированный (0–100 %).
+   Селектор тяжелее `.activityPanel svg` выше — иначе графа сжимается до 48 px. */
+.activityPanel svg.ridges {
+  width: 100%;
+  height: 88px;
+  overflow: visible;
+}
+
+.ridges [data-ridge='cpu'] {
+  --ridge: var(--ah-cyan);
+}
+
+.ridges [data-ridge='ram'],
+.ridges [data-ridge='memory'] {
+  --ridge: var(--ah-gold);
+}
+
+.ridges [data-ridge='disk'] {
+  --ridge: color-mix(in srgb, var(--ah-cyan) 45%, var(--ah-gold));
+}
+
+.ridgeStopTop {
+  stop-color: var(--ridge);
+  stop-opacity: 0.18;
+}
+
+.ridgeStopBottom {
+  stop-color: var(--ridge);
+  stop-opacity: 0.015;
+}
+
+.ridgeArea {
+  stroke: none;
+}
+
+.ridgeLine {
+  fill: none;
+  stroke: var(--ridge);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 4px var(--ridge)) drop-shadow(0 0 10px color-mix(in srgb, var(--ridge) 45%, transparent));
+}
+
+.ridgePeak {
+  fill: #fff;
+  filter: drop-shadow(0 0 5px var(--ridge)) drop-shadow(0 0 12px var(--ridge));
+}
+
+.ridgeBaseline {
+  stroke: color-mix(in srgb, var(--ah-gold) 28%, transparent);
+  stroke-width: 1;
+}
+
+.todayPanel {
+  /* Four timeline rows fit the canonical rail without clipping the fifth. */
+  --nexus-glass-panel-padding: 18px 20px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nexus-space-3, 12px);
+}
+
+.panelTitle {
+  margin: 0;
+  font-size: var(--nexus-type-panel-title-font-size, 18px);
+  font-weight: var(--nexus-type-panel-title-font-weight, 500);
+  letter-spacing: 0.02em;
+  color: var(--ah-ink);
+}
+
+.panelIconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--nexus-radius-full, 9999px);
+  background: transparent;
+  color: var(--ah-ink-muted);
+  cursor: pointer;
+}
+
+.panelIconButton svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.panelIconButton:hover {
+  color: var(--ah-ink);
+  border-color: var(--nexus-border-subtle, rgba(246, 240, 228, 0.1));
+}
+
+.muted {
+  margin: 0;
+  color: var(--ah-ink-muted);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+/* runtime core — volumetric holographic orb, state via data-state */
+
+.coreMark {
+  position: relative;
+  display: flex;
+  width: fit-content;
+  margin-inline: auto;
+  padding-block: var(--nexus-space-2, 8px);
+}
+
+.coreMark canvas {
+  display: block;
+  cursor: grab;
+  touch-action: none;
+  filter: drop-shadow(0 16px 26px rgba(0, 0, 0, 0.45));
+  transition: opacity var(--nexus-duration-base, 200ms) ease;
+}
+
+.coreMark canvas[data-dragging='true'] { cursor: grabbing; }
+
+.coreMark canvas:focus-visible { outline: none; }
+
+/* Кольцо фокуса — по кругу модели, а не по квадратной коробке канваса:
+   рамка сидит на обёртке, которая shrink-wrap'ит канвас. */
+.coreMark::after {
+  content: '';
+  position: absolute;
+  inset: var(--nexus-space-2, 8px) 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--nexus-border-focus, var(--ah-cyan));
+  opacity: 0;
+  transition: opacity var(--nexus-duration-fast, 120ms) ease;
+  pointer-events: none;
+}
+
+.coreMark:has(canvas:focus-visible)::after { opacity: 1; }
+
+/* Состояние читается палитрой канваса; здесь только глобальное приглушение. */
+.coreMark[data-state='offline'] canvas { opacity: 0.55; }
+
+.coreStatus {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.04em;
+  color: var(--ah-ink-dim);
+}
+
+.coreStatus::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--nexus-radius-full, 9999px);
+  background: currentColor;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.coreStatus[data-state='healthy'] { color: var(--nexus-state-online, #36BE79); }
+.coreStatus[data-state='attention'],
+.coreStatus[data-state='degraded'] { color: var(--nexus-state-warning, #F5A63B); }
+.coreStatus[data-state='thinking'],
+.coreStatus[data-state='syncing'] { color: var(--ah-cyan); }
+.coreStatus[data-state='critical'] { color: var(--nexus-state-error, #F97F66); }
+.coreStatus[data-state='offline'] { color: var(--ah-ink-muted); }
+
+.facts {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-2, 8px);
+  padding-top: var(--nexus-space-2, 8px);
+  border-top: 1px solid rgba(255, 253, 248, 0.08);
+}
+
+.factRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--nexus-space-3, 12px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.factRow dt {
+  color: var(--ah-ink-dim);
+}
+
+.factRow dd {
+  margin: 0;
+  font-family: var(--nexus-font-mono, 'IBM Plex Mono', monospace);
+  color: var(--ah-ink);
+}
+
+.factAction {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nexus-space-1, 4px);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.factAction svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: var(--ah-ink-muted);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.factAction:hover {
+  color: var(--ah-gold-bright);
+}
+
+.factAction:hover svg {
+  stroke: var(--ah-gold-bright);
+}
+
+.meters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-3, 12px);
+  padding-top: var(--nexus-space-2, 8px);
+}
+
+/* Оттенок полосы — той же палитры, что и ядро (золото корпуса, тил
+   контресвета). Краска ложится на обёртку, компонент остаётся общим:
+   ResourceBar читает `--resbar-color` / `--resbar-head`. */
+.meter[data-meter='cpu'] {
+  --resbar-color: var(--ah-gold);
+}
+
+.meter[data-meter='ram'],
+.meter[data-meter='memory'] {
+  --resbar-color: var(--ah-cyan);
+}
+
+.meter[data-meter='disk'] {
+  --resbar-color: var(--ah-cyan);
+  --resbar-head: var(--ah-gold);
+}
+
+.panelAction {
+  align-self: flex-start;
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-4, 16px);
+  border: 1px solid var(--nexus-border-subtle, rgba(255, 255, 255, 0.09));
+  border-radius: var(--nexus-radius-full, 9999px);
+  background: transparent;
+  color: var(--ah-ink-dim);
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  cursor: pointer;
+}
+
+.panelAction:hover {
+  color: var(--ah-ink);
+  border-color: var(--nexus-border-active, var(--ah-gold));
+}
+
+/* --- today timeline --- */
+
+.timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.timelineRow {
+  position: relative;
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  min-height: 34px;
+  padding-left: 2px;
+}
+
+.timelineRow + .timelineRow::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: -20px;
+  bottom: 20px;
+  border-left: 1px solid var(--nexus-border-subtle, rgba(255, 255, 255, 0.09));
+}
+
+.timelineDot {
+  width: 6px;
+  height: 6px;
+  margin-left: 2px;
+  border-radius: var(--nexus-radius-full, 9999px);
+  background: var(--nexus-state-online, #36BE79);
+  box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 12%, transparent);
+  color: var(--nexus-state-online, #36BE79);
+}
+
+.timelineDot[data-status='thinking'] { background: var(--nexus-state-thinking, #7FB9FF); color: var(--nexus-state-thinking, #7FB9FF); }
+.timelineDot[data-status='syncing'] { background: var(--nexus-state-syncing, #539EFF); color: var(--nexus-state-syncing, #539EFF); }
+.timelineDot[data-status='executing'] { background: var(--nexus-state-executing, #F5A63B); color: var(--nexus-state-executing, #F5A63B); }
+.timelineDot[data-status='paused'] { background: var(--nexus-state-paused, #B0B7C2); color: var(--nexus-state-paused, #B0B7C2); }
+.timelineDot[data-status='offline'] { background: var(--nexus-state-offline, #B0B7C2); color: var(--nexus-state-offline, #B0B7C2); }
+.timelineDot[data-status='warning'] { background: var(--nexus-state-warning, #F5A63B); color: var(--nexus-state-warning, #F5A63B); }
+.timelineDot[data-status='error'] { background: var(--nexus-state-error, #F97F66); color: var(--nexus-state-error, #F97F66); }
+.timelineDot[data-status='success'] { background: var(--nexus-state-success, #36BE79); color: var(--nexus-state-success, #36BE79); }
+
+.timelineTitle {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--ah-ink-dim);
+}
+
+.timelineTime {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-family: var(--nexus-font-mono, 'IBM Plex Mono', monospace);
+  color: var(--ah-ink-muted);
+  text-align: right;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-1, 4px);
+}
+
+.emptyTitle {
+  margin: 0;
+  font-size: var(--nexus-type-body-font-size, 15px);
+  color: var(--ah-ink);
+}
+
+/* --- utilities --- */
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.capability:focus-visible,
+.modeChip:focus-visible,
+.voiceButton:focus-visible,
+.attachButton:focus-visible,
+.submit:focus-visible,
+.tool:focus-visible,
+.panelAction:focus-visible,
+.panelIconButton:focus-visible,
+.factAction:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--nexus-border-focus, var(--ah-cyan));
+}
+
+/* --- media fallbacks --- */
+
+@media (prefers-reduced-motion: reduce) {
+  .capability,
+  .submit {
+    transition: none;
+  }
+  .composer[data-state='executing'] .submit {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  /* Стекло без frosting должно быть непрозрачным, иначе текст ложится прямо
+     на резкую сцену. Примитивы перекрываются здесь, а не в правилах пластин:
+     --nexus-depth-*-bg и фоны чипов вычисляются из них на .root. */
+  .root {
+    --ah-glass-fill: #131A1F;
+    --ah-glass-fill-raised: #1A232A;
+    --ah-glass-fill-sunk: #0A1014;
+  }
+
+  .statusPanel,
+  .activityPanel,
+  .todayPanel,
+  .composer,
+  .capability,
+  .composerInput:focus-visible,
+  .modeChip,
+  .modeStatic,
+  .agentSelect,
+  .tool,
+  .voiceButton {
+    background: rgba(20, 24, 27, 0.9);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* --- responsive fallbacks below the canonical 1920x1080 mount ---
+   Owner decisions 2026-10-29: rail is strictly 356px at canonical and
+   elastic below; composer row is exactly 264px (tools scroll inside). */
+@media (max-width: 1240px) {
+  .root {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 356px);
+  }
+}
+
+@media (max-width: 1000px) {
+  .root {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    /* Один вертикальный скролл-owner — внешний WindowFrame main: стек
+       растёт в нормальном потоке, без вложенного overflow. */
+    height: auto;
+    min-height: 100%;
+    overflow: visible;
+  }
+
+  .rightRail {
+    grid-template-rows: auto auto auto;
+  }
+
+  .activityPanel {
+    min-height: 112px;
+  }
+}
+
+/* Ниже — декоративная подпись героя не помещается рядом с копирайтом и
+   начинает наезжать на описание; капабилити-имена дублируют её смысл. */
+@media (max-width: 860px) {
+  .heroSignature {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .workspace {
+    grid-template-rows: minmax(440px, 1fr) auto 264px;
+  }
+
+  .capabilityRail {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  /* В узкой колонке подписи не влезают в одну строку — переносим, иначе
+     ellipsis режет смысл («Автоматизация…»). */
+  .capabilityLabel {
+    white-space: normal;
+    line-height: 1.2;
+    text-align: center;
+  }
+}
+
+/* Height fallbacks применяются только к двухколоночной раскладке: ниже
+   760px средний ряд обязан быть auto, иначе 3×2 чипа наезжают на композер. */
+@media (max-height: 860px) and (min-width: 761px) {
+  .workspace {
+    grid-template-rows: minmax(320px, 1fr) 72px minmax(200px, auto);
+  }
+}
+
+@media (max-height: 680px) and (min-width: 761px) {
+  .workspace {
+    grid-template-rows: minmax(240px, 1fr) auto minmax(160px, auto);
+  }
+}

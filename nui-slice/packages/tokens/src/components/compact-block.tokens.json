@@ -1,0 +1,56 @@
+{
+  "$description": "CompactBlock — сворачиваемый блок сжатого фрагмента диалога (wave-XXVI W2). Стеклянный тон переиспользует glass.card — собственного backdrop-filter у блока нет, бюджет blur-слоёв (glass.maxBlurLayers = 4) не расходуется. Золотая кромка и цвета состояний решаются по теме через ссылки на accent.*/state.*.",
+  "compactBlock": {
+    "bg": {
+      "$type": "color",
+      "$value": "{glass.card.bg}",
+      "$comment": "glass-tone fill; no backdrop-filter — budget-safe"
+    },
+    "bgOpaque": {
+      "$type": "color",
+      "$value": "{glass.card.bgOpaque}",
+      "$comment": "same-tone opaque composite for @supports/forced-colors fallback"
+    },
+    "border": {
+      "$type": "color",
+      "$value": "{glass.card.border}"
+    },
+    "edge": {
+      "$type": "color",
+      "$value": "{personaEdge.nexus}",
+      "$comment": "золотая кромка слева — стабильный gold edge (nexus persona), включая светлую Alice"
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.lg}"
+    },
+    "shadow": {
+      "$type": "shadow",
+      "$value": "{glass.card.shadow}"
+    },
+    "stateNormal": {
+      "$type": "color",
+      "$value": "{compact.normal}",
+      "$comment": "нейтральный статус — титановый; alice резолвит в titanium.700"
+    },
+    "stateWarning": {
+      "$type": "color",
+      "$value": "{compact.warning}",
+      "$comment": "приближение к порогу — amber; alice резолвит в amber.700"
+    },
+    "stateActive": {
+      "$type": "color",
+      "$value": "{compact.active}",
+      "$comment": "компактизация выполняется — золото; alice резолвит в gold.800"
+    },
+    "indicatorTrack": {
+      "$type": "color",
+      "$value": "{chart.grid}",
+      "$comment": "дорожка индикатора-полосы — слабый нейтральный трек по теме"
+    },
+    "padding": {
+      "$type": "dimension",
+      "$value": "{space.3}"
+    }
+  }
+}

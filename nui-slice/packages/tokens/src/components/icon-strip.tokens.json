@@ -1,0 +1,59 @@
+{
+  "$description": "Icon-strip contract (wave-XIV W2): narrow 56px icon column of the rail (app-shell .strip). Tap zone ≥40px per WCAG target rule; active section marked by accent wash + optional edge, tooltip reads section name verbatim.",
+  "iconStrip": {
+    "width": {
+      "$type": "dimension",
+      "$value": "56px",
+      "$description": "Column width per spec (56px)."
+    },
+    "iconSize": {
+      "$type": "dimension",
+      "$value": "22px",
+      "$description": "NexusIcon size inside strip buttons — spec range 20–24px."
+    },
+    "tapSize": {
+      "$type": "dimension",
+      "$value": "40px",
+      "$description": "Button box — WCAG 2.2 target ≥24px, rail canon 40px."
+    },
+    "gap": {
+      "$type": "dimension",
+      "$value": "{space.1}"
+    },
+    "hoverBg": {
+      "$type": "color",
+      "$value": "{navItem.bgHover}"
+    },
+    "activeBg": {
+      "$type": "color",
+      "$value": "{navItem.bgActive}",
+      "$description": "Active-section wash — same accent tint as the wide rail."
+    },
+    "activeEdge": {
+      "$type": "color",
+      "$value": "{accent.primary}",
+      "$description": "Left marker on the active strip button — hairline, not a frame."
+    },
+    "iconIdle": {
+      "$type": "color",
+      "$value": "{text.secondary}"
+    },
+    "iconActive": {
+      "$type": "color",
+      "$value": "{navItem.iconActive}"
+    },
+    "tooltipBg": {
+      "$type": "color",
+      "$value": "{surface.elevated}",
+      "$description": "Section-name tooltip ground on hover/focus."
+    },
+    "tooltipText": {
+      "$type": "color",
+      "$value": "{text.primary}"
+    },
+    "tooltipRadius": {
+      "$type": "dimension",
+      "$value": "{radius.sm}"
+    }
+  }
+}

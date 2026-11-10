@@ -1,0 +1,60 @@
+{
+  "$description": "W2-138 · window-chrome — единые токены оконных контролов плавающих панелей (grip/return/collapse/close в bubble/echo/bar). Три исторические копии паттерна сведены в один источник: размер/радиус/фон/border/fg/состояния. Кластерный z-index — локальная укладка (lint 0–2), не layer.*.",
+  "winChrome": {
+    "size": {
+      "$type": "dimension",
+      "$value": "26px",
+      "$comment": "квадрат кнопки окна — 26px во всех трёх копиях"
+    },
+    "gap": {
+      "$type": "dimension",
+      "$value": "{space.1}",
+      "$comment": "зазор между кнопками в кластере"
+    },
+    "inset": {
+      "$type": "dimension",
+      "$value": "5px",
+      "$comment": "оффсет кластера от края плавающей панели"
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.sm}",
+      "$comment": "скругление кнопки"
+    },
+    "bg": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {surface.elevated} 86%, transparent)",
+      "$comment": "фон кнопки — elevated-подложка над стеклом панели"
+    },
+    "fg": {
+      "$type": "color",
+      "$value": "{text.secondary}",
+      "$comment": "глиф в покое"
+    },
+    "fgHover": {
+      "$type": "color",
+      "$value": "{text.primary}",
+      "$comment": "глиф на hover/focus"
+    },
+    "border": {
+      "$type": "color",
+      "$value": "{border.subtle}",
+      "$comment": "нейтральная рамка"
+    },
+    "borderHover": {
+      "$type": "color",
+      "$value": "{accent.primary}",
+      "$comment": "рамка на hover/focus — акцент темы"
+    },
+    "opacityQuiet": {
+      "$type": "number",
+      "$value": 0.65,
+      "$comment": "приглушённость второстепенного контрола до hover (reveal-on-hover)"
+    },
+    "zIndex": {
+      "$type": "number",
+      "$value": 2,
+      "$comment": "кластер поверх контента своей панели — локальная укладка 0–2"
+    }
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "$description": "Semantic state colors implementing the unified status vocabulary (spec §9): ONLINE, ACTIVE, THINKING, WAITING, SYNCING, VALIDATING, EXECUTING, COMPLETE, PAUSED, ERROR. Domain states, not interaction states.",
+  "state": {
+    "$type": "color",
+    "online": {
+      "$value": "{color.green.400}"
+    },
+    "active": {
+      "$value": "{color.gold.400}"
+    },
+    "thinking": {
+      "$value": "{color.blue.300}"
+    },
+    "waiting": {
+      "$value": "{color.titanium.300}"
+    },
+    "syncing": {
+      "$value": "{color.blue.400}"
+    },
+    "validating": {
+      "$value": "{color.violet.300}"
+    },
+    "executing": {
+      "$value": "{color.amber.400}"
+    },
+    "complete": {
+      "$value": "{color.green.400}"
+    },
+    "paused": {
+      "$value": "{color.titanium.300}"
+    },
+    "error": {
+      "$value": "{color.red.300}"
+    },
+    "warning": {
+      "$value": "{color.amber.400}"
+    },
+    "success": {
+      "$value": "{color.green.400}"
+    },
+    "offline": {
+      "$value": "{color.titanium.300}"
+    },
+    "info": {
+      "$value": "{color.blue.400}"
+    }
+  },
+  "stateSurface": {
+    "$type": "color",
+    "$description": "Soft surface fills paired with each state role (12-16% alpha).",
+    "online": {
+      "$value": "color-mix(in srgb, {color.green.400} 14%, transparent)"
+    },
+    "active": {
+      "$value": "color-mix(in srgb, {color.gold.400} 14%, transparent)"
+    },
+    "thinking": {
+      "$value": "color-mix(in srgb, {color.blue.300} 14%, transparent)"
+    },
+    "waiting": {
+      "$value": "color-mix(in srgb, {color.titanium.300} 14%, transparent)"
+    },
+    "syncing": {
+      "$value": "color-mix(in srgb, {color.blue.400} 14%, transparent)"
+    },
+    "validating": {
+      "$value": "color-mix(in srgb, {color.violet.300} 14%, transparent)"
+    },
+    "executing": {
+      "$value": "color-mix(in srgb, {color.amber.400} 14%, transparent)"
+    },
+    "complete": {
+      "$value": "color-mix(in srgb, {color.green.400} 14%, transparent)"
+    },
+    "success": {
+      "$value": "color-mix(in srgb, {color.green.400} 14%, transparent)"
+    },
+    "paused": {
+      "$value": "color-mix(in srgb, {color.titanium.300} 14%, transparent)"
+    },
+    "error": {
+      "$value": "color-mix(in srgb, {color.red.300} 14%, transparent)"
+    },
+    "warning": {
+      "$value": "color-mix(in srgb, {color.amber.400} 14%, transparent)"
+    },
+    "info": {
+      "$value": "color-mix(in srgb, {color.blue.400} 14%, transparent)"
+    }
+  }
+}

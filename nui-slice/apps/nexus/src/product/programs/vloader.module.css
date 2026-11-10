@@ -1,0 +1,355 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-4, 16px);
+  height: 100%;
+  overflow: auto;
+  padding-bottom: var(--nexus-space-5, 24px);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+  gap: var(--nexus-space-4, 16px);
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nexus-space-3, 12px);
+  min-width: 0;
+  padding: clamp(18px, 3vw, 30px);
+}
+
+.kicker {
+  margin: 0;
+  color: var(--nexus-accent-primary, #c9a45c);
+  font: 700 0.82rem/1.4 var(--nexus-font-mono, monospace);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.heading {
+  margin: 0;
+  color: var(--nexus-text-primary, #f2f0e8);
+  font-size: clamp(1.45rem, 2.6vw, 2.15rem);
+  line-height: 1.12;
+}
+
+.body {
+  max-width: 68ch;
+  margin: 0;
+  color: var(--nexus-text-secondary, #c4c5c8);
+  line-height: 1.65;
+}
+
+.steps {
+  display: grid;
+  gap: var(--nexus-space-3, 12px);
+  width: 100%;
+  margin-top: var(--nexus-space-2, 8px);
+}
+
+.step {
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--nexus-accent-primary, #c9a45c) 30%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--nexus-surface-raised, #141821) 88%, transparent);
+}
+
+.stepLabel {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--nexus-text-secondary, #c4c5c8);
+  font: 600 0.84rem/1.4 var(--nexus-font-mono, monospace);
+}
+
+.step pre {
+  overflow-x: auto;
+  margin: 0;
+  color: var(--nexus-text-primary, #f2f0e8);
+  font: 600 0.95rem/1.5 var(--nexus-font-mono, monospace);
+}
+
+.facts {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--nexus-text-secondary, #c4c5c8);
+  line-height: 1.55;
+}
+
+.facts li::marker {
+  color: var(--nexus-accent-primary, #c9a45c);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 20px;
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.links a {
+  color: var(--nexus-accent-primary, #c9a45c);
+  font-weight: 650;
+  text-underline-offset: 0.2em;
+}
+
+.links a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.notice {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding: 14px 18px;
+  border-left: 3px solid var(--nexus-accent-primary, #c9a45c);
+  background: color-mix(in srgb, var(--nexus-accent-primary, #c9a45c) 8%, transparent);
+  color: var(--nexus-text-secondary, #c4c5c8);
+  line-height: 1.55;
+}
+
+.notice strong {
+  color: var(--nexus-text-primary, #f2f0e8);
+}
+
+@media (max-width: 760px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* --- TPlayer каталог (NUE-3, восстановлен из rollback-чанка 3745tj6o6nm) --- */
+
+.tplayerVideo {
+  display: block;
+  width: 100%;
+  max-height: min(76vh, 980px);
+  margin: 0 auto var(--nexus-space-3, 12px);
+  aspect-ratio: 16 / 9;
+  background:
+    radial-gradient(at 50% 0, #e8b45c14, transparent 55%),
+    #000;
+  border: 1px solid #e8b45c59;
+  border-radius: 14px;
+  box-shadow:
+    0 0 0 1px #e8b45c14,
+    0 18px 44px #0000008c,
+    0 0 28px #e8b45c1f,
+    inset 0 0 32px #0009;
+}
+
+.tplayerBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  width: 100%;
+  margin: 0 auto;
+}
+
+.tplayerBar .input {
+  flex: 1;
+  min-width: 220px;
+}
+
+.input,
+.outputPath {
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--nexus-accent-primary, #c9a45c) 38%, transparent);
+  border-radius: var(--nexus-radius-sm, 6px);
+  background: color-mix(in srgb, var(--nexus-surface-raised, #141821) 88%, transparent);
+  color: var(--nexus-text-primary, #f2f0e8);
+  font: inherit;
+}
+
+.input::placeholder {
+  color: var(--nexus-text-secondary, #c4c5c8);
+  opacity: 0.72;
+}
+
+.input:focus-visible,
+.runButton:focus-visible,
+.links a:focus-visible {
+  outline: 2px solid var(--nexus-accent-primary, #c9a45c);
+  outline-offset: 3px;
+}
+
+.runButton {
+  min-height: 44px;
+  padding: 10px 18px;
+  border: 1px solid var(--nexus-accent-primary, #c9a45c);
+  border-radius: var(--nexus-radius-sm, 6px);
+  background: color-mix(in srgb, var(--nexus-accent-primary, #c9a45c) 18%, transparent);
+  color: var(--nexus-text-primary, #f2f0e8);
+  font: 700 0.9rem/1.3 var(--nexus-font-mono, monospace);
+  cursor: pointer;
+  justify-self: start;
+}
+
+.runButton:hover {
+  background: color-mix(in srgb, var(--nexus-accent-primary, #c9a45c) 28%, transparent);
+}
+
+.fieldLabel {
+  color: var(--nexus-text-secondary, #c4c5c8);
+  font: 650 0.84rem/1.4 var(--nexus-font-mono, monospace);
+}
+
+.toolForm {
+  display: grid;
+  gap: var(--nexus-space-4, 16px);
+  width: 100%;
+  margin-top: var(--nexus-space-2, 8px);
+}
+
+.tplayerCatalog {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tplayerCatalogRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tplayerCatalogRow .tplayerChip:first-child {
+  flex: 1;
+  text-align: left;
+}
+
+.tplayerChip {
+  max-width: 320px;
+  padding: 5px 12px;
+  overflow: hidden;
+  border: 1px solid #e8b45c4d;
+  border-radius: 999px;
+  background: #070b1199;
+  color: var(--nexus-text-secondary, #cfc6b2);
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tplayerChip:hover {
+  border-color: #e8b45c99;
+  color: var(--nexus-text-primary, #f2ede0);
+}
+
+.tplayerChip[data-kind='stream'] {
+  border-style: dashed;
+}
+
+.tplayerChip[data-kind='file'] {
+  border-style: solid;
+}
+
+.tplayerShelf {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-3, 12px);
+  margin-top: var(--nexus-space-3, 12px);
+}
+
+.tplayerShelfGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-2, 8px);
+}
+
+.tplayerList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tplayerEngineRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nexus-space-2, 8px);
+}
+
+.tplayerEngineRow .fieldLabel {
+  flex: 1;
+  min-width: 220px;
+}
+
+.tplayerBack {
+  margin-left: auto;
+  padding: 6px 4px;
+  color: var(--nexus-text-tertiary, #8d8471);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  text-decoration: none;
+}
+
+.tplayerBack:hover {
+  color: var(--nexus-text-primary, #f2ede0);
+}
+
+.tplayerJobs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tplayerJob {
+  display: grid;
+  gap: 5px;
+  padding: 10px 14px;
+  border: 1px solid color-mix(in srgb, var(--nexus-accent-primary, #c9a45c) 26%, transparent);
+  border-radius: 11px;
+  background: #0a0d13b8;
+}
+
+.tplayerJobTitle {
+  overflow-wrap: anywhere;
+  color: var(--nexus-text-secondary, #cfc6b2);
+  font-size: 0.82rem;
+}
+
+.tplayerJobLine {
+  color: var(--nexus-text-tertiary, #8d8471);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.tplayerJob[data-state='run'] .tplayerJobLine {
+  color: var(--nexus-accent-primary, #e8b45c);
+}
+
+.tplayerJob[data-state='done'] .tplayerJobLine {
+  color: #a8c47a;
+}
+
+.tplayerJob[data-state='error'] .tplayerJobLine {
+  color: #e2846b;
+}

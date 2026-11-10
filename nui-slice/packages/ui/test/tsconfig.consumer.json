@@ -1,0 +1,19 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": "../../../",
+    "paths": {
+      "@nexus/tokens": [
+        "packages/tokens/src/index.ts"
+      ]
+    },
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "types": []
+  },
+  "include": [
+    "./public-api-consumer.tsx",
+    "../src/css-modules.d.ts"
+  ]
+}

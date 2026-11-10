@@ -1,0 +1,410 @@
+/* wave-XXV W3 — плавающая панель ассистента (DCT bar).
+   Токены темы (@nexus/tokens), без хардкода бренд-цветов: светлая alice
+   и тёмные темы обслуживаются одним набором правил. */
+
+.agentBar {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: var(--nexus-z-panel, 60);
+  display: flex;
+  flex-direction: column;
+  min-width: 320px;
+  max-width: calc(100vw - 32px);
+  border: 1px solid var(--nexus-border-default, rgba(27, 27, 34, 0.14));
+  border-radius: var(--nexus-radius-xl, 16px);
+  background: var(--nexus-glass-panel-bg, color-mix(in srgb, var(--nexus-surface-panel, #FBF8F1) 88%, transparent));
+  box-shadow: var(--nexus-depth-overlay-shadow, 0 24px 64px rgba(38, 31, 20, 0.22));
+  -webkit-backdrop-filter: blur(18px) saturate(1.12);
+  backdrop-filter: blur(18px) saturate(1.12);
+  color: var(--nexus-text-primary, #F6F0E4);
+  overflow: hidden;
+  font-family: var(--nexus-type-body-font-family, 'Inter Tight', system-ui, sans-serif);
+  animation: barEnter 180ms ease-out;
+}
+
+.agentBar[hidden],
+.closed {
+  display: none !important;
+}
+
+/* --- collapsed: капсула ------------------------------------------------ */
+
+.collapsed {
+  width: min(280px, calc(100vw - 32px));
+  min-width: 0;
+  height: 48px;
+  border-radius: 999px;
+  right: 24px;
+  bottom: 24px;
+}
+
+.capsule {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  padding: 0 6px 0 12px;
+}
+
+.avatar {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 28%, var(--nexus-accent-primary, #C9A45C) 0%, transparent 62%),
+    var(--nexus-surface-elevated, rgba(27, 27, 34, 0.08));
+  border: 1px solid color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 55%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 35%, transparent);
+}
+
+.capsuleText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+  line-height: 1.15;
+}
+
+.capsuleName {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.capsuleStatus {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- expanded: рабочая панель ----------------------------------------- */
+
+.expanded {
+  width: min(380px, calc(100vw - 32px));
+  min-height: 220px;
+  max-height: min(72vh, 640px);
+}
+
+.chatMode {
+  width: min(520px, calc(100vw - 32px));
+  height: min(72vh, 620px);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--nexus-border-subtle, rgba(27, 27, 34, 0.08));
+  background: var(--nexus-surface-panel, transparent);
+  flex: none;
+}
+
+.dragHandle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+  padding: 4px 6px;
+  border-radius: var(--nexus-radius-sm, 4px);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.dragHandle:focus-visible,
+.resizeHandle:focus-visible,
+.expandBtn:focus-visible,
+.queryBtn:focus-visible,
+.minimizeBtn:focus-visible,
+.closeBtn:focus-visible,
+.sendBtn:focus-visible,
+.queryInput:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, var(--nexus-accent-primary, #C9A45C));
+  outline-offset: 2px;
+}
+
+.grip {
+  flex: none;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: -2px;
+  line-height: 1; /* tokenlint-ignore: иконочный глиф в боксе фиксированного размера, line box не участвует в раскладке */
+  color: var(--nexus-text-tertiary, #8E97A5);
+  opacity: 0.7;
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  line-height: 1.15;
+}
+
+.titleName {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.titleStatus {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.headerTools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+}
+
+.headerTools>button,
+.expandBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 24px;
+  padding: 0 6px;
+  border: 1px solid transparent;
+  border-radius: var(--nexus-radius-sm, 4px);
+  background: none;
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  cursor: pointer;
+  transition: background-color var(--nexus-duration-fast, 140ms) ease,
+    color var(--nexus-duration-fast, 140ms) ease;
+}
+
+.headerTools>button:hover,
+.expandBtn:hover {
+  background: var(--nexus-nav-item-bg-hover, rgba(27, 27, 34, 0.06));
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.queryBtn[aria-pressed='true'] {
+  color: var(--nexus-text-accent, #D8BC76);
+  border-color: var(--nexus-border-strong, rgba(27, 27, 34, 0.22));
+  background: var(--nexus-nav-item-bg-active, rgba(201, 164, 92, 0.14));
+}
+
+.closeBtn:hover {
+  color: var(--nexus-state-error, #F97F66);
+}
+
+.expandBtn {
+  flex: none;
+  width: 28px;
+  border-radius: 50%;
+  font-size: 14px;
+}
+
+/* --- body / chat ------------------------------------------------------- */
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  min-height: 0;
+  flex: 1;
+}
+
+.chatBar {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-gutter: stable;
+  padding: 2px;
+}
+
+.message {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: var(--nexus-radius-md, 8px);
+  background: var(--nexus-surface-panel, rgba(27, 27, 34, 0.05));
+  border: 1px solid var(--nexus-border-subtle, rgba(27, 27, 34, 0.06));
+  font-size: var(--nexus-type-body-font-size, 13px);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.message[data-role='user'] {
+  background: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 14%, transparent);
+  border-color: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 30%, transparent);
+}
+
+.message[data-role='system'] {
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.messageRole {
+  display: block;
+  margin-bottom: 2px;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.placeholder {
+  margin: 0;
+  padding: 8px 2px;
+  color: var(--nexus-text-tertiary, #8E97A5);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1.4;
+}
+
+/* --- composer ---------------------------------------------------------- */
+
+.composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  flex: none;
+  padding-top: 8px;
+  border-top: 1px solid var(--nexus-border-subtle, rgba(27, 27, 34, 0.08));
+}
+
+.queryInput {
+  flex: 1;
+  min-height: 34px;
+  max-height: 96px;
+  resize: none;
+  padding: 8px 10px;
+  border: 1px solid var(--nexus-border-default, rgba(27, 27, 34, 0.16));
+  border-radius: var(--nexus-radius-md, 8px);
+  background: var(--nexus-surface-panel, rgba(255, 255, 255, 0.55));
+  color: var(--nexus-text-primary, #F6F0E4);
+  font: inherit;
+  font-size: var(--nexus-type-body-font-size, 13px);
+  line-height: 1.35;
+}
+
+.queryInput::placeholder {
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.queryInput:focus-visible {
+  outline: none;
+  border-color: var(--nexus-accent-primary, #C9A45C);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 30%, transparent);
+}
+
+.sendBtn {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: var(--nexus-radius-md, 8px);
+  background: var(--nexus-accent-primary, #C9A45C);
+  color: var(--nexus-accent-on-primary, #0A0A0C);
+  font-size: 16px;
+  line-height: 1; /* tokenlint-ignore: иконочный глиф в боксе фиксированного размера, line box не участвует в раскладке */
+  cursor: pointer;
+  transition: opacity var(--nexus-duration-fast, 140ms) ease,
+    transform var(--nexus-duration-fast, 140ms) ease;
+}
+
+.sendBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.sendBtn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.notice {
+  margin: 0;
+  color: var(--nexus-state-warning, #F5A63B);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1.4;
+}
+
+/* --- gestures ---------------------------------------------------------- */
+
+.dragging {
+  transition: none;
+  user-select: none;
+}
+
+.dragging .dragHandle {
+  cursor: grabbing;
+}
+
+.resizing {
+  transition: none;
+}
+
+.resizeHandle {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 18px;
+  height: 18px;
+  cursor: nwse-resize;
+  touch-action: none;
+  opacity: 0.65;
+  background:
+    linear-gradient(135deg, transparent 46%, var(--nexus-border-strong, rgba(27, 27, 34, 0.28)) 46% 54%, transparent 54%) 100% 100% / 10px 10px no-repeat,
+    linear-gradient(135deg, transparent 60%, var(--nexus-border-subtle, rgba(27, 27, 34, 0.16)) 60% 68%, transparent 68%) 100% 100% / 16px 16px no-repeat;
+}
+
+.resizeHandle:hover {
+  opacity: 1;
+}
+
+/* --- motion ------------------------------------------------------------ */
+
+@keyframes barEnter {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .agentBar,
+  .agentBar * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

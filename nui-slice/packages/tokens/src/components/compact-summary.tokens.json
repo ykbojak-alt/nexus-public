@@ -1,0 +1,23 @@
+{
+  "$description": "Compact history summary row and message-count badge. Colors resolve from semantic surface/text/accent roles; typography consumes the shared type.body/type.caption rhythm.",
+  "compactBadge": {
+    "background": { "$type": "color", "$value": "{surface.elevated}" },
+    "text": { "$type": "color", "$value": "{text.secondary}" },
+    "border": { "$type": "color", "$value": "{border.default}" },
+    "hoverBackground": { "$type": "color", "$value": "{navItem.bgHover}" },
+    "hoverText": { "$type": "color", "$value": "{text.primary}" },
+    "hoverBorder": { "$type": "color", "$value": "{border.strong}" },
+    "expandedBackground": { "$type": "color", "$value": "{accent.primarySoft}" },
+    "expandedText": { "$type": "color", "$value": "{text.accent}" },
+    "expandedBorder": { "$type": "color", "$value": "{border.active}" },
+    "minWidth": { "$type": "dimension", "$value": "40px" },
+    "height": { "$type": "dimension", "$value": "24px" },
+    "paddingX": { "$type": "dimension", "$value": "{space.2}" },
+    "radius": { "$type": "dimension", "$value": "{radius.full}" }
+  },
+  "compactRow": {
+    "primaryText": { "$type": "color", "$value": "{text.primary}" },
+    "secondaryText": { "$type": "color", "$value": "{text.secondary}" },
+    "gap": { "$type": "dimension", "$value": "{space.1}" }
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "$description": "Screen typography roles for NEU product screens. Named roles replace local KPI/label/chip/metric font-size literals. Compact keeps a 13px floor and 18px line-height; regular uses 14px/20px for labels. Numeric KPIs use tabular-nums in both densities.",
+  "screenType": {
+    "compact": {
+      "$type": "typography",
+      "kpiLabel": {
+        "$value": {
+          "fontFamily": "{font.ui}",
+          "fontSize": "13px",
+          "lineHeight": "18px",
+          "fontWeight": "{weight.medium}",
+          "letterSpacing": "0.01em"
+        }
+      },
+      "starterChip": {
+        "$value": {
+          "fontFamily": "{font.ui}",
+          "fontSize": "13px",
+          "lineHeight": "18px",
+          "fontWeight": "{weight.medium}",
+          "letterSpacing": "0"
+        }
+      },
+      "listenLabel": {
+        "$value": {
+          "fontFamily": "{font.ui}",
+          "fontSize": "13px",
+          "lineHeight": "18px",
+          "fontWeight": "{weight.medium}",
+          "letterSpacing": "0.01em"
+        }
+      },
+      "sectionLabel": {
+        "$value": {
+          "fontFamily": "{font.ui}",
+          "fontSize": "13px",
+          "lineHeight": "18px",
+          "fontWeight": "{weight.semibold}",
+          "letterSpacing": "0.06em"
+        }
+      },
+      "supporting": {
+        "$value": {
+          "fontFamily": "{font.ui}",
+          "fontSize": "13px",
+          "lineHeight": "18px",
+          "fontWeight": "{weight.regular}",
+          "letterSpacing": "0"
+        }
+      },
+      "kpiValue": {
+        "$value": {
+          "fontFamily": "{font.ui}",
+          "fontSize": "28px",
+          "lineHeight": "36px",
+          "fontWeight": "{weight.medium}",
+          "letterSpacing": "-0.02em",
+          "fontVariantNumeric": "tabular-nums"
+        }
+      },
+      "kpiStrong": {
+        "$value": {
+          "fontFamily": "{font.ui}",
+          "fontSize": "17px",
+          "lineHeight": "24px",
+          "fontWeight": "{weight.semibold}",
+          "letterSpacing": "0",
+          "fontVariantNumeric": "tabular-nums"
+        }
+      }
+    },
+    "regular": {
+      "$type": "typography",
+      "kpiLabel": {
+        "$value": {
+          "fontFamily": "{font.ui}",
+          "fontSize": "14px",
+          "lineHeight": "20px",
+          "fontWeight": "{weight.medium}",
+          "letterSpacing": "0.01em"
+        }
+      },
+      "starterChip": {
+        "$value": {
+          "fontFamily": "{font.ui}",
+          "fontSize": "14px",
+          "lineHeight": "20px",
+          "fontWeight": "{weight.medium}",
+          "letterSpacing": "0"
+        }
+      },
+      "listenLabel": {
+        "$value": {
+          "fontFamily": "{font.ui}",
+          "fontSize": "14px",
+          "lineHeight": "20px",
+          "fontWeight": "{weight.medium}",
+          "letterSpacing": "0.01em"
+        }
+      },
+      "sectionLabel": {
+        "$value": {
+          "fontFamily": "{font.ui}",
+          "fontSize": "14px",
+          "lineHeight": "20px",
+          "fontWeight": "{weight.semibold}",
+          "letterSpacing": "0.06em"
+        }
+      },
+      "supporting": {
+        "$value": {
+          "fontFamily": "{font.ui}",
+          "fontSize": "15px",
+          "lineHeight": "24px",
+          "fontWeight": "{weight.regular}",
+          "letterSpacing": "0"
+        }
+      },
+      "kpiValue": {
+        "$value": {
+          "fontFamily": "{font.ui}",
+          "fontSize": "28px",
+          "lineHeight": "36px",
+          "fontWeight": "{weight.medium}",
+          "letterSpacing": "-0.02em",
+          "fontVariantNumeric": "tabular-nums"
+        }
+      },
+      "kpiStrong": {
+        "$value": {
+          "fontFamily": "{font.ui}",
+          "fontSize": "17px",
+          "lineHeight": "24px",
+          "fontWeight": "{weight.semibold}",
+          "letterSpacing": "0",
+          "fontVariantNumeric": "tabular-nums"
+        }
+      }
+    }
+  }
+}

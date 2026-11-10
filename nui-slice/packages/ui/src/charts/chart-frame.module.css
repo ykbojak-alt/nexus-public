@@ -1,0 +1,22 @@
+.root {
+  display: inline-block;
+  max-width: 100%;
+  color: var(--nexus-text-primary, inherit);
+}
+
+.svg {
+  display: block;
+  font-family: var(--nexus-type-caption-font-family, inherit);
+}
+
+.statePanel {
+  display: grid;
+  place-items: center;
+  border-radius: var(--nexus-radius-md, 8px);
+  background: var(--nexus-depth-panel-bg, transparent);
+}
+
+.stateText {
+  color: var(--nexus-text-tertiary, currentColor);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}

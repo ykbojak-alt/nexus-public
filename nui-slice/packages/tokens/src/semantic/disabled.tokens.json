@@ -1,0 +1,10 @@
+{
+  "$description": "Disabled-state tokens (W2-156): unified opacity + cursor contract for disabled controls.",
+  "disabled": {
+    "$type": "number",
+    "opacity": {
+      "$value": 0.45,
+      "$description": "Disabled control opacity (WCAG allows softer contrast for disabled)."
+    }
+  }
+}

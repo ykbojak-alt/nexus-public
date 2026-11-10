@@ -1,0 +1,38 @@
+/* Staunton piece — authored-art channels: --pf fill / --po outline / --pd
+   detail strokes. Palettes are the illustration (ivory+bronze vs obsidian+gold),
+   fixed across themes — see docs/verification/visual-baseline-policy.md
+   «authored-art». */
+/* tokenlint allow color-literal shadow-off-scale */
+/* authored-art палитра фигур, темонезависимая (visual-baseline-policy). */
+.root {
+  display: block;
+  overflow: visible;
+}
+
+.root [data-part='sil'] {
+  fill: var(--pf);
+  stroke: var(--po);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.root [data-part='det'] {
+  fill: none;
+  stroke: var(--pd);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+}
+
+.root[data-c='w'] {
+  --pf: #F2E7CE;
+  --po: #463723;
+  --pd: #463723;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.55));
+}
+
+.root[data-c='b'] {
+  --pf: #26232B;
+  --po: var(--nexus-color-gold-500, #C9A45C);
+  --pd: var(--nexus-color-gold-500, #C9A45C);
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.65));
+}

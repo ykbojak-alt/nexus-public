@@ -1,0 +1,46 @@
+/* ArtPanel — art background + pinned-dark scrim (visual-3 V2).
+   Scrim colors from artPanel.* tokens (surface.art role): theme-invariant,
+   so text-on-art contrast never depends on the active shell theme. */
+
+.root {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--nexus-art-panel-radius, 12px);
+  border: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.08));
+  background: var(--nexus-surface-panel, #1a1a21);
+  box-shadow: var(--nexus-art-panel-edge, inset 0 1px 0 rgba(246, 240, 228, 0.1));
+  color: var(--nexus-text-on-art, #f6f0e4);
+}
+
+.root:not([data-has-art]) {
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top,
+    var(--nexus-art-panel-scrim, rgba(15, 15, 19, 0.78)) 0%,
+    var(--nexus-art-panel-scrim-soft, rgba(15, 15, 19, 0.34)) 55%,
+    transparent 100%);
+}
+
+.root[data-scrim='left'] .scrim {
+  background: linear-gradient(to right,
+    var(--nexus-art-panel-scrim, rgba(15, 15, 19, 0.78)) 0%,
+    var(--nexus-art-panel-scrim-soft, rgba(15, 15, 19, 0.34)) 55%,
+    transparent 100%);
+}
+
+.body {
+  position: relative;
+  padding: var(--nexus-space-5, 20px);
+}

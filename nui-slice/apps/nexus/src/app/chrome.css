@@ -1,0 +1,93 @@
+/* NEXUS window chrome — глобальный слой, подключается в app/layout.tsx.
+   1) Базовая геометрия: корни на всю высоту, без браузерного margin.
+   2) Скроллбар под тему: тонкий полупрозрачный thumb на прозрачном треке;
+      hover → ярче, active → акцент. Firefox — scrollbar-width/color;
+      WebView2/Chromium — ::-webkit-scrollbar. */
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  /* Базовый шрифт оболочки: без него элементы с `font: inherit`/без явного
+     font-family падали в UA-серифу (Times New Roman) — рейл, подписи,
+     чужие h1 (NQ-087). Авторская серифа объявлена явно и не пострадает. */
+  font-family: var(--nexus-type-body-font-family, 'Inter Tight', system-ui, sans-serif);
+  /* Типографика NUE — эстетика без потери читаемости:
+     - antialiased/grayscale: светлый текст на тёмном иначе рисуется на
+       полступени жирнее макета (эталон NEU — тонкий «люкс»-шрифт);
+     - font-optical-sizing: у Inter Tight есть ось opsz — мелкий кегль
+       автоматически получает открытые апертуры (читаемость), дисплейный —
+       стянутый трекинг (эстетика);
+     - optimizeLegibility: кернинг плотных пар + лигатуры, на десктопном
+       Chromium стоимость незаметна. */
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Разрывы строк без висячих: заголовки балансируются, абзацы — pretty
+   (Chromium ≥117); где не поддержано — игнорируется без вреда. */
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* Ссылки: отступ подчёркивания от базовой линии и тонкая линия — эталонный
+   «люкс» вместо UA-подчёркивания, прилипшего к буквам. */
+a {
+  text-underline-offset: 0.16em;
+  text-decoration-thickness: 1px;
+}
+
+[data-nexus-root] {
+  height: 100%;
+}
+
+/* The document theme is bootstrapped before paint. Let the top-level app
+   inherit its native control palette even while React is hydrating. Nested
+   persona roots keep their own theme-specific color-scheme. */
+body > [data-nexus-root] {
+  color-scheme: inherit;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--nexus-text-tertiary, #8A93A3) 45%, transparent) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--nexus-text-tertiary, #8A93A3) 35%, transparent);
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in srgb, var(--nexus-text-secondary, #B0B7C2) 55%, transparent);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 55%, transparent);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}

@@ -1,0 +1,887 @@
+/* GAMES — хаб локальных игр NEXUS */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-4, 16px);
+  height: 100%;
+}
+
+/* Вертикальный список: видео-обложка слева, описание справа.
+   Одна колонка на любой ширине — видео не сжимается сеткой. */
+/* Сетка каталога: 1 колонка на узких, 2 на средних, 3 на широких экранах.
+   Максимум — 1600px по центру: на ультрашироких плитки не растягиваются. */
+.list {
+  display: grid;
+  gap: 0;
+  align-content: start;
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 760px) {
+  .list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-2, 8px);
+  min-width: 0;
+}
+
+.tileMain {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+.tileMain:hover {
+  transform: translateY(-3px);
+}
+
+.tileInner {
+  display: flex;
+  gap: var(--nexus-space-3, 12px);
+  padding: var(--nexus-space-3, 12px) var(--nexus-space-4, 16px);
+  align-items: stretch;
+  min-height: 96px;
+  height: 100%;
+  transition: box-shadow var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+  position: relative;
+  overflow: hidden;
+}
+
+/* Блик по плитке при наведении */
+.tileInner::after {
+  content: '';
+  position: absolute;
+  top: -60%;
+  left: -30%;
+  width: 45%;
+  height: 220%;
+  background: linear-gradient(105deg, transparent, rgba(255, 236, 180, 0.14), transparent);
+  transform: translateX(-160%) rotate(8deg);
+  transition: transform var(--nexus-motion-ghost, 620ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+  pointer-events: none;
+}
+
+.tileMain:hover .tileInner::after {
+  transform: translateX(320%) rotate(8deg);
+}
+
+.tileMain:hover .tileInner {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 55%, transparent),
+    0 8px 28px rgba(0, 0, 0, 0.4),
+    0 0 20px color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 18%, transparent);
+}
+
+.tileMain:focus-visible {
+  outline: 2px solid var(--nexus-accent-primary, #C9A45C);
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+
+.tileArt {
+  width: 72px;
+  flex-shrink: 0;
+  align-self: stretch;
+  border-radius: 10px;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse at 50% 20%, rgba(226, 196, 130, 0.14), transparent 60%),
+    radial-gradient(ellipse at 40% 30%, rgba(201, 164, 92, 0.16), rgba(10, 10, 14, 0.9));
+  border: 1px solid rgba(201, 164, 92, 0.35);
+  overflow: hidden;
+}
+
+/* Видео-плитка — неоновая вывеска: размер по аспекту ролика,
+   светящаяся трубка-рамка, описание поверх видео */
+.tileMedia {
+  position: relative;
+  display: block;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 2px solid rgba(0, 255, 240, 0.75);
+  box-shadow:
+    0 0 8px rgba(0, 255, 240, 0.45),
+    0 0 24px rgba(0, 255, 240, 0.3),
+    0 0 64px rgba(0, 255, 240, 0.18),
+    inset 0 0 24px rgba(0, 255, 240, 0.07);
+}
+
+.tileInner {
+  border: 2px solid rgba(0, 255, 240, 0.5);
+  border-radius: 16px;
+  box-shadow:
+    0 0 8px rgba(0, 255, 240, 0.3),
+    0 0 20px rgba(0, 255, 240, 0.18),
+    inset 0 0 18px rgba(0, 255, 240, 0.05);
+}
+
+/* Стилизованная кайма: тонкая неоновая линия + угловые скобки (cyberpunk) */
+.tileMedia::before,
+.tileInner::before {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 255, 240, 0.45);
+  box-shadow:
+    inset 0 0 10px rgba(0, 255, 240, 0.1),
+    0 0 8px rgba(0, 255, 240, 0.15);
+  background:
+    linear-gradient(#7DFFF8, #7DFFF8) 0 0 / 14px 2px,
+    linear-gradient(#7DFFF8, #7DFFF8) 100% 0 / 14px 2px,
+    linear-gradient(#7DFFF8, #7DFFF8) 0 100% / 14px 2px,
+    linear-gradient(#7DFFF8, #7DFFF8) 100% 100% / 14px 2px,
+    linear-gradient(#7DFFF8, #7DFFF8) 0 0 / 2px 14px,
+    linear-gradient(#7DFFF8, #7DFFF8) 100% 0 / 2px 14px,
+    linear-gradient(#7DFFF8, #7DFFF8) 0 100% / 2px 14px,
+    linear-gradient(#7DFFF8, #7DFFF8) 100% 100% / 2px 14px;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.tileMediaVideo {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.tileMediaOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 24px 28px;
+  background: linear-gradient(to top, rgba(5, 8, 14, 0.94) 0%, rgba(5, 8, 14, 0.55) 42%, rgba(5, 8, 14, 0.05) 70%, transparent 100%);
+  pointer-events: none;
+}
+
+.tileMediaOverlay > * {
+  pointer-events: auto;
+}
+
+/* Видео-обложка — сама иконка: колонка фиксированной ширины,
+   высота НЕ задана — видео занимает свою натуральную высоту
+   (aspect-ratio из метаданных ролика), плашка растёт по вертикали. */
+.tileArtVideo {
+  width: min(340px, 30%);
+  align-self: flex-start;
+}
+
+.tileImg {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  border-radius: 0;
+}
+
+img.tileImg {
+  height: 72px;
+  max-width: 100%;
+  width: auto;
+  align-self: center;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+/* Staunton-конь — те же vars, что на доске: обсидиан + золото */
+.tileKnight {
+  width: 48px;
+  height: 48px;
+  --pf: #26232b;
+  --po: #d9b876;
+  --pd: var(--nexus-color-gold-500, #c9a45c);
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 14px rgba(201, 164, 92, 0.3));
+}
+
+.tileKnight [data-part='sil'] {
+  fill: var(--pf);
+  stroke: var(--po);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+}
+
+.tileKnight [data-part='det'] {
+  fill: none;
+  stroke: var(--pd);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+
+.tileBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 2px 0;
+}
+
+.tileTitle {
+  font-family: 'IBM Plex Mono', 'Inter Tight', monospace;
+  font-size: calc(var(--nexus-type-body-font-size, 15px) * 1.8);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.15;
+  text-transform: uppercase;
+  font-style: normal;
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  width: auto;
+  max-width: 100%;
+  min-height: 72px;
+  padding: 9px 20px 11px;
+  border-radius: 0 0 10px 0;
+  border-left: none;
+  border-right: 2px solid #00B8C8;
+  border-bottom: 2px solid #00B8C8;
+  color: #042E38;
+  background: linear-gradient(180deg, #F2FFFD 0%, #D6F7F3 100%);
+  box-shadow:
+    0 0 12px rgba(0, 200, 220, 0.45),
+    0 4px 16px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* В видео-плитке вывеска — матричная лента: центрированный неоново-
+   зелёный текст поверх потока падающих символов; края ленты тают
+   маской, резких швов с видео нет */
+.tileMediaOverlay .tileTitle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  min-height: 64px;
+  padding: 10px 56px 14px;
+  justify-content: center;
+  text-align: center;
+  border: none;
+  border-radius: 0;
+  color: #C9FFDA;
+  background-color: rgba(1, 12, 6, 0.78);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cg font-family='monospace' font-size='13' fill='%2300FF66'%3E%3Ctext x='8' y='30' opacity='.55'%3E01%26%2312402%3B%3C/text%3E%3Ctext x='42' y='80' opacity='.35'%3E%26%2312479%3B10%3C/text%3E%3Ctext x='76' y='140' opacity='.5'%3E1%26%2312416%3B0%3C/text%3E%3Ctext x='110' y='50' opacity='.4'%3E%26%2312450%3B01%3C/text%3E%3Ctext x='144' y='110' opacity='.6'%3E01%26%2312433%3B%3C/text%3E%3Ctext x='172' y='170' opacity='.3'%3E%26%2312459%3B1%3C/text%3E%3Ctext x='20' y='190' opacity='.45'%3E%26%2312425%3B10%3C/text%3E%3Ctext x='90' y='210' opacity='.55'%3E10%26%2312408%3B%3C/text%3E%3Ctext x='150' y='25' opacity='.35'%3E1%26%2312467%3B0%3C/text%3E%3Ctext x='60' y='240' opacity='.4'%3E%26%2312442%3B01%3C/text%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(180deg, rgba(1, 16, 8, 0.9), rgba(1, 12, 6, 0.55));
+  background-repeat: repeat, no-repeat;
+  background-position: 0 0, 0 0;
+  animation: tileMatrixRain 5.5s linear infinite;
+  text-shadow:
+    0 0 8px rgba(61, 255, 136, 0.9),
+    0 0 22px rgba(0, 255, 102, 0.55),
+    0 2px 6px rgba(0, 0, 0, 0.95);
+  -webkit-mask-image:
+    linear-gradient(to right, transparent, #000 9%, #000 91%, transparent),
+    linear-gradient(to bottom, #000 55%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent, #000 9%, #000 91%, transparent),
+    linear-gradient(to bottom, #000 55%, transparent 100%);
+  mask-composite: intersect;
+}
+
+@keyframes tileMatrixRain {
+  to {
+    background-position: 0 200px, 0 0;
+  }
+}
+
+.tileDesc {
+  font-family: 'Playfair Display', 'Inter Tight', serif;
+  font-size: calc(var(--nexus-type-caption-font-size, 13px) * 1.5);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+/* Честные мета-чипы — только факты об игре, столбиком, фиксированная ширина */
+.tileMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: auto;
+}
+
+/* В видео-плитке чипы — адаптивные под длину текста, столбик
+   приподнят над кнопкой ON, поэтому максимальная ширина — почти
+   вся плитка */
+.tileMediaOverlay .tileMeta {
+  align-items: flex-start;
+  margin-right: 16px;
+  margin-bottom: 52px;
+}
+
+.tileMediaOverlay .tileMetaChip {
+  width: fit-content;
+  max-width: 100%;
+}
+
+.tileMetaChip {
+  font-family: 'IBM Plex Mono', 'Inter Tight', monospace;
+  font-size: calc(var(--nexus-type-caption-font-size, 13px) * 1.18);
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  width: fit-content;
+  padding: 5px 14px 6px 32px;
+  color: #F6FFFE;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--neon, #00FFF0) 16%, transparent), rgba(7, 12, 20, 0.94) 55%),
+    #070C14;
+  border: 1px solid color-mix(in srgb, var(--neon, #00FFF0) 85%, #FFFFFF 15%);
+  border-radius: 6px;
+  box-shadow:
+    inset 0 0 10px color-mix(in srgb, var(--neon, #00FFF0) 16%, transparent),
+    0 0 8px color-mix(in srgb, var(--neon, #00FFF0) 45%, transparent);
+  text-shadow:
+    0 0 6px var(--neon, #00FFF0),
+    0 1px 0 rgba(0, 0, 0, 0.95),
+    0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+/* Неоновый маркер слева — цвет чипа */
+.tileMetaChip::before {
+  content: '◆';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  translate: 0 -50%;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--neon, #00FFF0);
+  text-shadow:
+    0 0 8px var(--neon, #00FFF0),
+    0 0 16px color-mix(in srgb, var(--neon, #00FFF0) 70%, transparent);
+}
+
+/* Неоновая палитра чипов — цикл по позиции в столбике */
+.tileMetaChip[data-c='0'] {
+  --neon: #FFD23F;
+}
+
+.tileMetaChip[data-c='1'] {
+  --neon: #00FFF0;
+}
+
+.tileMetaChip[data-c='2'] {
+  --neon: #FF2E97;
+}
+
+.tileMetaChip[data-c='3'] {
+  --neon: #3DFF88;
+}
+
+.tileMetaChip[data-c='4'] {
+  --neon: #B26BFF;
+}
+
+.tileMetaChip[data-c='5'] {
+  --neon: #FF7A3C;
+}
+
+.tileFoot {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--nexus-space-2, 8px));
+}
+
+/* Статус — cyberpunk-метка в правом нижнем углу: неон, срезанные углы, моно */
+.tileStatus {
+  font-family: 'IBM Plex Mono', 'Inter Tight', monospace;
+  font-size: calc(var(--nexus-type-caption-font-size, 13px) * 1.2);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  position: relative;
+  padding: 8px 22px 9px;
+  color: var(--neon, #00FFF0);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--neon, #00FFF0) 20%, transparent), color-mix(in srgb, var(--neon, #00FFF0) 4%, transparent) 45%, rgba(0, 0, 0, 0.7) 100%),
+    #04060C;
+  border: 1px solid var(--neon, #00FFF0);
+  border-radius: 4px;
+  box-shadow:
+    inset 0 0 14px color-mix(in srgb, var(--neon, #00FFF0) 22%, transparent),
+    0 0 8px color-mix(in srgb, var(--neon, #00FFF0) 55%, transparent),
+    0 0 22px color-mix(in srgb, var(--neon, #00FFF0) 35%, transparent),
+    0 6px 16px rgba(0, 0, 0, 0.6);
+  text-shadow:
+    0 0 6px var(--neon, #00FFF0),
+    0 0 18px color-mix(in srgb, var(--neon, #00FFF0) 75%, transparent),
+    0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Терминальный маркер */
+.tileStatus::before {
+  content: '▸';
+  margin-right: 8px;
+  font-size: 0.9em;
+  animation: tileStatusBlink 1.2s steps(2) infinite;
+}
+
+@keyframes tileStatusBlink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.tileStatusOk {
+  --neon: #00FFF0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: calc(var(--nexus-type-caption-font-size, 13px) * 1.3);
+  letter-spacing: 0.14em;
+  padding: 9px 20px 10px 40px;
+  border-radius: 999px;
+  color: #EFFFFF;
+  background:
+    radial-gradient(120% 120% at 25% 12%, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 45%),
+    linear-gradient(180deg, #0C3A44 0%, #072530 45%, #04131A 100%);
+  border: 2px solid #00FFF0;
+  box-shadow:
+    inset 0 2px 3px rgba(255, 255, 255, 0.35),
+    inset 0 -4px 8px rgba(0, 0, 0, 0.5),
+    inset 0 0 14px rgba(0, 255, 240, 0.25),
+    0 0 10px rgba(0, 255, 240, 0.6),
+    0 0 26px rgba(0, 255, 240, 0.4),
+    0 8px 18px rgba(0, 0, 0, 0.6);
+  text-shadow:
+    0 0 8px #00FFF0,
+    0 0 20px rgba(0, 255, 240, 0.7),
+    0 2px 4px rgba(0, 0, 0, 0.8);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+/* Значок питания — кнопка ON */
+.tileStatusOk::before {
+  content: '⏻';
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  translate: 0 -50%;
+  font-size: 1.15em;
+  font-weight: 400;
+  color: #00FFF0;
+  text-shadow:
+    0 0 8px #00FFF0,
+    0 0 18px rgba(0, 255, 240, 0.8);
+  animation: tileStatusBlink 2.4s ease-in-out infinite;
+}
+
+.tileStatusSoon {
+  --neon: #FF2E97;
+}
+
+.tileTag {
+  align-self: flex-start;
+  font-family: 'Playfair Display', 'Inter Tight', serif;
+  font-size: calc(var(--nexus-type-caption-font-size, 13px) * 1.5);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--nexus-text-accent, #C9A45C);
+  border: 1px solid color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 40%, transparent);
+  border-radius: var(--nexus-radius-sm, 4px);
+  padding: 2px 14px;
+  background: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 8%, transparent);
+}
+
+/* Бейджи состояния моста в шапке + verbatim-причина под заголовком */
+.headerBadges {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+}
+
+.sceneNote {
+  margin: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+/* Persist-полоса под плиткой — реальные данные прошлых сессий */
+.tilePersist {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--nexus-space-2, 8px) + var(--nexus-space-1, 4px) / 2);
+  padding: 0 var(--nexus-space-1, 4px);
+  font-size: calc(var(--nexus-type-caption-font-size, 13px) * 1.5);
+  letter-spacing: 0.05em;
+}
+
+.tileScore {
+  color: var(--nexus-text-accent, #C9A45C);
+  font-variant-numeric: tabular-nums;
+}
+
+.tileResult {
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.tileReplay {
+  margin-left: auto;
+  color: var(--nexus-text-accent, #C9A45C);
+  text-decoration: none;
+  border-bottom: 1px dashed color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 45%, transparent);
+}
+
+.tileReplay:hover {
+  color: #F0E4C4;
+  border-bottom-style: solid;
+}
+
+.tileReplay:focus-visible {
+  outline: 2px solid var(--nexus-accent-primary, #C9A45C);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .tileMain,
+  .tileInner,
+  .tileInner::after {
+    transition: none;
+  }
+
+  .tileMain:hover .tileInner::after {
+    transform: translateX(-160%) rotate(8deg);
+  }
+}
+
+/* ══════════ LAUNCH-PANEL ══════════ */
+.selectionLayout{width:100%;max-width:1600px;margin-inline:auto}
+
+.selectionLayout .tile,.durakExpanded .tile{max-height:720px}
+
+.selectionLayout[data-durak-selection=active],.durakExpanded{align-items:start;gap:var(--nexus-space-4,16px);grid-template-columns:minmax(260px,.78fr) minmax(0,1.22fr);display:grid}
+
+.selectionLayout[data-durak-selection=active] .list,.durakExpanded .list{grid-template-columns:minmax(0,1fr);gap:0;width:100%;margin:0;padding:0}
+
+.selectionLayout[data-durak-selection=active] .tile:not([data-selected-game]),.durakExpanded .durakTileLeaving{opacity:0;pointer-events:none;visibility:hidden;min-height:0;max-height:0;margin:0;overflow:hidden;transform:translate(-12px)scale(.98)}
+
+.selectionLayout[data-durak-selection=active] [data-selected-game],.durakExpanded .durakTileSelected{opacity:1;visibility:visible;z-index:3;max-height:720px;position:relative;transform:none}
+
+.selectionLayout[data-durak-selection=active] .tile,.durakExpanded .tile,.durakTileSelected,.durakTileLeaving{transition:max-height var(--nexus-duration-fast,.14s) cubic-bezier(var(--nexus-easing-standard,.2, 0, 0, 1)), opacity var(--nexus-duration-fast,.14s) cubic-bezier(var(--nexus-easing-standard,.2, 0, 0, 1)), transform var(--nexus-duration-fast,.14s) cubic-bezier(var(--nexus-easing-standard,.2, 0, 0, 1)), visibility 0s linear var(--nexus-duration-fast,.14s)}
+
+.durakSetupPanel{opacity:0;pointer-events:none;visibility:hidden;min-width:0;max-height:0;transition:max-height var(--nexus-duration-fast,.14s) cubic-bezier(var(--nexus-easing-standard,.2, 0, 0, 1)), gap var(--nexus-duration-fast,.14s) cubic-bezier(var(--nexus-easing-standard,.2, 0, 0, 1)), padding var(--nexus-duration-fast,.14s) cubic-bezier(var(--nexus-easing-standard,.2, 0, 0, 1)), opacity var(--nexus-duration-fast,.14s) cubic-bezier(var(--nexus-easing-standard,.2, 0, 0, 1)), transform var(--nexus-duration-fast,.14s) cubic-bezier(var(--nexus-easing-standard,.2, 0, 0, 1)), visibility 0s linear var(--nexus-duration-fast,.14s);flex-direction:column;grid-column:2;gap:0;padding:0;display:flex;overflow:hidden;transform:translate(12px)}
+
+.durakSetupPanelOpen{gap:var(--nexus-space-4,16px);max-height:min(80vh,900px);padding:var(--nexus-space-5,20px);opacity:1;pointer-events:auto;visibility:visible;transition:max-height var(--nexus-duration-fast,.14s) cubic-bezier(var(--nexus-easing-standard,.2, 0, 0, 1)), gap var(--nexus-duration-fast,.14s) cubic-bezier(var(--nexus-easing-standard,.2, 0, 0, 1)), padding var(--nexus-duration-fast,.14s) cubic-bezier(var(--nexus-easing-standard,.2, 0, 0, 1)), opacity var(--nexus-duration-fast,.14s) cubic-bezier(var(--nexus-easing-standard,.2, 0, 0, 1)), transform var(--nexus-duration-fast,.14s) cubic-bezier(var(--nexus-easing-standard,.2, 0, 0, 1)), visibility 0s;overflow-y:auto;transform:translate(0)}
+
+.durakSetup{box-sizing:border-box;color:#ddf7f5;min-width:0;min-height:max-content;animation:durakSetupReveal var(--nexus-duration-fast,.14s) cubic-bezier(var(--nexus-easing-standard,.2, 0, 0, 1)) both;background:radial-gradient(at 50% 0,#00fff01a,#0000 55%),linear-gradient(160deg,#061014e0,#040a0edb);border:2px solid #00fff0bf;border-radius:16px;flex-direction:column;gap:14px;margin-left:-22px;padding:20px 22px 18px;display:flex;position:relative;overflow:hidden auto;box-shadow:0 0 8px #00fff073,0 0 24px #00fff04d,0 0 64px #00fff02e,inset 0 0 24px #00fff012}
+
+.durakSetup:after{content:"";background-image:linear-gradient(160deg, #040a108c, #040a1059 45%, #040a1099), var(--durak-bg,none);pointer-events:none;z-index:0;background-position:50%;background-size:cover;border-radius:14px;position:absolute;inset:0}
+
+.durakSetup:before{content:"";pointer-events:none;z-index:1;background-color:#0000;background-image:linear-gradient(#7dfff8,#7dfff8),linear-gradient(#7dfff8,#7dfff8),linear-gradient(#7dfff8,#7dfff8),linear-gradient(#7dfff8,#7dfff8),linear-gradient(#7dfff8,#7dfff8),linear-gradient(#7dfff8,#7dfff8),linear-gradient(#7dfff8,#7dfff8),linear-gradient(#7dfff8,#7dfff8);background-position:0 0,100% 0,0 100%,100% 100%,0 0,100% 0,0 100%,100% 100%;background-repeat:no-repeat;background-size:14px 2px,14px 2px,14px 2px,14px 2px,2px 14px,2px 14px,2px 14px,2px 14px;background-attachment:scroll,scroll,scroll,scroll,scroll,scroll,scroll,scroll;background-origin:padding-box,padding-box,padding-box,padding-box,padding-box,padding-box,padding-box,padding-box;background-clip:border-box,border-box,border-box,border-box,border-box,border-box,border-box,border-box;border-radius:6px;position:absolute;inset:7px}
+
+.durakSetup{position:relative}
+
+.durakSetup>*{z-index:2;position:relative}
+
+.durakSetupPanel:not(.durakSetupPanelOpen){gap:0;padding:0;animation:none}
+
+.durakSetupHeader{justify-content:space-between;align-items:flex-start;gap:var(--nexus-space-3,12px);display:flex}
+
+.durakSetupHeadText{flex-direction:column;gap:4px;min-width:0;display:flex}
+
+.durakSetupKicker{font-family:IBM Plex Mono,Inter Tight,monospace;font-size:var(--nexus-type-caption-font-size,13px);letter-spacing:.24em;text-transform:uppercase;color:#7dfff8b3;align-items:center;gap:8px;font-weight:600;display:inline-flex}
+
+.durakSetupKicker:before{content:"";background:linear-gradient(90deg,#0000,#00fff0);width:20px;height:1px;box-shadow:0 0 6px #00fff0cc}
+
+.durakSetupTitle{letter-spacing:.07em;text-transform:uppercase;color:#eafeff;text-shadow:0 0 12px #00fff080,0 0 28px #00fff033;margin:0;font-family:IBM Plex Mono,Inter Tight,monospace;font-size:19px;font-weight:700;line-height:1.15}
+
+.durakSetupTitle:focus-visible,.durakSetup :focus-visible{outline-offset:3px;outline:2px solid #00fff0d9}
+
+.durakSetupDescription{color:#ceeeec9e;max-width:56ch;font-size:var(--nexus-type-caption-font-size,13px);margin:0;line-height:1.5}
+
+.durakSetupClose{min-height:34px;font-family:IBM Plex Mono,Inter Tight,monospace;font-size:var(--nexus-type-caption-font-size,13px);letter-spacing:.14em;text-transform:uppercase;color:#bffffa;cursor:pointer;background:linear-gradient(#00fff024,#00fff008);border:1px solid #00fff06b;border-radius:6px;flex-shrink:0;align-items:center;gap:8px;padding:7px 13px;font-weight:600;transition:border-color .14s,box-shadow .14s,color .14s;display:inline-flex;box-shadow:inset 0 0 12px #00fff014,0 0 10px #00fff01f}
+
+.durakSetupCloseIcon{font-size:var(--nexus-type-caption-font-size,13px);color:#00fff0;text-shadow:0 0 8px #00fff0e6}
+
+.durakSetupClose:hover{color:#efffff;border-color:#00fff0d9;box-shadow:inset 0 0 14px #00fff024,0 0 16px #00fff047}
+
+.durakSetupFieldset{border:0;min-width:0;margin:0;padding:0}
+
+.durakSetupLabel{margin-bottom:var(--nexus-space-2,8px);font-family:IBM Plex Mono,Inter Tight,monospace;font-size:var(--nexus-type-caption-font-size,13px);letter-spacing:.18em;text-transform:uppercase;color:#7dfff8d1;text-shadow:0 0 10px #00fff04d;padding:0;font-weight:600;display:block}
+
+.durakOpponentList{grid-template-columns:minmax(0,1fr);gap:8px;display:grid}
+
+.durakOpponent{--neon:#00fff0;text-align:left;color:#ddf7f5;background:linear-gradient(90deg, color-mix(in srgb, var(--neon) 13%, transparent), #030a0e9e 58%), #040a0e8c;border:1px solid color-mix(in srgb, var(--neon) 26%, transparent);cursor:pointer;border-radius:7px;grid-template-columns:34px auto minmax(24px,1fr) auto;align-items:center;gap:10px;min-height:46px;padding:6px 12px 6px 14px;transition:border-color .14s,box-shadow .14s,background .14s,transform .14s,opacity .14s;display:grid;position:relative}
+
+.durakOpponent:before{content:"";background:var(--neon);width:2px;box-shadow:0 0 8px var(--neon);opacity:.35;border-radius:0 2px 2px 0;transition:opacity .14s;position:absolute;top:7px;bottom:7px;left:0}
+
+.durakOpponent:hover{border-color:color-mix(in srgb, var(--neon) 55%, transparent);transform:translate(2px)}
+
+.durakOpponent:not([aria-pressed=true]){opacity:.68}
+
+.durakOpponent:not([aria-pressed=true]):hover{opacity:.92}
+
+.durakOpponent[aria-pressed=true]{color:#f2ffff;border-color:color-mix(in srgb, var(--neon) 82%, transparent);background:linear-gradient(90deg, color-mix(in srgb, var(--neon) 22%, transparent), #030c10cc 62%), #040a0eb3;box-shadow:inset 0 0 18px color-mix(in srgb, var(--neon) 16%, transparent), 0 0 14px color-mix(in srgb, var(--neon) 26%, transparent)}
+
+.durakOpponent[aria-pressed=true]:before{opacity:1}
+
+.durakOpponent[data-c="0"]{--neon:#ffd23f}
+
+.durakOpponent[data-c="1"]{--neon:#00fff0}
+
+.durakOpponent[data-c="2"]{--neon:#ff2e97}
+
+.durakOpponent[data-c="3"]{--neon:#3dff88}
+
+.durakOpponent[data-c="4"]{--neon:#b26bff}
+
+.durakOpponent[data-c="5"]{--neon:#ff7a3c}
+
+.durakOpponentAvatar{object-fit:cover;border:1px solid color-mix(in srgb, var(--neon) 55%, transparent);width:34px;height:34px;box-shadow:0 0 10px color-mix(in srgb, var(--neon) 30%, transparent);filter:saturate(1.05);border-radius:7px;flex-shrink:0}
+
+.durakOpponent[aria-pressed=false] .durakOpponentAvatar{filter:grayscale(.6)brightness(.82);box-shadow:none}
+
+.durakOpponentName{letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;text-overflow:ellipsis;font-family:IBM Plex Mono,Inter Tight,monospace;font-size:13px;font-weight:700;overflow:hidden}
+
+.durakOpponentRail{background:repeating-linear-gradient(90deg, color-mix(in srgb, var(--neon) 55%, transparent) 0 5px, transparent 5px 10px);opacity:.3;height:1px;transition:opacity .14s}
+
+.durakOpponent:hover .durakOpponentRail{opacity:.5}
+
+.durakOpponent[aria-pressed=true] .durakOpponentRail{opacity:.7}
+
+.durakOpponentState{font-family:IBM Plex Mono,Inter Tight,monospace;font-size:var(--nexus-type-caption-font-size,13px);letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;color:color-mix(in srgb, var(--neon) 78%, #fff 8%);border:1px solid color-mix(in srgb, var(--neon) 28%, transparent);background:#0000004d;border-radius:3px;padding:4px 8px;font-weight:700}
+
+.durakOpponent[aria-pressed=true] .durakOpponentState{color:#041014;border-color:var(--neon);background:var(--neon);box-shadow:0 0 10px color-mix(in srgb, var(--neon) 45%, transparent)}
+
+.durakFields{z-index:3;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:12px;display:grid}
+
+.durakField{flex-direction:column;gap:6px;min-width:0;display:flex;position:relative}
+
+.durakFields>:last-child:nth-child(odd){grid-column:1/-1}
+
+.durakFieldHead{justify-content:space-between;align-items:center;gap:8px;display:flex}
+
+.durakFieldHead .durakSetupLabel{margin:0}
+
+.durakFieldHint{font-family:IBM Plex Mono,Inter Tight,monospace;font-size:var(--nexus-type-caption-font-size,13px);letter-spacing:.16em;color:#7dfff899;border:1px solid #00fff042;border-radius:3px;flex-shrink:0;padding:2px 6px;font-weight:600}
+
+.durakFieldShell{background:linear-gradient(#00fff01a,#030a0eb8 62%),#03080cb3;border:1px solid #00fff061;border-radius:8px;align-items:center;min-width:0;height:46px;transition:border-color .14s,box-shadow .14s;display:flex;position:relative;overflow:hidden;box-shadow:inset 0 0 16px #00fff012}
+
+.durakFieldShell:before{content:"";opacity:.7;background:#00fff0;border-radius:0 2px 2px 0;width:2px;position:absolute;top:8px;bottom:8px;left:0;box-shadow:0 0 8px #00fff0e6}
+
+.durakFieldShell:focus-within{border-color:#00fff0e6;box-shadow:inset 0 0 18px #00fff024,0 0 14px #00fff03d}
+
+.durakFieldIcon{z-index:1;text-align:center;width:32px;font-family:IBM Plex Mono,monospace;font-size:var(--nexus-type-caption-font-size,13px);color:#7dfff8;text-shadow:0 0 8px #00fff0d9;flex-shrink:0;position:relative}
+
+.durakSeed,.durakDeckValue{box-sizing:border-box;z-index:1;color:#eafffd;letter-spacing:.08em;font-variant-numeric:tabular-nums;background:0 0;border:0;outline:none;width:100%;min-width:0;height:100%;margin:0;padding:0 12px 0 0;font-family:IBM Plex Mono,Inter Tight,monospace;font-size:14px;font-weight:600;position:relative}
+
+.durakSeed{appearance:textfield}
+
+.durakSeed::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+
+.durakSeed::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+
+.durakDeckTrigger{text-align:left;cursor:pointer;width:100%;padding:0}
+
+.durakDeckTrigger[aria-expanded=true]{border-color:#00fff0e6;box-shadow:inset 0 0 18px #00fff024,0 0 14px #00fff03d}
+
+.durakDeckValue{white-space:nowrap;text-overflow:ellipsis;letter-spacing:.04em;flex:auto;height:auto;padding-right:26px;font-size:13px;overflow:hidden}
+
+.durakDeckList{z-index:20;box-sizing:border-box;background:linear-gradient(#041218fa,#02080cfc);border:1px solid #00fff073;border-radius:8px;gap:2px;max-height:220px;margin:0;padding:6px;list-style:none;animation:.13s ease-out durakDeckOpen;display:grid;position:absolute;top:calc(100% + 6px);left:0;right:0;overflow-y:auto;box-shadow:0 18px 40px #0000009e,0 0 22px #00fff029,inset 0 0 18px #00fff00f}
+
+.durakDeckOption{color:#ddf5f4;font-family:IBM Plex Mono,Inter Tight,monospace;font-size:var(--nexus-type-caption-font-size,13px);letter-spacing:.03em;white-space:nowrap;cursor:pointer;border:1px solid #0000;border-radius:5px;align-items:center;gap:9px;padding:9px 14px 9px 10px;font-weight:600;transition:background .11s,border-color .11s,color .11s;display:flex}
+
+.durakDeckOption[data-active=true]{color:#efffff;background:#00fff01a;border-color:#00fff057}
+
+.durakDeckOption[aria-selected=true]{color:#7dfff8}
+
+.durakDeckOptionMark{color:#00fff0;text-shadow:0 0 8px #00fff0cc;flex-shrink:0;width:10px}
+
+.durakDeckOptionText{text-overflow:ellipsis;min-width:0;overflow:hidden}
+
+.durakRandom{color:#bffffa;font-family:IBM Plex Mono,Inter Tight,monospace;font-size:var(--nexus-type-caption-font-size,13px);letter-spacing:.16em;text-transform:uppercase;cursor:pointer;background:linear-gradient(#00fff024,#00fff00a);border:1px solid #00fff06b;border-radius:4px;flex-shrink:0;align-items:center;gap:5px;padding:3px 8px;font-weight:700;transition:border-color .14s,box-shadow .14s,color .14s;display:inline-flex}
+
+.durakRandom span{font-size:var(--nexus-type-caption-font-size,13px);color:#00fff0;text-shadow:0 0 8px #00fff0cc}
+
+.durakRandom:hover{color:#fff;border-color:#00fff0d9;box-shadow:0 0 12px #00fff042}
+
+.durakRandom:active{background:linear-gradient(#00fff03d,#00fff014)}
+
+.setupChips{flex-wrap:wrap;gap:8px;display:flex}
+
+.setupChip{--neon:#00fff0;min-height:34px;font-family:IBM Plex Mono,Inter Tight,monospace;font-size:var(--nexus-type-caption-font-size,13px);letter-spacing:.12em;text-transform:uppercase;color:#ddf7f5c7;background:linear-gradient(180deg, color-mix(in srgb, var(--neon) 10%, transparent), #030a0ea8), #040a0e8c;border:1px solid color-mix(in srgb, var(--neon) 30%, transparent);cursor:pointer;border-radius:6px;padding:7px 13px;font-weight:600;transition:color .14s,border-color .14s,box-shadow .14s,background .14s}
+
+.setupChip[data-c="0"]{--neon:#ffd23f}
+
+.setupChip[data-c="1"]{--neon:#00fff0}
+
+.setupChip[data-c="2"]{--neon:#ff2e97}
+
+.setupChip[data-c="3"]{--neon:#3dff88}
+
+.setupChip[data-c="4"]{--neon:#b26bff}
+
+.setupChip[data-c="5"]{--neon:#ff7a3c}
+
+.setupChip:hover{color:#efffff;border-color:color-mix(in srgb, var(--neon) 70%, transparent);box-shadow:0 0 12px color-mix(in srgb, var(--neon) 24%, transparent)}
+
+.setupChip[aria-pressed=true]{color:#041014;background:var(--neon);border-color:var(--neon);box-shadow:0 0 14px color-mix(in srgb, var(--neon) 45%, transparent), inset 0 0 10px #ffffff40}
+
+.setupRosterCompact{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+.durakOpponentList,.setupRosterCompact{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+
+.durakOpponent{grid-template-columns:minmax(0,1fr) auto;gap:8px;min-height:36px;padding:3px 9px 3px 11px}
+
+.durakOpponentAvatar,.durakOpponentRail{display:none}
+
+.durakFieldChevron{z-index:1;font-size:var(--nexus-type-caption-font-size,13px);color:#7dfff8;text-shadow:0 0 8px #00fff0d9;pointer-events:none;transition:rotate .14s;position:absolute;top:50%;right:11px;translate:0 -50%}
+
+.durakDeckTrigger[aria-expanded=true] .durakFieldChevron{rotate:180deg}
+
+.durakBars{background:repeating-linear-gradient(90deg,#00fff00e 0 1px,#0000 1px 28px),repeating-linear-gradient(0deg,#00fff00b 0 1px,#0000 1px 20px),linear-gradient(#00fff00d,#00000059);border:1px solid #00fff029;border-radius:8px;flex-direction:column;flex:1 1 0;justify-content:flex-end;gap:8px;min-height:56px;padding:10px 14px 8px;display:flex;position:relative;overflow:hidden}
+
+.durakBarsLabel{font-family:IBM Plex Mono,Inter Tight,monospace;font-size:var(--nexus-type-caption-font-size,13px);letter-spacing:.22em;text-transform:uppercase;color:#7dfff88c;align-items:center;gap:10px;font-weight:600;display:flex}
+
+.durakBarsLabel:after{content:"";background:linear-gradient(90deg,#00fff04d,#0000);flex:1;height:1px}
+
+.durakBarsWave{flex:auto;align-items:flex-end;gap:4px;min-height:40px;display:flex}
+
+.durakBar{min-width:2px;height:var(--bar,50%);opacity:.55;transform-origin:bottom;background:linear-gradient(#c9ffda 0%,#3dff88 20%,#00fff0 55%,#00fff01a 100%);border-radius:1px 1px 0 0;flex:1 1 0;animation:3.6s ease-in-out infinite durakBarPulse;box-shadow:0 0 6px #00fff066}
+
+.durakBar:nth-child(3n){opacity:.4;animation-delay:-1.2s}
+
+.durakBar:nth-child(4n+1){opacity:.72;animation-delay:-2.4s}
+
+.durakBar:nth-child(5n+2){opacity:.62;animation-delay:-.6s}
+
+.durakBars:after{content:"";pointer-events:none;background:linear-gradient(90deg,#0000,#00fff01f,#0000);width:22%;animation:7s linear infinite durakBarsScan;position:absolute;top:0;bottom:0;left:-25%}
+
+.durakSetupFooter{background:linear-gradient(#040a0e00,#040a0ee6 42%);justify-content:space-between;align-items:center;gap:14px;padding-bottom:14px;display:flex;position:sticky;bottom:-14px}
+
+.durakSetupFooterNote{text-overflow:ellipsis;white-space:nowrap;min-width:0;font-family:IBM Plex Mono,Inter Tight,monospace;font-size:var(--nexus-type-caption-font-size,13px);letter-spacing:.16em;text-transform:uppercase;color:#7dfff894;font-weight:600;overflow:hidden}
+
+.durakSetup .durakStart{min-height:44px;font-family:IBM Plex Mono,Inter Tight,monospace;font-size:var(--nexus-type-caption-font-size,13px);letter-spacing:.14em;text-transform:uppercase;color:#efffff;text-shadow:0 0 8px #00fff0b3;background:linear-gradient(#00fff047,#00fff014 45%,#00000080),#06181d;border:1px solid #00fff0;flex-shrink:0;padding-inline:22px;font-weight:700;box-shadow:inset 0 0 16px #00fff038,0 0 16px #00fff052,0 6px 18px #00000080}
+
+.durakSetup .durakStart:hover:not(:disabled){color:#fff;background:linear-gradient(#00fff066,#00fff024 45%,#00000073),#072028;box-shadow:inset 0 0 18px #00fff052,0 0 24px #00fff07a,0 6px 18px #00000080}
+
+.durakSetup .durakStart:active:not(:disabled){background:linear-gradient(#00fff080,#00fff02e 45%,#0006),#072028}
+
+.durakSetup .durakStart:focus-visible{outline-offset:3px;outline:2px solid #00fff0e6}
+
+.tileMainButton{text-align:left;cursor:pointer;background:0 0;border:0;width:100%;padding:0}
+
+.selectionLayout[data-durak-selection=active] .tile,.durakExpanded .tile,.durakTileSelected,.durakTileLeaving,.durakSetup,.durakSetupPanel,.durakSetupPanel:not(.durakSetupPanelOpen),.durakSetupPanelOpen{transition:none;animation:none}
+
+.selectionLayout[data-durak-selection=active] .list .tile[data-featured],.selectionLayout[data-durak-selection=active] .list .tileFeature,.selectionLayout[data-durak-selection=active] .list .machinaTile,.durakExpanded .list .tile[data-featured],.durakExpanded .list .tileFeature,.durakExpanded .list .machinaTile{grid-column:auto}
+
+.tilePersist{align-items:center;gap:var(--nexus-space-2,8px);padding:0 var(--nexus-space-1,4px);font-size:var(--nexus-type-caption-font-size,13px);letter-spacing:.05em;flex-wrap:wrap;display:flex}
+
+.tileScore,.tileResult,.tileReplay{white-space:nowrap;background:#00fff00d;border:1px solid #00fff059;border-radius:7px;align-items:center;min-height:26px;padding:3px 10px;display:inline-flex;box-shadow:inset 0 0 8px #00fff00f}
+
+.tileScore{color:var(--nexus-text-accent,#c9a45c);font-variant-numeric:tabular-nums;border-color:color-mix(in srgb, var(--nexus-accent-primary,#c9a45c) 45%, transparent);background:color-mix(in srgb, var(--nexus-accent-primary,#c9a45c) 10%, transparent)}
+
+.tileResult{color:var(--nexus-text-tertiary,#8e97a5)}
+
+.tileReplay{color:#7dfff8e6;transition:border-color var(--nexus-duration-fast,.14s), box-shadow var(--nexus-duration-fast,.14s);margin-left:auto;text-decoration:none}
+
+.tileReplay:hover{color:#eafefa;border-color:#00fff0bf;box-shadow:0 0 10px #00fff033}
+
+.tileReplay:focus-visible{outline:2px solid var(--nexus-accent-primary,#c9a45c);outline-offset:2px}
+
+.page p.sceneError{color:#f6f0e4e0;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);background:linear-gradient(130deg,#4a38226b,#181719ad);border:1px solid #d9b87557;border-radius:999px;width:fit-content;max-width:100%;margin:0;padding:9px 14px;box-shadow:inset 0 1px #ffffff14,0 6px 18px #0000002e}
+
+.sceneError button{color:var(--games-ice);text-underline-offset:3px;-webkit-text-decoration:underline #82dfe480;text-decoration:underline #82dfe480}
+
+.durakSetup{gap:10px;padding:16px 18px 14px}
+
+.durakBars{min-height:34px;padding:8px 12px 6px}
+
+.durakBarsWave{min-height:22px}
+
+.tileMediaOverlay .tileTitle,.tileStatus,.tileStatusOk:before,.durakBar,.durakBars:after,.durakDeckList{animation:none}
+
+.durakFields{grid-template-columns:minmax(0,1fr)}
+
+.durakOpponentState,.durakFieldHint{display:none}
+
+.selectionLayout[data-durak-selection=active],.durakExpanded{grid-template-columns:minmax(0,1fr)}
+
+.durakSetupPanel,.durakSetupPanelOpen{grid-column:1}
+
+.durakSetup{margin-left:0}
+
+.durakFields{grid-template-columns:minmax(0,1fr)}
+
+.durakBars{min-height:48px}
+
+.durakBarsWave{min-height:28px}
+
+.selectionLayout[data-durak-selection=active] [data-selected-game]{overflow:hidden}
+
+@keyframes durakDeckOpen{0%{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+
+@keyframes durakBarPulse{0%,to{transform:scaleY(1)}50%{transform:scaleY(.74)}}
+
+@keyframes durakBarsScan{to{left:112%}}
+
+@keyframes tileMatrixRain{to{background-position:0 200px,0 0}}
+
+@keyframes tileStatusBlink{50%{opacity:.25}}
+
+@media (max-width:1299px){.durakOpponentList,.setupRosterCompact{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.durakOpponent{grid-template-columns:minmax(0,1fr) auto;gap:8px;min-height:36px;padding:3px 9px 3px 11px}.durakOpponentAvatar,.durakOpponentRail{display:none}}
+
+@media (prefers-reduced-motion:reduce){.selectionLayout[data-durak-selection=active] .tile,.durakExpanded .tile,.durakTileSelected,.durakTileLeaving,.durakSetup,.durakSetupPanel,.durakSetupPanel:not(.durakSetupPanelOpen),.durakSetupPanelOpen{transition:none;animation:none}}
+
+@media (min-width:760px){.list{grid-template-columns:repeat(2,1fr)}.list .tile[data-featured],.list .tileFeature,.list .machinaTile{grid-column:span 2}}
+
+@media (min-width:1200px){.list{grid-template-columns:repeat(3,1fr)}.list .tile[data-featured],.list .tileFeature,.list .machinaTile{grid-column:span 2}}
+
+@media (min-width:760px){.tile[data-featured] .tileMediaVideo,.tileFeature .tileMediaVideo,.machinaTile .tileMediaVideo{aspect-ratio:16/9;object-fit:contain}.tile[data-featured] .tileMediaOverlay .tileMeta,.tileFeature .tileMediaOverlay .tileMeta,.machinaTile .tileMediaOverlay .tileMeta{flex-flow:wrap;align-items:flex-start;max-width:100%;margin-right:16px}.tile[data-featured] .tileMediaOverlay .tileMetaChip,.tileFeature .tileMediaOverlay .tileMetaChip,.machinaTile .tileMediaOverlay .tileMetaChip{flex-shrink:1;min-width:0}}
+
+@media (prefers-reduced-motion:reduce){.tileMain,.tileInner,.tileInner:after{transition:none}.tileMain:hover .tileInner:after{transform:translate(-160%)rotate(8deg)}}
+
+@media (max-width:1299px){.durakSetup{gap:10px;padding:16px 18px 14px}.durakBars{min-height:34px;padding:8px 12px 6px}.durakBarsWave{min-height:22px}}
+
+@media (max-width:759px){.list{gap:12px;padding-inline:0}.tileMediaOverlay{padding:14px}.tileMediaOverlay .tileTitle{letter-spacing:.04em;min-height:48px;padding:8px 12px;font-size:clamp(16px,5vw,22px);top:12px;left:12px;right:12px}}
+
+@media (prefers-reduced-motion:reduce){.tileMediaOverlay .tileTitle,.tileStatus,.tileStatusOk:before,.durakBar,.durakBars:after,.durakDeckList{animation:none}}
+
+@media (max-width:1099px){.durakFields{grid-template-columns:minmax(0,1fr)}}
+
+@media (max-width:959px){.durakOpponentState,.durakFieldHint{display:none}}
+
+@media (max-width:759px){.selectionLayout[data-durak-selection=active],.durakExpanded{grid-template-columns:minmax(0,1fr)}.durakSetupPanel,.durakSetupPanelOpen{grid-column:1}.durakSetup{margin-left:0}.durakFields{grid-template-columns:minmax(0,1fr)}.durakBars{min-height:48px}.durakBarsWave{min-height:28px}.selectionLayout[data-durak-selection=active] [data-selected-game]{overflow:hidden}}
+
+@keyframes tileMatrixRain{to{background-position:0 200px,0 0}}
+
+@media (min-width:760px){.list{grid-template-columns:repeat(2,1fr)}}
+
+@media (min-width:1200px){.list{grid-template-columns:repeat(3,1fr)}}
+/* Панельный body — контентная зона между header и footer (скроллит panel). */
+.durakSetupBody{display:flex;flex-direction:column;gap:14px;flex:1;min-height:0;position:relative;z-index:1}

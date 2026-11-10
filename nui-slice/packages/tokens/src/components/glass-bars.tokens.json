@@ -1,0 +1,126 @@
+{
+  "$description": "Glass-bars contract (wave-XVI W2; refs AI2_ref/NEU/Alice/* + main2.png — pearl glass bars, gold edges): translucent layers rail/topbar/card/statusbar. Per layer: bg alpha 0.35–0.65 over shell art, backdrop blur 14–28px @ saturate 1.2, 1px inner border (alpha 0.12–0.25), top highlight over 0–8% height, directional shadow. glass.minOpacity = contrast floor — if text on the composited layer drops <4.5:1 on the theme's own substrates, the layer alpha must be raised to at least this value (asserted in glass-bars.test.ts). glass.maxBlurLayers = 4 — budget of simultaneous backdrop-filter layers per screen. Persona tone binds in component css via [data-persona] → --nexus-glass-tone (personaEdge.*), no per-persona token duplicates. bgOpaque = same-tone opaque composite for @supports/reduced-transparency/forced-colors fallbacks.",
+  "glass": {
+    "saturate": {
+      "$type": "number",
+      "$value": 1.2,
+      "$description": "backdrop-filter saturate() factor shared by all glass layers."
+    },
+    "minOpacity": {
+      "$type": "number",
+      "$value": 0.55,
+      "$description": "Minimum layer bg alpha allowed when contrast correction is applied; all layers already sit at/above it."
+    },
+    "maxBlurLayers": {
+      "$type": "number",
+      "$value": 4,
+      "$description": "Performance budget: max simultaneous backdrop-filter surfaces per screen (rail + topbar + statusbar + card zone = 4)."
+    },
+    "highlightSize": {
+      "$type": "dimension",
+      "$value": "8%",
+      "$description": "Height of the top-edge light catch (gradient fades within 0–8% of the layer)."
+    },
+    "rail": {
+      "bg": {
+        "$type": "color",
+        "$value": "color-mix(in srgb, {color.obsidian.800} 55%, transparent)",
+        "$description": "Left rail glass over art — alpha .55 (in 0.35–0.65 band)."
+      },
+      "bgOpaque": {
+        "$type": "color",
+        "$value": "color-mix(in srgb, {color.obsidian.800} 55%, {surface.root})"
+      },
+      "blur": { "$type": "dimension", "$value": "24px" },
+      "border": {
+        "$type": "color",
+        "$value": "color-mix(in srgb, {color.ivory.100} 14%, transparent)",
+        "$description": "1px inner hairline — alpha .14 (0.12–0.25 band)."
+      },
+      "highlight": {
+        "$type": "color",
+        "$value": "color-mix(in srgb, {color.ivory.100} 10%, transparent)"
+      },
+      "shadow": {
+        "$type": "shadow",
+        "$value": "12px 0 32px 0 rgba(0,0,0,0.30)",
+        "$description": "Rightward cast — rail floats over the canvas."
+      },
+      "radius": { "$type": "dimension", "$value": "0px" }
+    },
+    "topbar": {
+      "bg": {
+        "$type": "color",
+        "$value": "color-mix(in srgb, {color.obsidian.800} 58%, transparent)"
+      },
+      "bgOpaque": {
+        "$type": "color",
+        "$value": "color-mix(in srgb, {color.obsidian.800} 58%, {surface.root})"
+      },
+      "blur": { "$type": "dimension", "$value": "20px" },
+      "border": {
+        "$type": "color",
+        "$value": "color-mix(in srgb, {color.ivory.100} 12%, transparent)"
+      },
+      "highlight": {
+        "$type": "color",
+        "$value": "color-mix(in srgb, {color.ivory.100} 12%, transparent)"
+      },
+      "shadow": {
+        "$type": "shadow",
+        "$value": "0 8px 24px 0 rgba(0,0,0,0.28)",
+        "$description": "Downward cast — header floats over content."
+      },
+      "radius": { "$type": "dimension", "$value": "0px" }
+    },
+    "card": {
+      "bg": {
+        "$type": "color",
+        "$value": "color-mix(in srgb, {color.obsidian.700} 60%, transparent)"
+      },
+      "bgOpaque": {
+        "$type": "color",
+        "$value": "color-mix(in srgb, {color.obsidian.700} 60%, {surface.root})"
+      },
+      "blur": { "$type": "dimension", "$value": "16px" },
+      "border": {
+        "$type": "color",
+        "$value": "color-mix(in srgb, {color.ivory.100} 18%, transparent)"
+      },
+      "highlight": {
+        "$type": "color",
+        "$value": "color-mix(in srgb, {color.ivory.100} 12%, transparent)"
+      },
+      "shadow": {
+        "$type": "shadow",
+        "$value": "0 8px 32px 0 rgba(0,0,0,0.34)"
+      },
+      "radius": { "$type": "dimension", "$value": "{radius.xl}" }
+    },
+    "statusbar": {
+      "bg": {
+        "$type": "color",
+        "$value": "color-mix(in srgb, {color.obsidian.800} 62%, transparent)"
+      },
+      "bgOpaque": {
+        "$type": "color",
+        "$value": "color-mix(in srgb, {color.obsidian.800} 62%, {surface.root})"
+      },
+      "blur": { "$type": "dimension", "$value": "14px" },
+      "border": {
+        "$type": "color",
+        "$value": "color-mix(in srgb, {color.ivory.100} 16%, transparent)"
+      },
+      "highlight": {
+        "$type": "color",
+        "$value": "color-mix(in srgb, {color.ivory.100} 8%, transparent)"
+      },
+      "shadow": {
+        "$type": "shadow",
+        "$value": "0 -8px 24px 0 rgba(0,0,0,0.30)",
+        "$description": "Upward cast — bottom status bar floats over content."
+      },
+      "radius": { "$type": "dimension", "$value": "0px" }
+    }
+  }
+}

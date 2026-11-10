@@ -1,0 +1,122 @@
+{
+  "manifest": "nexus-products/1",
+  "generated": "2026-10-27",
+  "note": "Единый формат интеграции продуктов в NEXUS. Только существующие поверхности; адаптеры не изменены. bus/SSE — live-канал, MCP/control — управление.",
+  "products": [
+    {
+      "id": "craft",
+      "title": "SolidCraft CAD",
+      "adapter": "craft.*",
+      "type": "process+tcp",
+      "launch": {
+        "exe": "D:\\Temp\\solidcraft\\target\\release\\solidcraft.exe",
+        "args": ["--control", "<PORT>", "--sample?"],
+        "token": "%LOCALAPPDATA%\\SolidCraft\\control\\<PORT>.token",
+        "port_discovery": "%LOCALAPPDATA%\\SolidCraft\\control\\current.port"
+      },
+      "control": {
+        "protocol": "json-lines-tcp",
+        "endpoint": "127.0.0.1:<PORT>",
+        "auth": "first-line token, constant-time",
+        "methods": ["ui.inspect", "engine.commands", "engine.execute", "engine.script", "engine.batch", "document.inspect", "control.pending", "control.running", "ui.*"],
+        "limits": {"line": "16MiB", "connections": 16, "request_timeout_s": 60, "batch_timeout_s": 3600},
+        "notes": "busy→429, running:true→504-не-провал (опрос через control.pending), allow_paths для файловых операций"
+      },
+      "capabilities": [
+        "ui.inspect", "engine.commands", "engine.execute (allowlist: sketch./solid./parameters./measure.)",
+        "file.export только в D:\\nexus\\craft-workspace (+allow_paths)", "control.pending/running"
+      ],
+      "ui_mount": {"route": "/tools/solidcraft", "embed": "iframe|panel", "status_badge": "adapter+control.health"},
+      "health": {"probe": "ui.inspect (adapter.frame_ms, documents)", "fallback": "control.running"},
+      "fallback": {
+        "strategy": "adapter.down → read-only status; retry через backoff; GUI не спавнить",
+        "degraded": "canvas.status + lastTool из статуса"
+      }
+    },
+    {
+      "id": "office",
+      "title": "ElixirOffice",
+      "adapter": "office.*",
+      "type": "process+http",
+      "launch": {
+        "exe": "container (server-compose + DocumentServer v9.3.5-rc.1)",
+        "args": ["docker-compose up"],
+        "token": "n/a (Caddy boundary; ключи только в env контейнера)"
+      },
+      "control": {
+        "protocol": "http-loopback",
+        "endpoint": "127.0.0.1:<CADDY_PORT>",
+        "methods": ["GET /healthcheck", "GET /elixir-ai/config.json"],
+        "tier": "A только; Tier B (builder API в редакторе) — отдельный драйвер, вне MVP; Tier C — не обещать"
+      },
+      "capabilities": ["office.session.status", "office.ai.config"],
+      "ui_mount": {"route": "/tools/office", "embed": "iframe", "status_badge": "healthcheck"},
+      "health": {"probe": "GET /healthcheck → 200", "fallback": "status unknown"},
+      "fallback": {
+        "strategy": "AGPL-граница: только HTTP loopback, без линкования; crash-изоляция — отдельный контейнер",
+        "degraded": "статус 'offline' + retry; правки документа не выполнять"
+      },
+      "constraints": ["AGPL-3.0: строго отдельный процесс + HTTP", "ключи только в env контейнеров", "REST-API открытия/сохранения документов не документировано — не обещать"]
+    },
+    {
+      "id": "igma",
+      "title": "desigma",
+      "adapter": "igma.*",
+      "type": "process+stdio-mcp",
+      "launch": {
+        "exe": "desigma-mcp",
+        "args": ["--workspace", "D:\\nexus\\igma-workspace"],
+        "gui": "desigma (GUI, --bridge/--screenshot) — запуск не требуется для адаптера"
+      },
+      "control": {
+        "protocol": "stdio-mcp",
+        "methods": ["desigma_* (15 инструментов)", "igma.adapter.status"],
+        "sessions": ["file (безопасная)", "editor (мост bridge.json + per-launch token, правки в undo-стек)"],
+        "notes": "adapter_busy, timeout may_have_applied, session_mismatch, path_denied"
+      },
+      "capabilities": [
+        "file-сессия: чтение/правка через igma.*", "editor-сессия: только с согласия оператора",
+        "image.export (irreversible)", "node.delete/undo/redo (irreversible — агентам запрещено)"
+      ],
+      "ui_mount": {"route": "/tools/igma", "embed": "panel", "status_badge": "adapter.session"},
+      "health": {"probe": "igma.adapter.status → session/workspace/pid", "fallback": "adapter_busy"},
+      "fallback": {
+        "strategy": "gateway владеет только desigma-mcp; GUI не запускает; workspace-allowlist D:\\nexus\\igma-workspace",
+        "degraded": "session crash → gateway жив; irreversible — prompt оператору"
+      },
+      "constraints": ["альфа-API 0.1.0-alpha.9", "save_file без перезаписи → версионирование в адаптере", "write только в file-сессии"]
+    },
+    {
+      "id": "canvas",
+      "title": "Agent Canvas",
+      "adapter": "canvas.*",
+      "type": "native+readonly",
+      "launch": {"exe": "none (native bridge, in-process)", "args": []},
+      "control": {
+        "protocol": "read-only bus",
+        "sources": {
+          "observed.json": "generatedAt, windows[].{observed,since,source}",
+          "status.json": "generated_at, uptime_sec, windows[].{id,name,kind,dispatch,model,state,task,queue,sent,out,inbox,dev_alive,guard_*,cpu_delta,runId}",
+          "events.jsonl": "{ts,window,kind,event,detail,runId}"
+        },
+        "methods": ["canvas.agents.list", "canvas.agent.get", "canvas.events.tail", "canvas.snapshot.get", "canvas.freshness"],
+        "notes": "runId-gap закрыт (marker run=<id> / derived sha256). dispatch сознательно отсутствует."
+      },
+      "capabilities": ["чтение bus: окна/статус/события/runId", "freshness по generated_at"],
+      "ui_mount": {"route": "/games/nes?→ /canvas или отдельная страница", "embed": "panel|page", "status_badge": "freshness"},
+      "health": {"probe": "canvas.freshness → {since_s}", "fallback": "status 'stale' при превышении порога"},
+      "fallback": {
+        "strategy": "bus offline/stale → ошибки 'offline'/'stale' вместо 500; live-поток остаётся через SSE",
+        "degraded": "кэш последнего снимка + метка stale"
+      },
+      "constraints": ["только чтение", "нет dispatch", "bus/SSE — канал событий, MCP — снимок/хвост"]
+    }
+  ],
+  "cross_cutting": {
+    "auth": "gateway bearer (timing-safe) + per-product token (craft token file, office env, igma session token)",
+    "allow_paths": "файловые операции только в workspace-границах продукта",
+    "isolation": "падение адаптера/продукта не роняет gateway; отдельные процессы для craft/office/igma",
+    "audit": "per-tool JSONL audit (argsHash, без значений секретов)",
+    "transport_policy": "MCP — только управление/снимок; live-поток через bus/SSE (не в этом манифесте)"
+  }
+}

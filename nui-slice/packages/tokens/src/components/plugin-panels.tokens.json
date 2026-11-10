@@ -1,0 +1,106 @@
+{
+  "$description": "Plugin-panels contract (wave-XVI W2, neu-plugin-panels-spec.md): трёхколоночный докинг-каркас по образцу DSH ui-layout — левая панель 264–420 (по умолчанию 280), свёрнутая полоса = iconStrip.width (один источник), правая панель 45%→70%, центр не уже 400px; одна кривая для push/fullscreen (W4 анимирует, тут длительности). Статусы плагина — закрытый словарь на state.* (контраст ≥4.5:1 уже зашит контрактом state-бейджей во всех темах).",
+  "dock": {
+    "leftMin": {
+      "$type": "dimension",
+      "$value": "264px",
+      "$description": "Левая панель: минимальная ширина (спека §1 ui-layout)."
+    },
+    "leftMax": {
+      "$type": "dimension",
+      "$value": "420px",
+      "$description": "Левая панель: максимальная ширина."
+    },
+    "leftDefault": {
+      "$type": "dimension",
+      "$value": "280px",
+      "$description": "Левая панель: ширина по умолчанию."
+    },
+    "leftStrip": {
+      "$type": "dimension",
+      "$value": "{iconStrip.width}",
+      "$description": "Свёрнутая полоса = иконочная полоса 56px — один источник."
+    },
+    "collapseBelow": {
+      "$type": "dimension",
+      "$value": "1024px",
+      "$description": "Ниже 1024px левая панель сворачивается сама (спека §1)."
+    }
+  },
+  "rightPanel": {
+    "widthDefault": {
+      "$type": "dimension",
+      "$value": "45%",
+      "$description": "Правая панель: ширина по умолчанию (доля окна)."
+    },
+    "widthMax": {
+      "$type": "dimension",
+      "$value": "70%",
+      "$description": "Правая панель: верх запомненной ширины."
+    },
+    "centerMin": {
+      "$type": "dimension",
+      "$value": "400px",
+      "$description": "Центральная колонка никогда не уже 400px."
+    },
+    "pushDuration": {
+      "$type": "duration",
+      "$value": "{duration.normal}",
+      "$description": "Раскрытие в режиме push (240ms)."
+    },
+    "fullscreenDuration": {
+      "$type": "duration",
+      "$value": "{duration.slow}",
+      "$description": "Переход в fullscreen (420ms)."
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "$value": "{easing.standard}",
+      "$description": "Общая кривая push/fullscreen — одна на оба режима (W4)."
+    }
+  },
+  "pluginStatus": {
+    "active": {
+      "$type": "color",
+      "$value": "{state.active}",
+      "$description": "Плагин работает."
+    },
+    "failed": {
+      "$type": "color",
+      "$value": "{state.error}",
+      "$description": "Плагин упал при загрузке/в работе."
+    },
+    "overridden": {
+      "$type": "color",
+      "$value": "{state.warning}",
+      "$description": "Запись переопределена слоем патча с приоритетом."
+    },
+    "restartRequired": {
+      "$type": "color",
+      "$value": "{state.paused}",
+      "$description": "Изменение применится после перезапуска."
+    }
+  },
+  "pluginCard": {
+    "bg": {
+      "$type": "color",
+      "$value": "{surface.panel}",
+      "$description": "Карточка плагина на поверхности панели."
+    },
+    "border": {
+      "$type": "color",
+      "$value": "{border.subtle}",
+      "$description": "Волосина карточки."
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.lg}",
+      "$description": "Скругление карточки."
+    },
+    "iconFrame": {
+      "$type": "dimension",
+      "$value": "40px",
+      "$description": "Рамка иконки плагина (manifest icon)."
+    }
+  }
+}

@@ -1,0 +1,913 @@
+/* NEWF "Spaces & Agents" sidebar (#536) — тёмный моноширинный Herdr-look.
+ * Палитра nexus-lux продублирована локально (как voice-panel.module.css):
+ * CSS-переменные newf.module.css живут в скоупе .page/.luxShell и сюда
+ * не доезжают. */
+
+/* Демо-роут /newf-agents: канвас nexus-lux + панель по центру. */
+.demoPage {
+  --nx-canvas: #08090c;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px 16px;
+  background: var(--nx-canvas);
+}
+
+.panel {
+  --nx-canvas: #08090c;
+  --nx-panel: #10131a;
+  --nx-raised: #161a22;
+  --nx-hover: #1c212b;
+  --nx-border: #232833;
+  --nx-muted: #7d8494;
+  --nx-dim: #565d6c;
+  --nx-accent: #d4af37;
+  --nx-blocked: #d9605a;
+  --nx-done: #8fb573;
+  --nx-working: #5f8fb5;
+  --nx-idle: #565d6c;
+  --nx-warn: #f5a63b;
+  --text-primary: #f6f0e4;
+  --text-muted: #b0b7c2;
+  --font-mono: 'IBM Plex Mono', Consolas, monospace;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 264px;
+  min-width: 200px;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 10px 8px;
+  border: 1px solid var(--nx-border);
+  border-radius: 10px;
+  background: var(--nx-panel);
+  color: var(--text-primary);
+  font: 13px/1.45 var(--font-mono);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 4px 8px;
+  border-bottom: 1px solid var(--nx-border);
+}
+
+.headerTitle {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--nx-muted);
+}
+
+.conn {
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--nx-dim);
+}
+.connOk { color: var(--nx-done); }
+.connDim { color: var(--nx-muted); }
+.connBad { color: var(--nx-blocked); }
+
+.offline {
+  margin: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--nx-blocked);
+  border-radius: 6px;
+  color: var(--nx-blocked);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.empty {
+  margin: 0;
+  padding: 8px 4px;
+  color: var(--nx-dim);
+  font-size: 13px;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.groupTitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 4px 2px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--nx-dim);
+  text-transform: uppercase;
+}
+
+.groupCount {
+  padding: 0 5px;
+  border: 1px solid var(--nx-border);
+  border-radius: 999px;
+  color: var(--nx-muted);
+  font-size: 13px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px;
+  border-radius: 6px;
+  color: var(--text-primary);
+}
+.badge:hover { background: var(--nx-hover); }
+.badge:focus-within { outline: 1px solid var(--nx-accent); outline-offset: -1px; }
+
+.dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--nx-idle);
+}
+.dotWorking { background: var(--nx-working); box-shadow: 0 0 6px rgba(95, 143, 181, 0.8); }
+.dotBlocked { background: var(--nx-warn); box-shadow: 0 0 6px rgba(245, 166, 59, 0.7); }
+.dotDone { background: var(--nx-done); }
+.dotError { background: var(--nx-blocked); box-shadow: 0 0 6px rgba(217, 96, 90, 0.7); }
+.dotIdle { background: var(--nx-idle); }
+.dotArchived { background: var(--nx-dim); opacity: 0.55; }
+
+.machineOk { background: var(--nx-done); }
+.machineWarn { background: var(--nx-warn); }
+.machineBad { background: var(--nx-blocked); }
+.machineDim { background: var(--nx-idle); }
+
+.badgeMain {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.badgeName {
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.badgeMeta {
+  overflow: hidden;
+  color: var(--nx-muted);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.badgeTime {
+  flex: none;
+  color: var(--nx-dim);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dotWorking { animation: pulse 2.4s ease-in-out infinite; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+/* W4: attention-бейдж */
+.attentionDot {
+  color: #ffd24a;
+  font-size: 13px;
+  line-height: 1;
+  animation: pulse 1.6s infinite;
+  flex: none;
+  margin-right: 2px;
+}
+
+/* W6: дерево терминалов — collapse/иконки */
+.collapseBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--nx-muted);
+  font-size: 13px;
+  padding: 0 2px;
+  margin-right: 2px;
+}
+.collapseBtn:hover { color: var(--nx-text, #e8e8e8); }
+.treeIcon { font-size: 13px; flex: none; opacity: 0.8; margin-right: 2px; }
+.survivorMark { color: var(--nx-done); opacity: 0.85; }
+
+/* W30: метка архивного терминала */
+.archivedMark { color: var(--nx-dim); opacity: 0.9; }
+
+/* W31: индикатор send-очереди + flush */
+.sendqBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+  border: 1px solid var(--nx-warn);
+  border-radius: 999px;
+  padding: 0 6px;
+  color: var(--nx-warn);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* W32: спейсы — фильтрующая строка + счётчики terms/live */
+.spaceRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 6px;
+}
+.spaceRow[aria-pressed="true"] { background: var(--nx-raised); }
+.spaceStats {
+  display: inline-flex;
+  gap: 4px;
+  flex: none;
+  margin-left: auto;
+  font-size: 13px;
+}
+.spaceLive { color: var(--nx-done); }
+.spaceTerms { color: var(--nx-dim); }
+
+/* W60: spaces-list enrichment — avatar + git-tail */
+.spaceAvatar {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+.spaceGitTail { color: var(--nx-dim); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* W33: events-feed */
+.evControls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 0 6px;
+  flex-wrap: wrap;
+}
+.evType {
+  color: var(--nx-accent);
+  font-size: 13px;
+  flex: none;
+  min-width: 72px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.evTime {
+  color: var(--nx-dim);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  flex: none;
+}
+.evTerm {
+  color: var(--nx-muted);
+  font-size: 13px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* W34: diagnostics drawer */
+.diagDrawer {  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 300px;
+  max-width: 80vw;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  background: var(--nx-panel);
+  border-left: 1px solid var(--nx-border);
+  box-shadow: -8px 0 24px rgb(0 0 0 / 0.35);
+  overflow-y: auto;
+}
+.diagHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.diagSectionTitle {
+  margin: 6px 4px 2px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--nx-dim);
+}
+.diagRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.diagTableWrap {
+  overflow: auto;
+  max-height: 180px;
+  border: 1px solid var(--nx-border);
+  border-radius: 6px;
+}
+.diagTable {
+  width: 100%;
+  border-collapse: collapse;
+  font: 13px var(--font-mono);
+}
+.diagTable th,
+.diagTable td {
+  text-align: left;
+  padding: 2px 6px;
+  border-bottom: 1px solid var(--nx-border);
+  color: var(--text-muted);
+}
+.diagTable th { color: var(--nx-dim); font-weight: 600; white-space: nowrap; }
+
+/* W35: терминал-грид (summary + lazy-screen) */
+.summaryRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 6px;
+}
+.summarySpace {
+  color: var(--nx-dim);
+  font-size: 13px;
+  margin-left: 4px;
+}
+.summaryLine {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--nx-muted);
+  font-size: 13px;
+}
+.summaryScreen {
+  margin: 4px 0 2px;
+  width: 100%;
+  border: 1px solid var(--nx-border);
+  border-radius: 6px;
+  background: var(--nx-canvas);
+  overflow: hidden;
+}
+.summaryScreenPre {
+  margin: 0;
+  padding: 4px 6px;
+  max-height: 120px;
+  overflow: auto;
+  font: 13px/1.35 var(--font-mono);
+  color: var(--text-muted);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+/* W81: xterm+WebGL canvas — те же габариты, что у pre-фолбэка */
+.gpuScreen {
+  height: 120px;
+  max-height: 120px;
+  overflow: hidden;
+  background: var(--nx-canvas);
+  padding: 2px 4px;
+}
+.gpuScreen .xterm { height: 100%; }
+
+/* W37: alert-rules */
+.alertChip {
+  flex: none;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  padding: 0 8px;
+  border: 1px solid var(--nx-border);
+}
+.alertOn { color: var(--nx-done); border-color: var(--nx-done); }
+.alertOff { color: var(--nx-dim); }
+
+/* W38: share-диалог и активные шары */
+.shareDialog {
+  border: 1px solid var(--nx-accent);
+  border-radius: 8px;
+  background: var(--nx-raised);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.shareRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.shareLabel {
+  color: var(--nx-muted);
+  font-size: 13px;
+  min-width: 60px;
+}
+.shareSelect {
+  flex: 1;
+  font: 13px var(--font-mono);
+  color: var(--text-primary);
+  background: var(--nx-panel);
+  border: 1px solid var(--nx-border);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+.shareResult {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.shareUrl {
+  word-break: break-all;
+  font-size: 13px;
+  color: var(--nx-accent);
+  background: var(--nx-panel);
+  border-radius: 4px;
+  padding: 4px 6px;
+}
+
+/* W39: input-log viewer */
+.summaryActions {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+.inputLogWrap { position: relative; }
+.inputLogPopover {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  width: 260px;
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 50;
+  background: var(--nx-panel);
+  border: 1px solid var(--nx-accent);
+  border-radius: 8px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.4);
+}
+.inputLogList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.inputLogItem {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font: 13px var(--font-mono);
+  padding: 2px 4px;
+  border-radius: 4px;
+  border: 1px solid var(--nx-border);
+}
+.inputLogTime { color: var(--nx-dim); flex: none; font-variant-numeric: tabular-nums; }
+.inputLogText { flex: 1; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.inputLogEnter { color: var(--nx-accent); flex: none; }
+
+/* W41: input-line в expanded-карточке */
+.inputLine {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-top: 1px solid var(--nx-border);
+}
+.inputLineField {
+  flex: 1;
+  min-width: 0;
+  font: 13px var(--font-mono);
+  color: var(--text-primary);
+  background: var(--nx-panel);
+  border: 1px solid var(--nx-border);
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+.inputLineField:focus { outline: 1px solid var(--nx-accent); }
+.inputLineError { color: var(--nx-blocked); font-size: 13px; }
+
+/* W43+W76: herdr-паритет term-card — рамочное окно.
+ * Токены nexus-lux продублированы на .termFrame: карточка живёт вне
+ * .panel-скоупа (grid — корень страницы), var(--nx-*) обязаны резолвиться. */
+.termFrame {
+  --nx-bg: #0b0d11;
+  --nx-panel: #10131a;
+  --nx-raised: #161a22;
+  --nx-hover: #1c212b;
+  --nx-border: #232833;
+  --nx-fg: #e9e4d6;
+  --nx-muted: #7d8494;
+  --nx-dim: #565d6c;
+  --nx-accent: #d4af37;
+  --nx-blocked: #d9605a;
+  --nx-done: #8fb573;
+  --nx-working: #5f8fb5;
+
+  width: 100%;
+  margin-top: 4px;
+  background: var(--nx-panel);
+  border: 1px solid var(--nx-border);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 18px rgb(0 0 0 / 0.4);
+}
+.termFrameActive { border-color: var(--nx-working); }   /* working #5f8fb5, не done */
+.termFrameMax { position: fixed; inset: 8px; width: auto; z-index: 70; }
+/* W67: pin = всегда поверх (других карточек/панелей) */
+.termFramePinned { z-index: 50000; border-color: var(--nx-accent); box-shadow: 0 0 0 1px var(--nx-accent), 0 4px 18px rgb(0 0 0 / 0.5); }
+/* W66: hover-controls — контролы titlebar видны по hover/focus (как herdr) */
+.termControls { opacity: 0; transition: opacity 120ms ease; }
+.termTitlebar:hover .termControls,
+.termTitlebar:focus-within .termControls { opacity: 1; }
+.termControls:focus-within { opacity: 1; }
+/* W76: спека mods/pane — header 30px, px10, gap8, text12, bg background */
+.termTitlebar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  padding: 0 10px;
+  background: var(--nx-bg);
+  border-bottom: 1px solid var(--nx-border);
+  user-select: none;
+}
+.termIcon { color: var(--nx-accent); font-size: 14px; }
+.termTitleText {
+  flex: 1;
+  min-width: 0;
+  max-width: 260px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--nx-fg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.termControls { display: inline-flex; gap: 2px; }
+.termControls button {
+  background: transparent;
+  border: 1px solid var(--nx-border);
+  color: var(--nx-dim);
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1;
+  padding: 3px;
+  cursor: pointer;
+}
+.termControls button:hover { background: var(--nx-hover); color: var(--nx-fg); }
+.termBody { min-height: 80px; }
+/* W76: футер 28px (спека statusbar) */
+.termStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 10px;
+  border-top: 1px solid var(--nx-border);
+  background: var(--nx-panel);
+  font-size: 13px;
+}
+/* W76: статус-глифы по спеке mods/pane —
+ * working → spinner 12px spin 900ms цвет working;
+ * blocked → pill «Needs you» 10.5 semibold bg blocked+"26";
+ * done → dot 7px bg done; idle/archived → ничего. */
+.termState { display: inline-flex; align-items: center; flex: none; }
+.termSpinner {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  border: 2px solid var(--nx-working);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: termSpin 0.9s linear infinite;
+}
+@keyframes termSpin { to { transform: rotate(360deg); } }
+.termNeedsYou {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--nx-blocked) 15%, transparent);
+  color: var(--nx-blocked);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.termDoneDot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 4px;
+  background: var(--nx-done);
+}
+.termMeta { color: var(--nx-muted); white-space: nowrap; }
+.termContext {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+  color: var(--nx-dim);
+}
+
+/* W47: multi-select на гриде */
+.multiSelected { outline: 1px solid var(--nx-accent); outline-offset: -1px; }
+
+/* W49: command palette */
+.palette {
+  position: fixed;
+  top: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 360px;
+  max-width: 90vw;
+  z-index: 100;
+  background: #0d1117;
+  border: 1px solid var(--nx-accent);
+  border-radius: 10px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 12px 40px rgb(0 0 0 / 0.5);
+}
+.paletteInputRow { display: flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--nx-border); padding-bottom: 4px; }
+.palettePrompt { color: var(--nx-accent); font: 14px var(--font-mono); }
+.paletteInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font: 13px var(--font-mono);
+  outline: none;
+}
+.paletteList { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 1px; max-height: 260px; overflow-y: auto; }
+.paletteItem {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font: 13px var(--font-mono);
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.paletteItem:hover { background: var(--nx-raised); }
+
+/* W52: toasts */
+.toastTray {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+.toastItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--nx-accent);
+  background: rgb(212 175 55 / 0.08);
+  border-radius: 6px;
+  padding: 3px 6px;
+  font: 13px var(--font-mono);
+  color: var(--text-muted);
+}
+
+/* W50: agent-badge в titlebar */
+.termAgent {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--nx-accent);
+  border: 1px solid var(--nx-accent);
+  border-radius: 999px;
+  padding: 0 6px;
+  white-space: nowrap;
+}
+
+/* W51: machine-chip + live-индикатор */
+.termMachineChip {
+  border: 1px solid var(--nx-border);
+  border-radius: 999px;
+  padding: 0 6px;
+}
+.termLive { color: var(--nx-done); }
+
+/* W53: controls + счётчик working */
+.gridControls { display: inline-flex; gap: 4px; margin-left: auto; }
+.workingCount { color: var(--nx-done); font-size: 13px; }
+
+/* W59: глобальная status-bar (28px) */
+.statusBar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 14px;
+  height: 28px;
+  border-top: 1px solid var(--nx-border);
+  background: var(--nx-panel);
+  font-size: 13px;
+  color: var(--nx-muted);
+}
+.statusItem { white-space: nowrap; }
+.statusNeeds { color: var(--nx-blocked); }
+.statusHint { margin-left: auto; color: var(--nx-dim); }
+
+/* W11: labels-бейджи */
+.labelChips { display: inline-flex; gap: 2px; flex-wrap: wrap; margin-left: 4px; }
+.labelChip {
+  font: 13px var(--font-mono);
+  border: 1px solid var(--nx-border);
+  border-radius: 3px;
+  padding: 0 3px;
+  color: var(--nx-muted);
+  opacity: 0.85;
+}
+
+/* W14: worktree-статусы */
+.wtDirty { color: var(--nx-working); font-size: 13px; margin-left: 4px; }
+.wtFailed { color: var(--nx-blocked); font-size: 13px; margin-left: 4px; }
+
+/* W15: audit-панель */
+.filterRow { display: flex; flex-wrap: wrap; gap: 4px; padding: 2px 0 6px; }
+.filterChip {
+  font: 13px var(--font-mono);
+  border: 1px solid var(--nx-border);
+  background: transparent;
+  color: var(--nx-muted);
+  border-radius: 999px;
+  padding: 0 8px;
+  cursor: pointer;
+}
+.filterChip:hover { color: var(--nx-text, #e8e8e8); }
+.filterActive { border-color: var(--nx-accent); color: var(--nx-accent); }
+.verifyBadge { color: var(--nx-done); font-weight: 700; margin-left: 4px; }
+
+/* W16: replay-player */
+.replayControls { display: flex; align-items: center; gap: 6px; padding: 2px 0 6px; flex-wrap: wrap; }
+.replayControls input[type="range"] { flex: 1; min-width: 80px; }
+.replayOutput {
+  background: var(--surface-glass);
+  border: 1px solid var(--nx-border);
+  border-radius: 6px;
+  padding: 8px;
+  font: 13px/1.4 var(--font-mono);
+  max-height: 200px;
+  overflow: auto;
+  white-space: pre-wrap;
+}
+
+/* W18: batch-бар */
+.batchBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  margin-bottom: 4px;
+  border: 1px solid var(--nx-accent);
+  border-radius: 6px;
+  font: 13px var(--font-mono);
+}
+
+/* W20: approval-баннер */
+.approvalBanner {
+  border: 1px solid var(--nx-blocked);
+  background: rgb(217 96 90 / 0.08);
+  border-radius: 6px;
+  padding: 6px;
+  margin-bottom: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font: 13px var(--font-mono);
+}
+.approvalRow { display: flex; align-items: center; gap: 6px; }
+.approvalRow code { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.approvalInput {
+  flex: 1;
+  min-width: 80px;
+  font: 13px var(--font-mono);
+  color: var(--text-primary);
+  background: var(--nx-raised);
+  border: 1px solid var(--nx-border);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+.approvalProgress { color: var(--nx-warn); font-size: 13px; white-space: nowrap; }
+.approvalBy { color: var(--nx-muted); }
+
+/* W23: notifications tray */
+.tray { position: relative; display: inline-block; }
+.trayToggle {
+  border: 1px solid var(--nx-border);
+  background: transparent;
+  color: var(--nx-muted);
+  border-radius: 6px;
+  font: 13px var(--font-mono);
+  padding: 2px 8px;
+  cursor: pointer;
+}
+.trayPanel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  width: 300px;
+  max-height: 320px;
+  background: var(--surface-elevated, #10131a);
+  border: 1px solid var(--nx-border);
+  border-radius: 8px;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+}
+.trayHeader { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; border-bottom: 1px solid var(--nx-border); }
+.trayList { margin: 0; padding: 4px; list-style: none; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+.trayItem { display: flex; gap: 6px; align-items: center; font: 13px var(--font-mono); border: 1px solid var(--nx-border); border-radius: 4px; padding: 4px 6px; }
+.trayItem[data-kind="attention"] { border-color: var(--nx-blocked); }
+.trayItem[data-kind="error"] { border-color: var(--nx-blocked); }
+.trayText { flex: 1; }
+
+/* W27: health-panel */
+.healthRow { display: flex; flex-direction: column; gap: 4px; }
+.healthCell { font: 13px var(--font-mono); border-radius: 4px; padding: 2px 6px; border: 1px solid var(--nx-border); }
+.healthOk { color: var(--nx-done); border-color: var(--nx-done); }
+.healthBad { color: var(--nx-blocked); border-color: var(--nx-blocked); }
+.healthUnknown { color: var(--nx-muted); }
+
+/* W29: заметка */
+.noteChip {
+  font: 13px var(--font-mono);
+  border: 1px solid var(--nx-border);
+  border-radius: 3px;
+  padding: 0 3px;
+  color: var(--nx-muted);
+  margin-left: 4px;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

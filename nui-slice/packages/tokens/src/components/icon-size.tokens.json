@@ -1,0 +1,21 @@
+{
+  "$description": "W2-128 · иконочная сетка: каноническая шкала размеров и контекстные слоты (toolbar/tab/status/button/feature).",
+  "iconSize": {
+    "$type": "dimension",
+    "xs": { "$value": "12px", "$description": "status/dot, плотные строки" },
+    "sm": { "$value": "16px", "$description": "button, tab, nav item" },
+    "md": { "$value": "20px", "$description": "toolbar, panel header, карточки" },
+    "lg": { "$value": "24px", "$description": "акцентные действия" },
+    "xl": { "$value": "32px", "$description": "feature-иконки empty/error/unavailable" },
+    "tap": { "$value": "40px", "$description": "hit-area, совпадает с iconStrip.tapSize" }
+  },
+  "iconSlot": {
+    "$type": "dimension",
+    "status": { "$value": "{iconSize.xs}" },
+    "button": { "$value": "{iconSize.sm}" },
+    "tab": { "$value": "{iconSize.sm}" },
+    "toolbar": { "$value": "{iconSize.md}" },
+    "panelHeader": { "$value": "{iconSize.md}" },
+    "feature": { "$value": "{iconSize.xl}" }
+  }
+}

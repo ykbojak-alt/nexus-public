@@ -1,0 +1,92 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  height: 22px;
+  padding: 0 var(--nexus-space-2, 8px);
+  border-radius: var(--nexus-radius-sm, 4px);
+  border: 1px solid var(--nexus-border-default, rgba(246,240,228,0.12));
+  font-family: var(--nexus-type-status-font-family, 'Inter Tight', system-ui, sans-serif);
+  font-size: var(--nexus-type-status-font-size, 13px);
+  font-weight: var(--nexus-type-status-font-weight, 600);
+  letter-spacing: var(--nexus-type-status-letter-spacing, 0.08em);
+  text-transform: uppercase;
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+.dot {
+  width: var(--nexus-agent-card-status-dot, 8px);
+  height: var(--nexus-agent-card-status-dot, 8px);
+  border-radius: var(--nexus-radius-full, 9999px);
+  background: currentColor;
+}
+
+/* Each domain status binds its state.* role: solid color-mix bg so
+   axe can compute contrast honestly (gradients → axe "incomplete"). */
+.root[data-status='online'],
+.root[data-status='complete'] {
+  color: var(--nexus-state-online, #36BE79);   background:
+  color-mix(in srgb, var(--nexus-state-online, #36BE79) 14%, var(--nexus-surface-panel, #1A1A21));
+  border-color: transparent;
+}
+.root[data-status='active']   { color: var(--nexus-state-active, #D0B169);   background:
+  color-mix(in srgb, var(--nexus-state-active, #D0B169) 14%, var(--nexus-surface-panel, #1A1A21)); border-color: transparent; }
+.root[data-status='thinking'] { color: var(--nexus-state-thinking, #7FB9FF);   background:
+  color-mix(in srgb, var(--nexus-state-thinking, #7FB9FF) 14%, var(--nexus-surface-panel, #1A1A21)); border-color: transparent; }
+.root[data-status='syncing']  { color: var(--nexus-state-syncing, #539EFF);   background:
+  color-mix(in srgb, var(--nexus-state-syncing, #539EFF) 14%, var(--nexus-surface-panel, #1A1A21)); border-color: transparent; }
+.root[data-status='validating'] { color: var(--nexus-state-validating, #B4A1F7);   background:
+  color-mix(in srgb, var(--nexus-state-validating, #B4A1F7) 14%, var(--nexus-surface-panel, #1A1A21)); border-color: transparent; }
+.root[data-status='executing'] { color: var(--nexus-state-executing, #F5A63B);   background:
+  color-mix(in srgb, var(--nexus-state-executing, #F5A63B) 14%, var(--nexus-surface-panel, #1A1A21)); border-color: transparent; }
+.root[data-status='waiting']  { color: var(--nexus-state-waiting, #B0B7C2);   background:
+  color-mix(in srgb, var(--nexus-state-waiting, #B0B7C2) 14%, var(--nexus-surface-panel, #1A1A21)); border-color: transparent; }
+.root[data-status='paused']   { color: var(--nexus-state-paused, #B0B7C2);   background:
+  color-mix(in srgb, var(--nexus-state-paused, #B0B7C2) 14%, var(--nexus-surface-panel, #1A1A21)); border-color: transparent; }
+.root[data-status='error']    { color: var(--nexus-state-error, #F97F66);   background:
+  color-mix(in srgb, var(--nexus-state-error, #F97F66) 14%, var(--nexus-surface-panel, #1A1A21)); border-color: transparent; }
+.root[data-status='warning']  { color: var(--nexus-state-warning, #F5A63B);   background:
+  color-mix(in srgb, var(--nexus-state-warning, #F5A63B) 14%, var(--nexus-surface-panel, #1A1A21)); border-color: transparent; }
+.root[data-status='offline']  { color: var(--nexus-state-offline, #B0B7C2);   background:
+  color-mix(in srgb, var(--nexus-state-offline, #B0B7C2) 14%, var(--nexus-surface-panel, #1A1A21)); border-color: transparent; }
+.root[data-status='info']     { color: var(--nexus-state-info, #539EFF);   background:
+  color-mix(in srgb, var(--nexus-state-info, #539EFF) 14%, var(--nexus-surface-panel, #1A1A21)); border-color: transparent; }
+
+/* W2-132 · non-color distinction inside same-color groups — shape/motion
+   survives forced-colors and reduced-motion fallbacks:
+   - syncing vs info (#539EFF): open arc + spin (static arc when reduced)
+   - thinking vs syncing-family (#7FB9FF≈#539EFF): dots-cascade + label
+   - executing vs warning (#F5A63B): warning is a triangle
+   - waiting/paused/offline (#B0B7C2): filled / two bars / hollow ring
+   - online vs complete (#36BE79): circle / check mark */
+.root[data-status='syncing'] .dot {
+  background: conic-gradient(currentColor 0deg 270deg, transparent 270deg 360deg);
+  animation: statusSpin var(--nexus-duration-slow, 420ms) linear infinite;
+}
+.root[data-status='warning'] .dot {
+  border-radius: 0;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+.root[data-status='paused'] .dot {
+  border-radius: 0;
+  background: linear-gradient(90deg, currentColor 0 33%, transparent 33% 66%, currentColor 66% 100%);
+}
+.root[data-status='offline'] .dot {
+  background: transparent;
+  border: 1.5px solid currentColor;
+  box-sizing: border-box;
+}
+.root[data-status='complete'] .dot {
+  border-radius: 0;
+  clip-path: polygon(14% 44%, 0 65%, 40% 100%, 100% 16%, 84% 0, 40% 68%);
+}
+
+@keyframes statusSpin { to { transform: rotate(1turn); } }
+@media (prefers-reduced-motion: reduce) {
+  .root[data-status='syncing'] .dot { animation: none; }
+}
+
+@media (forced-colors: active) {
+  .root[data-status] { background: Canvas; border-color: CanvasText; color: CanvasText; }
+  .root[data-status='offline'] .dot { border-color: CanvasText; }
+}

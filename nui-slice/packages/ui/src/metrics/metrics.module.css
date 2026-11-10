@@ -1,0 +1,223 @@
+/* Metrics family — cards, rings, gauges, bars, sparklines. Token-driven only. */
+.metricCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-2, 8px);
+  min-width: 160px;
+}
+
+.metricLabel {
+  font: var(--nexus-type-caption-font-weight, 500) var(--nexus-type-caption-font-size, 13px)/var(--nexus-type-caption-line-height, 18px) var(--nexus-type-caption-font-family, 'Inter Tight', system-ui, sans-serif);
+  color: var(--nexus-text-tertiary, #8E97A5);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.metricValue {
+  font: var(--nexus-type-metric-font-weight, 500) var(--nexus-type-metric-font-size, 28px)/var(--nexus-type-metric-line-height, 32px) var(--nexus-type-metric-font-family, 'IBM Plex Mono', monospace);
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.metricDelta {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-family: var(--nexus-type-code-font-family, 'IBM Plex Mono', monospace);
+}
+
+.metricDelta[data-dir='up'] {
+  color: var(--nexus-state-online, #36BE79);
+}
+
+.metricDelta[data-dir='down'] {
+  color: var(--nexus-state-error, #F97F66);
+}
+
+.metricDelta[data-dir='flat'] {
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.strip {
+  display: flex;
+  align-items: stretch;
+  gap: var(--nexus-space-6, 24px);
+}
+
+.strip>*+* {
+  border-left: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.06));
+  padding-left: var(--nexus-space-6, 24px);
+}
+
+.ringWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ringCenter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--nexus-type-code-font-family, 'IBM Plex Mono', monospace);
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.ringCenter small {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.gauge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.gaugeDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.gaugeDot[data-health='ok'] {
+  background: var(--nexus-state-online, #36BE79);
+}
+
+.gaugeDot[data-health='warn'] {
+  background: var(--nexus-state-warning, #F5A63B);
+}
+
+.gaugeDot[data-health='error'] {
+  background: var(--nexus-state-error, #F97F66);
+}
+
+.resBar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-1, 4px);
+  min-width: 120px;
+  /* Per-instance hue comes from an inherited `--resbar-color` / `--resbar-head`
+     set by whoever embeds the bar (the ALICE home rail paints CPU gold,
+     memory cyan, disk cyan→gold). Unset → the NEXUS accent ramp, unchanged. */
+  --rb-base: var(--resbar-color, var(--nexus-meter-fill, var(--nexus-accent-primary, #C9A45C)));
+  --rb-head: var(--resbar-head, var(--rb-base));
+}
+
+/* Recessed capsule well: dark glass channel with a hairline rim, so the
+   lit fill reads as something glowing inside a groove, not as paint on a card. */
+.resBarTrack {
+  position: relative;
+  height: 8px;
+  border-radius: var(--nexus-radius-full, 9999px);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--nexus-color-obsidian-950) 62%, transparent), color-mix(in srgb, var(--nexus-color-obsidian-950) 32%, transparent)),
+    var(--nexus-border-subtle, rgba(246, 240, 228, 0.06));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--nexus-color-ivory-100) 7%, transparent),
+    inset 0 1px 2px color-mix(in srgb, var(--nexus-color-obsidian-950) 50%, transparent);
+}
+
+/* Fill: dim tail → body → white-hot head, with the bloom it casts. */
+.resBarFill {
+  height: 100%;
+  border-radius: var(--nexus-radius-full, 9999px);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--rb-base) 34%, transparent) 0%,
+    var(--rb-base) 62%,
+    color-mix(in srgb, var(--rb-head) 55%, var(--nexus-color-quartz-50, #FCFCFD)) 100%
+  );
+  box-shadow:
+    0 0 12px color-mix(in srgb, var(--rb-base) 42%, transparent),
+    0 0 3px color-mix(in srgb, var(--rb-base) 68%, transparent);
+  transition: width var(--nexus-duration-base, 200ms) ease;
+}
+
+/* Thresholds ride the same capsule, only the hue changes — same language. */
+.resBarFill[data-level='warn'] {
+  --rb-base: var(--nexus-state-warning, #F5A63B);
+  --rb-head: var(--nexus-state-warning, #F5A63B);
+}
+
+.resBarFill[data-level='critical'] {
+  --rb-base: var(--nexus-state-error, #F97F66);
+  --rb-head: var(--nexus-state-error, #F97F66);
+}
+
+/* Zero or "n/a" — nothing to light up; a bloom would read as a measurement. */
+.resBarFill[data-empty='true'] {
+  opacity: 0;
+  box-shadow: none;
+}
+
+/* Inline: label | track | value on one row (ALICE home rail meters). */
+.resBar[data-layout='inline'] {
+  display: grid;
+  grid-template-columns: minmax(56px, auto) minmax(60px, 1fr) auto;
+  align-items: center;
+  gap: var(--nexus-space-3, 12px);
+  min-width: 0;
+}
+
+.resBar[data-layout='inline'] .resBarLabel {
+  display: contents;
+}
+
+.resBar[data-layout='inline'] .resBarLabel > span:first-child {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.resBar[data-layout='inline'] .resBarLabel > span:last-child {
+  grid-column: 3;
+  grid-row: 1;
+  text-align: right;
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.resBar[data-layout='inline'] .resBarTrack {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.resBarLimit {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.resBarLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+  font-family: var(--nexus-type-code-font-family, 'IBM Plex Mono', monospace);
+  font-variant-numeric: tabular-nums;
+}
+
+.spark {
+  display: block;
+}
+
+.sparkLine {
+  fill: none;
+  stroke: var(--nexus-accent-primary, #C9A45C);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sparkArea {
+  fill: var(--nexus-accent-primary-soft, rgba(201, 164, 92, 0.16));
+  stroke: none;
+}
+.metricValue[data-empty] {
+  font-size: 14px;
+  color: var(--nexus-text-tertiary, #8E97A5);
+}

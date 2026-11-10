@@ -1,0 +1,59 @@
+{
+  "$description": "Title tokens — единый слой заголовков панелей и секций (wave-XXVI W2-126). Типографика алиасится на каноническую type-шкалу: title.panel → type.panelTitle (18/26·500), title.section → type.sectionTitle (28/36·400), title.screen → type.pageTitle (40/48·300). Цвета и хром — семантические ссылки, поэтому Alice/Nexus резолвят их автоматически без дубликатов.",
+  "title": {
+    "panel": {
+      "$type": "typography",
+      "$value": "{type.panelTitle}",
+      "$comment": "малая ступень — заголовок панели (dock head, tool-card, compact-блок)"
+    },
+    "section": {
+      "$type": "typography",
+      "$value": "{type.sectionTitle}",
+      "$comment": "заголовок секции внутри экрана"
+    },
+    "screen": {
+      "$type": "typography",
+      "$value": "{type.pageTitle}",
+      "$comment": "заголовок экрана (h1)"
+    },
+    "color": {
+      "$type": "color",
+      "$value": "{text.primary}"
+    },
+    "subtitleColor": {
+      "$type": "color",
+      "$value": "{text.secondary}",
+      "$comment": "scope-line/подзаголовок под титулом"
+    },
+    "iconColor": {
+      "$type": "color",
+      "$value": "{accent.primary}",
+      "$comment": "декоративный глиф слева от заголовка — акцент темы"
+    },
+    "divider": {
+      "$type": "color",
+      "$value": "{border.subtle}",
+      "$comment": "нижняя hairline-кромка шапки панели"
+    },
+    "gap": {
+      "$type": "dimension",
+      "$value": "{space.2}",
+      "$comment": "icon↔title↔actions базовый зазор; масштабируется density-режимом"
+    },
+    "iconSize": {
+      "$type": "dimension",
+      "$value": "{iconSlot.panelHeader}",
+      "$comment": "квадрат ведущей иконки — иконочная сетка W2-128 (panel-header slot, 20px)"
+    },
+    "paddingBlock": {
+      "$type": "dimension",
+      "$value": "{space.1}",
+      "$comment": "вертикальный ритм шапки панели (dock-head: 4px)"
+    },
+    "paddingInline": {
+      "$type": "dimension",
+      "$value": "{space.2}",
+      "$comment": "горизонтальный ритм шапки панели (dock-head: 8px)"
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "$description": "W2-134 · единый скроллбар: размеры и цвета полосы на токенах.",
+  "scrollbar": {
+    "width": {
+      "$type": "dimension",
+      "$value": "10px",
+      "$comment": "webkit inline/block size; Firefox — scrollbar-width: thin"
+    },
+    "track": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {surface.root} 0%, transparent)",
+      "$comment": "трек прозрачный — панель остаётся стеклом"
+    },
+    "thumb": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {text.tertiary} 35%, transparent)"
+    },
+    "thumbHover": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {text.secondary} 55%, transparent)"
+    },
+    "thumbActive": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {accent.primary} 55%, transparent)"
+    },
+    "borderInset": {
+      "$type": "dimension",
+      "$value": "3px",
+      "$comment": "прозрачная рамка вокруг thumb → тонкий визуальный ползунок"
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.full}"
+    }
+  }
+}

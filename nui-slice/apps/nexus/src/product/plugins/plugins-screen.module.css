@@ -1,0 +1,228 @@
+/* Экран «Плагины» (волна XVI) — токены W2, текст ≥13px. */
+
+.page {
+  padding: var(--nexus-space-5, 20px) var(--nexus-space-6, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-4, 16px);
+  max-width: 960px;
+}
+
+.inventoryState {
+  display: contents;
+}
+
+.recoveryBanner {
+  padding: var(--nexus-space-3, 12px) var(--nexus-space-4, 16px);
+  border: 1px solid var(--nexus-border-default, rgba(128, 128, 128, 0.3));
+  border-inline-start: 3px solid var(--nexus-state-warning, #93540F);
+  border-radius: var(--nexus-radius-md, 12px);
+  background: var(--nexus-surface-elevated, #232329);
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.recoveryBanner p {
+  margin: var(--nexus-space-1, 4px) 0 0;
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.rowArea {
+  padding: 0 var(--nexus-space-3, 12px) var(--nexus-space-2, 8px);
+}
+
+.rowsToggle {
+  background: none;
+  border: 0;
+  color: var(--nexus-text-secondary, #54545F);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  cursor: pointer;
+  padding: var(--nexus-space-1, 4px) 0;
+}
+
+.rowsToggle:hover {
+  color: var(--nexus-text-primary, #f0ead8);
+}
+
+.rowList {
+  list-style: none;
+  margin: var(--nexus-space-1, 4px) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-1, 4px);
+}
+
+.rowItem {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-3, 12px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.rowTitle {
+  flex: 1;
+  min-width: 0;
+  color: var(--nexus-text-primary, #f0ead8);
+}
+
+.rowSlot {
+  color: var(--nexus-text-tertiary, rgba(240, 234, 216, 0.55));
+  font-family: var(--nexus-font-mono, monospace);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.diag {
+  margin: var(--nexus-space-1, 4px) var(--nexus-space-3, 12px) var(--nexus-space-2, 8px);
+  color: var(--nexus-state-warning, var(--nexus-text-accent, #c9a45c));
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.muted {
+  color: var(--nexus-text-secondary, #54545F);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.detail {
+  padding: var(--nexus-space-4, 16px) var(--nexus-space-5, 20px);
+}
+
+.detailHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--nexus-space-3, 12px);
+}
+
+.detailHead h2 {
+  margin: 0;
+  font-size: var(--nexus-type-panel-title-font-size, 20px);
+}
+
+.backLink {
+  color: var(--nexus-text-link, #7fb9ff);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.kv {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px var(--nexus-space-4, 16px);
+  margin: var(--nexus-space-3, 12px) 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.kv dt {
+  color: var(--nexus-text-tertiary, rgba(240, 234, 216, 0.55));
+}
+
+.kv dd {
+  margin: 0;
+  color: var(--nexus-text-primary, #f0ead8);
+}
+
+.rowsHead {
+  margin: var(--nexus-space-3, 12px) 0 var(--nexus-space-2, 8px);
+  font-size: var(--nexus-type-body-font-size, 14px);
+}
+
+.cfgArea {
+  margin-top: var(--nexus-space-3, 12px);
+}
+
+.installNote {
+  padding: var(--nexus-space-3, 12px) var(--nexus-space-4, 16px);
+}
+
+.installNote h2 {
+  margin: 0 0 var(--nexus-space-1, 4px);
+  font-size: var(--nexus-type-body-font-size, 14px);
+}
+
+.installPrefs,
+.installJournal {
+  margin-top: var(--nexus-space-4, 16px);
+  padding: var(--nexus-space-4, 16px);
+}
+
+.installPrefs h2,
+.installJournal h2 {
+  margin: 0;
+  font-size: var(--nexus-type-body-font-size, 14px);
+}
+
+.installJournalHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--nexus-space-3, 12px);
+  margin-bottom: var(--nexus-space-3, 12px);
+}
+
+.installJournalHead p {
+  margin: var(--nexus-space-1, 4px) 0 0;
+  color: var(--nexus-text-secondary, #54545F);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.prefRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nexus-space-3, 12px);
+  margin-top: var(--nexus-space-3, 12px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.installPrefs > .muted {
+  margin: var(--nexus-space-2, 8px) 0 0;
+}
+
+.auditList {
+  display: grid;
+  gap: var(--nexus-space-2, 8px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.auditRow {
+  min-width: 0;
+  padding: var(--nexus-space-3, 12px);
+  border: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-md, 8px);
+  overflow-wrap: anywhere;
+}
+
+.auditRow p {
+  margin: var(--nexus-space-1, 4px) 0 0;
+  color: var(--nexus-text-secondary, #b0b7c2);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.auditHead,
+.auditMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nexus-space-2, 8px);
+  justify-content: space-between;
+}
+
+.auditHead {
+  color: var(--nexus-text-primary, #f6f0e4);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.auditHead [data-decision='deny'] {
+  color: var(--nexus-state-error, #ee5b3f);
+}
+
+.auditHead [data-decision='allow'] {
+  color: var(--nexus-state-success, #38b878);
+}
+
+.auditMeta {
+  margin-top: var(--nexus-space-1, 4px);
+  color: var(--nexus-text-tertiary, #9299a5);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}

@@ -1,0 +1,120 @@
+.panel {
+  /* Панель рендерится вне .page newf — дублируем палитру nexus-lux,
+     иначе var(--nx-*) падали бы в fallback (GitHub-dark), не в тему. */
+  --nx-panel: #10131a;
+  --nx-bg-elevated: #161a22;
+  --nx-border-subtle: #2a2f3a;
+  --nx-fg: var(--nexus-text-primary, #f6f0e4);
+  --nx-muted: #7d8494;
+  --nx-accent: #d4af37;
+  --nx-done: #8fb573;
+  --nx-blocked: #d9605a;
+  --nx-working: #5f8fb5;
+  width: 100%;
+  max-width: 360px;
+  background: var(--nx-panel, #161b22);
+  border: 1px solid var(--nx-border-subtle, #30363d);
+  border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+  padding: 12px;
+  font-size: 13px;
+  color: var(--nx-fg, #e6edf3);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.status {
+  font-weight: 500;
+  font-size: 13px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(127, 127, 127, 0.15);
+  color: var(--nx-muted, #9da7b3);
+}
+.statusOk {
+  background: rgba(63, 185, 80, 0.16);
+  color: var(--nx-done, #3fb950);
+}
+.statusWarn {
+  background: rgba(217, 96, 90, 0.16);
+  color: var(--nx-blocked, #f0a832);
+}
+
+.textarea {
+  width: 100%;
+  min-height: 64px;
+  resize: vertical;
+  box-sizing: border-box;
+  background: var(--nx-bg-elevated, #0d1117);
+  border: 1px solid var(--nx-border-subtle, #30363d);
+  border-radius: 8px;
+  color: inherit;
+  padding: 8px;
+  font: inherit;
+  line-height: 1.4;
+}
+.textarea:focus {
+  border-color: var(--nx-accent, #58a6ff);
+}
+.textarea:focus-visible {
+  outline: 2px solid var(--nx-accent, #58a6ff);
+  outline-offset: 1px;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.button {
+  flex: 1;
+  border: 1px solid var(--nx-border-subtle, #30363d);
+  background: var(--nx-bg-elevated, #21262d);
+  color: inherit;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+}
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.button:not(:disabled):hover {
+  border-color: var(--nx-accent, #58a6ff);
+}
+.button:focus-visible {
+  outline: 2px solid var(--nx-accent, #58a6ff);
+  outline-offset: 2px;
+}
+
+.mic {
+  flex: 0 0 auto;
+}
+.micRecording {
+  border-color: var(--nx-blocked, #f85149);
+  background: rgba(248, 81, 73, 0.14);
+}
+
+.error {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--nx-blocked, #f85149);
+  word-break: break-word;
+}
+.note {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--nx-muted, #9da7b3);
+}

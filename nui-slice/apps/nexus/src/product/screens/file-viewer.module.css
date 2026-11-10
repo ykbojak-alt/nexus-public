@@ -1,0 +1,324 @@
+.page {
+    height: 100%;
+    overflow: auto;
+    scrollbar-gutter: stable;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.eyebrow {
+    margin: 0 0 6px;
+    color: var(--nexus-text-accent, #C9A45C);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    letter-spacing: .16em;
+}
+
+/* ROLE-1 geometry: sources rail → result inspector → provenance strip.
+   Route stays a local file/URL viewer — no archive collections exist in the
+   data contract (VIS-W3-06 data blocker, see route-reference-matrix). */
+.body {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(260px, 300px) minmax(0, 1fr);
+    gap: 16px;
+    align-items: stretch;
+}
+
+.sourcesRail {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+}
+
+.controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.controlPanel {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sectionTitle {
+    margin: 0;
+    font-size: var(--nexus-type-body-font-size, 15px);
+    font-weight: 600;
+}
+
+.filePicker {
+    width: fit-content;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 0 14px;
+    border: 1px solid var(--nexus-accent-primary, #C9A45C);
+    border-radius: var(--nexus-radius-md, 8px);
+    color: var(--nexus-text-primary, #F6F0E4);
+    cursor: pointer;
+    font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.filePicker:hover {
+    background: var(--nexus-nav-item-bg-active, rgba(201, 164, 92, .08));
+}
+
+.filePicker input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    clip: rect(0, 0, 0, 0);
+    overflow: hidden;
+}
+
+.filePicker:focus-within {
+    outline: 2px solid var(--nexus-accent-primary, #C9A45C);
+    outline-offset: 2px;
+}
+
+.urlLabel {
+    color: var(--nexus-text-secondary, #B0B7C2);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.urlRow {
+    display: flex;
+    gap: 8px;
+}
+
+.urlInput {
+    flex: 1;
+    min-width: 0;
+    background: var(--nexus-surface-elevated, #232329);
+    border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, .12));
+    border-radius: var(--nexus-radius-md, 8px);
+    color: var(--nexus-text-primary, #F6F0E4);
+    padding: 8px 12px;
+    font: inherit;
+    font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.urlInput:focus-visible {
+    outline: 2px solid var(--nexus-accent-primary, #C9A45C);
+    outline-offset: 1px;
+}
+
+.hint {
+    margin: 0;
+    color: var(--nexus-text-tertiary, #8A93A3);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    line-height: 1.5;
+}
+
+.message {
+    margin: 0;
+    color: var(--nexus-text-secondary, #B0B7C2);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.previewPanel {
+    min-height: 360px;
+    min-width: 0;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+}
+
+.previewHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 12px;
+}
+
+.preview {
+    min-height: 300px;
+    flex: 1;
+    display: grid;
+    place-items: center;
+    overflow: auto;
+    scrollbar-gutter: stable;
+    border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, .12));
+    border-radius: var(--nexus-radius-md, 8px);
+    background: rgba(0, 0, 0, .16);
+}
+
+.image {
+    max-width: 100%;
+    max-height: 65vh;
+    object-fit: contain;
+}
+
+.text {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    margin: 0;
+    padding: 16px;
+    overflow: auto;
+    scrollbar-gutter: stable;
+    color: var(--nexus-text-primary, #F6F0E4);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font: 13px/1.55 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.document {
+    width: 100%;
+    height: 68vh;
+    border: 0;
+    background: #fff;
+}
+
+.video {
+    width: 100%;
+    max-height: 68vh;
+    background: #000;
+}
+
+.empty {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    min-height: 300px;
+    gap: 8px;
+    text-align: center;
+}
+
+.emptyMark {
+    color: var(--nexus-text-accent, #C9A45C);
+    font-size: var(--nexus-type-metric-font-size, 34px);
+}
+
+/* Библиотека прогонов (subagents-wave): фильтры + список-ссылок на /run. */
+.filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.filters .urlInput {
+    flex: 0 1 auto;
+    min-width: 140px;
+}
+
+.runList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 280px;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+}
+
+.runList:focus-visible {
+    outline: 2px solid var(--nexus-accent-primary, #C9A45C);
+    outline-offset: 2px;
+    border-radius: var(--nexus-radius-sm, 4px);
+}
+
+.runRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 8px;
+    border-radius: var(--nexus-radius-md, 8px);
+}
+
+.runRow[data-parent] {
+    border-left: 2px solid var(--nexus-accent-primary, #C9A45C);
+}
+
+.runRow:hover {
+    background: var(--nexus-nav-item-bg-active, rgba(201, 164, 92, .08));
+}
+
+.runLink {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 10px;
+    color: inherit;
+    text-decoration: none;
+    font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.runLink:focus-visible {
+    outline: 2px solid var(--nexus-accent-primary, #C9A45C);
+    outline-offset: 2px;
+    border-radius: var(--nexus-radius-sm, 4px);
+}
+
+.runId {
+    min-width: 0;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    color: var(--nexus-text-accent, #C9A45C);
+    overflow-wrap: anywhere;
+}
+
+.runTask {
+    flex: 1 1 14rem;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    white-space: normal;
+    color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.runMeta {
+    flex: 0 1 auto;
+    min-width: 0;
+    color: var(--nexus-text-tertiary, #8A93A3);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    white-space: normal;
+}
+
+@media (max-width: 900px) {
+
+    .controls,
+    .body {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .root,
+    .root * {
+        scroll-behavior: auto !important;
+    }
+}
+/* XIV W3 — панели MCP/правила/сценарии: формы и ошибки на токенах. */
+.formStack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--nexus-space-2, 8px);
+    margin-top: var(--nexus-space-3, 12px)
+}
+
+.error {
+    margin: 0;
+    color: var(--nexus-state-error, #EE5B3F);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    overflow-wrap: anywhere
+}

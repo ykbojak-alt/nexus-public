@@ -1,0 +1,64 @@
+/* Focus must stay visible in every theme (spec §14): themes may restyle
+   the ring's look, never its distinguishability. Scoped to [data-theme]
+   — set both by NexusThemeProvider and the Storybook theme decorator. */
+/* W2-131: role-based widgets (custom tabs/options/menuitems/switches) are
+   plain elements with DOM focus — they now share the same reset and ring.
+   `[tabindex]` still catches everything else focusable; role selectors
+   only ever match elements that actually take DOM focus. */
+[data-theme] :where(button, a, input, select, textarea, [tabindex], summary,
+  [role='button'], [role='link'], [role='switch'], [role='tab'], [role='option'],
+  [role='menuitem'], [role='menuitemcheckbox'], [role='menuitemradio'],
+  [role='radio'], [role='checkbox'], [role='slider'], [role='spinbutton'],
+  [contenteditable='true']):focus {
+  outline: none;
+}
+
+/* :is() + :not(:root) deliberately raise specificity above module-level
+   component focus rules so every control renders this one ring regardless
+   of import order. `:not(:root)` is true for focusable descendants. */
+[data-theme] :is(button, a, input, select, textarea, [tabindex], summary,
+  [role='button'], [role='link'], [role='switch'], [role='tab'], [role='option'],
+  [role='menuitem'], [role='menuitemcheckbox'], [role='menuitemradio'],
+  [role='radio'], [role='checkbox'], [role='slider'], [role='spinbutton'],
+  [contenteditable='true']):focus-visible:not(:root) {
+  outline: var(--nexus-focus-ring-width, 2px) solid var(--nexus-focus-ring, #539EFF);
+  outline-offset: var(--nexus-focus-ring-offset, 2px);
+  box-shadow: none;
+  transition: outline-offset var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-enter, 0, 0, 0.2, 1));
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  [data-theme] :is(button, a, input, select, textarea, [tabindex], summary,
+    [role='button'], [role='link'], [role='switch'], [role='tab'], [role='option'],
+    [role='menuitem'], [role='menuitemcheckbox'], [role='menuitemradio'],
+    [role='radio'], [role='checkbox'], [role='slider'], [role='spinbutton'],
+    [contenteditable='true']):focus-visible:not(:root) {
+    transition: none;
+  }
+}
+
+/* Forced colors (WHCM, coord. W4): the UA re-maps colors to the system
+   palette and strips shadows/transparency — component boundaries use real
+   borders and this ring uses outline, so both survive automatically.
+   Two gaps closed explicitly:
+   1. aria-disabled custom controls get no GrayText from the UA (native
+      :disabled does) — mirror it.
+   2. Module-level `outline: none` previously beat the shared selector.
+      The higher-specificity :is() selector now re-asserts the ring. */
+@media (forced-colors: active) {
+  [data-theme] [aria-disabled='true'] {
+    color: GrayText;
+    border-color: GrayText;
+  }
+
+  [data-theme] :is(button, a, input, select, textarea, [tabindex], summary,
+    [role='button'], [role='link'], [role='switch'], [role='tab'], [role='option'],
+    [role='menuitem'], [role='menuitemcheckbox'], [role='menuitemradio'],
+    [role='radio'], [role='checkbox'], [role='slider'], [role='spinbutton'],
+    [contenteditable='true']):focus-visible:not(:root) {
+    outline: var(--nexus-focus-ring-width, 2px) solid Highlight;
+    outline-offset: var(--nexus-focus-ring-offset, 2px);
+    box-shadow: none;
+  }
+}

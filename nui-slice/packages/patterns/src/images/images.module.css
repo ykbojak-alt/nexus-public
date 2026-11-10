@@ -1,0 +1,56 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+    color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: .02em;
+}
+
+.muted {
+    margin: 0;
+    color: var(--nexus-text-secondary, #B0B7C2);
+    font-size: 13px;
+}
+
+.image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid var(--nexus-border-subtle, rgba(255, 255, 255, .08));
+    align-self: flex-start;
+}
+
+.meta {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 12px;
+    margin: 0;
+    font-size: 13px;
+}
+
+.meta dt {
+    color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+.meta dd {
+    margin: 0;
+}
+
+.prompts summary {
+    cursor: pointer;
+    color: var(--nexus-text-secondary, #B0B7C2);
+    font-size: 13px;
+}

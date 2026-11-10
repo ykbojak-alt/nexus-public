@@ -1,0 +1,252 @@
+/* Glass bars (wave-XVI W2): translucent rail/topbar/card/statusbar layers over
+   shell art. Every value comes from glass.* tokens — fallback literals mirror
+   the generated :root resolution (token-usage gate). Persona tone binds via
+   [data-persona] → personaEdge.*, no per-persona token duplicates.
+   Budget: ≤4 simultaneous backdrop-filter layers per screen (glass.maxBlurLayers). */
+
+.root {
+  position: relative;
+  overflow: hidden;
+  color: var(--nexus-text-primary, #F6F0E4);
+  background: var(--nexus-glass-scrim), var(--g-bg);
+  backdrop-filter: blur(var(--g-blur)) saturate(var(--nexus-glass-saturate, 1.2));
+  -webkit-backdrop-filter: blur(var(--g-blur)) saturate(var(--nexus-glass-saturate, 1.2));
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius, 0px);
+  box-shadow: var(--g-shadow), inset 0 0 0 1px var(--g-tone-edge, transparent);
+}
+
+/* Top light catch: gradient fading within 0–8% of the layer height. */
+.root::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: var(--nexus-glass-highlight-size, 8%);
+  border-radius: inherit;
+  background: linear-gradient(to bottom, var(--g-highlight), transparent);
+  pointer-events: none;
+}
+
+.scrollable {
+  overflow: auto;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+}
+
+.scrollable:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, #539EFF);
+  outline-offset: 2px;
+}
+
+.rail {
+  --g-bg: var(--nexus-glass-rail-bg, color-mix(in srgb, #1A1A21 55%, transparent));
+  --g-bg-opaque: var(--nexus-glass-rail-bg-opaque, color-mix(in srgb, #1A1A21 55%, #0A0A0C));
+  --g-blur: var(--nexus-glass-rail-blur, 24px);
+  --g-border: var(--nexus-glass-rail-border, color-mix(in srgb, #F6F0E4 14%, transparent));
+  --g-highlight: var(--nexus-glass-rail-highlight, color-mix(in srgb, #F6F0E4 10%, transparent));
+  --g-shadow: var(--nexus-glass-rail-shadow, 12px 0 32px 0 rgba(0, 0, 0, 0.30));
+  --g-radius: var(--nexus-glass-rail-radius, 0px);
+}
+
+.topbar {
+  --g-bg: var(--nexus-glass-topbar-bg, color-mix(in srgb, #1A1A21 58%, transparent));
+  --g-bg-opaque: var(--nexus-glass-topbar-bg-opaque, color-mix(in srgb, #1A1A21 58%, #0A0A0C));
+  --g-blur: var(--nexus-glass-topbar-blur, 20px);
+  --g-border: var(--nexus-glass-topbar-border, color-mix(in srgb, #F6F0E4 12%, transparent));
+  --g-highlight: var(--nexus-glass-topbar-highlight, color-mix(in srgb, #F6F0E4 12%, transparent));
+  --g-shadow: var(--nexus-glass-topbar-shadow, 0 8px 24px 0 rgba(0, 0, 0, 0.28));
+  --g-radius: var(--nexus-glass-topbar-radius, 0px);
+}
+
+.card {
+  --g-bg: var(--nexus-glass-card-bg, color-mix(in srgb, #232329 60%, transparent));
+  --g-bg-opaque: var(--nexus-glass-card-bg-opaque, color-mix(in srgb, #232329 60%, #0A0A0C));
+  --g-blur: var(--nexus-glass-card-blur, 16px);
+  --g-border: var(--nexus-glass-card-border, color-mix(in srgb, #F6F0E4 18%, transparent));
+  --g-highlight: var(--nexus-glass-card-highlight, color-mix(in srgb, #F6F0E4 12%, transparent));
+  --g-shadow: var(--nexus-glass-card-shadow, 0 8px 32px 0 rgba(0, 0, 0, 0.34));
+  --g-radius: var(--nexus-glass-card-radius, 16px);
+}
+
+.statusbar {
+  --g-bg: var(--nexus-glass-statusbar-bg, color-mix(in srgb, #1A1A21 62%, transparent));
+  --g-bg-opaque: var(--nexus-glass-statusbar-bg-opaque, color-mix(in srgb, #1A1A21 62%, #0A0A0C));
+  --g-blur: var(--nexus-glass-statusbar-blur, 14px);
+  --g-border: var(--nexus-glass-statusbar-border, color-mix(in srgb, #F6F0E4 16%, transparent));
+  --g-highlight: var(--nexus-glass-statusbar-highlight, color-mix(in srgb, #F6F0E4 8%, transparent));
+  --g-shadow: var(--nexus-glass-statusbar-shadow, 0 -8px 24px 0 rgba(0, 0, 0, 0.30));
+  --g-radius: var(--nexus-glass-statusbar-radius, 0px);
+}
+
+/* Persona tone: nearest [data-persona] tints the inner edge catch. */
+.root[data-persona='alice'] {
+  --g-tone-edge: color-mix(in srgb, var(--nexus-persona-edge-alice, #876D38) 30%, transparent);
+}
+
+.root[data-persona='mech'] {
+  --g-tone-edge: color-mix(in srgb, var(--nexus-persona-edge-mech, #2E82F6) 30%, transparent);
+}
+
+.root[data-persona='forge'] {
+  --g-tone-edge: color-mix(in srgb, var(--nexus-persona-edge-forge, #E08A1E) 30%, transparent);
+}
+
+.root[data-persona='codex'] {
+  --g-tone-edge: color-mix(in srgb, var(--nexus-persona-edge-codex, #A98848) 30%, transparent);
+}
+
+.root[data-persona='arch'] {
+  --g-tone-edge: color-mix(in srgb, var(--nexus-persona-edge-arch, #9A82E8) 30%, transparent);
+}
+
+.root[data-persona='nexus'] {
+  --g-tone-edge: color-mix(in srgb, var(--nexus-persona-edge-nexus, #C9A45C) 30%, transparent);
+}
+
+/* No backdrop-filter support → same-tone opaque composite (bgOpaque token). */
+@supports not (backdrop-filter: blur(1px)) {
+  .root {
+    background: var(--g-bg-opaque);
+    backdrop-filter: none;
+  }
+}
+
+/* prefers-reduced-transparency: generated tokens.css already rewrites
+   glass.*.bg to opaque composites over surface.root — blur off here too. */
+@media (prefers-reduced-transparency: reduce) {
+  .root {
+    backdrop-filter: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .root {
+    background: var(--g-bg-opaque);
+    backdrop-filter: none;
+    border-color: CanvasText;
+    box-shadow: none;
+  }
+
+  .root::before {
+    content: none;
+  }
+}
+
+/* CapsuleInput — pill composer field + accent submit (ref main2.png). */
+.capsule {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  padding: 6px 6px 6px var(--nexus-space-4, 16px);
+  border-radius: var(--nexus-radius-full, 9999px);
+  border: 1px solid var(--nexus-glass-card-border, color-mix(in srgb, #F6F0E4 18%, transparent));
+  background: var(--nexus-glass-card-bg, color-mix(in srgb, #232329 60%, transparent));
+  backdrop-filter: blur(var(--nexus-glass-card-blur, 16px)) saturate(var(--nexus-glass-saturate, 1.2));
+  -webkit-backdrop-filter: blur(var(--nexus-glass-card-blur, 16px)) saturate(var(--nexus-glass-saturate, 1.2));
+}
+
+.capsuleField {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: var(--nexus-text-primary, #F6F0E4);
+  font: inherit;
+}
+
+.capsuleField::placeholder {
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.capsuleSubmit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 var(--nexus-space-4, 16px);
+  border: 0;
+  border-radius: var(--nexus-radius-full, 9999px);
+  background: var(--nexus-accent-primary, #C9A45C);
+  color: var(--nexus-accent-on-primary, #0A0A0C);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--nexus-duration-fast, 140ms) ease,
+    transform var(--nexus-duration-fast, 140ms) ease;
+}
+
+.capsuleSubmit:hover:not(:disabled) {
+  background: var(--nexus-accent-primary-hover, #D0B169);
+}
+
+.capsuleSubmit:active:not(:disabled) {
+  background: var(--nexus-accent-primary-active, #A98848);
+}
+
+.capsuleSubmit:focus-visible,
+.capsuleField:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, #539EFF);
+  outline-offset: 2px;
+}
+
+.capsuleSubmit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .capsule {
+    background: var(--nexus-glass-card-bg-opaque, color-mix(in srgb, #232329 60%, #0A0A0C));
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .capsule {
+    backdrop-filter: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .capsule {
+    background: var(--nexus-glass-card-bg-opaque, color-mix(in srgb, #232329 60%, #0A0A0C));
+    backdrop-filter: none;
+    border-color: CanvasText;
+  }
+}
+
+/* StatusStrip — label + translucent progress + real value (SYSTEM STATUS rows). */
+.statusStrip {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-3, 12px);
+  min-width: 0;
+}
+
+.statusLabel {
+  flex: none;
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.statusBar {
+  flex: 1;
+  min-width: 48px;
+}
+
+.statusValue {
+  flex: none;
+  color: var(--nexus-text-primary, #F6F0E4);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .capsuleSubmit {
+    transition: none;
+  }
+}

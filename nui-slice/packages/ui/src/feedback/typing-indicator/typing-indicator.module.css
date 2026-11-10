@@ -1,0 +1,63 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  color: inherit;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.45;
+  transform: translateY(0);
+  animation: dotsCascade var(--nexus-motion-pulse, 1100ms) cubic-bezier(var(--nexus-easing-enter, 0, 0, 0.2, 1)) infinite;
+}
+
+.dot:nth-child(2) {
+  animation-delay: calc(0ms - var(--nexus-duration-fast, 140ms));
+}
+
+.dot:nth-child(3) {
+  animation-delay: calc(0ms - var(--nexus-duration-fast, 140ms) - var(--nexus-duration-fast, 140ms));
+}
+
+.label {
+  color: inherit;
+}
+
+@keyframes dotsCascade {
+  0%,
+  58%,
+  100% {
+    opacity: 0.45;
+    transform: translateY(0);
+  }
+
+  24% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dots {
+    display: none;
+  }
+
+  .dot {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

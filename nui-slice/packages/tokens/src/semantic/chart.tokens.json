@@ -1,0 +1,24 @@
+{
+  "$description": "Chart semantic tokens (spec §13). chart.series.* — ordered multi-series palette (8 roles): deterministic, theme-overridable, no arbitrary hex props in components. Grid/axis/label keep quiet contrast; positive/negative map to state roles.",
+  "chart": {
+    "series": {
+      "$type": "color",
+      "$description": "Ordered palette: consumed by index (series.1 first). Ordered for distinguishability on dark glass; themes may re-map to their accent families.",
+      "1": { "$value": "{color.gold.400}" },
+      "2": { "$value": "{color.blue.400}" },
+      "3": { "$value": "{color.violet.300}" },
+      "4": { "$value": "{color.green.400}" },
+      "5": { "$value": "{color.amber.400}" },
+      "6": { "$value": "{color.titanium.300}" },
+      "7": { "$value": "{color.red.300}" },
+      "8": { "$value": "{color.bronze.300}" }
+    },
+    "grid":      { "$type": "color", "$value": "color-mix(in srgb, {color.ivory.100} 8%, transparent)" },
+    "gridMajor": { "$type": "color", "$value": "color-mix(in srgb, {color.ivory.100} 14%, transparent)" },
+    "axis":      { "$type": "color", "$value": "{text.secondary}" },
+    "label":     { "$type": "color", "$value": "{text.tertiary}" },
+    "positive":  { "$type": "color", "$value": "{state.success}" },
+    "negative":  { "$type": "color", "$value": "{state.error}" },
+    "threshold": { "$type": "color", "$value": "{state.warning}" }
+  }
+}

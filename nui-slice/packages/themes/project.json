@@ -1,0 +1,17 @@
+{
+  "name": "themes",
+  "projectType": "library",
+  "sourceRoot": "packages/themes/src",
+  "tags": [
+    "scope:foundation",
+    "runtime:dom"
+  ],
+  "targets": {
+    "test": {
+      "command": "vitest run packages/themes --passWithNoTests"
+    },
+    "lint": {
+      "command": "tsc --noEmit -p packages/themes/tsconfig.json"
+    }
+  }
+}

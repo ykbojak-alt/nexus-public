@@ -1,0 +1,17 @@
+{
+  "name": "mock-data",
+  "projectType": "library",
+  "sourceRoot": "packages/mock-data/src",
+  "tags": [
+    "scope:product",
+    "runtime:agnostic"
+  ],
+  "targets": {
+    "test": {
+      "command": "vitest run packages/mock-data --passWithNoTests"
+    },
+    "lint": {
+      "command": "tsc --noEmit -p packages/mock-data/tsconfig.json"
+    }
+  }
+}

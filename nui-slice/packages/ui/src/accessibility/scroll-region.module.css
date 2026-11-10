@@ -1,0 +1,18 @@
+/* ScrollRegion (wave-XXV): keep scrollable areas keyboard reachable (axe
+   scrollable-region-focusable). The shared [tabindex]:focus-visible rule
+   supplies the focus ring from the focus.ring token. */
+.root {
+  min-height: 0;
+  min-width: 0;
+}
+
+.root[data-axis='y'] {
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.root[data-axis='both'] {
+  overflow: auto;
+  scrollbar-gutter: stable;
+}

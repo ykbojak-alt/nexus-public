@@ -1,0 +1,10 @@
+{
+  "$description": "Unreal Runtime Scene material scalars (semantic/scene.tokens.json) — unitless intensity knobs bound to token-derived colors; consumed via unreal-scene-tokens.json, not CSS.",
+  "scene": {
+    "fresnelStrength": {
+      "$type": "number",
+      "$value": 0.6,
+      "$comment": "Rim/fresnel intensity on the scene core — modulates Nexus_CoreGlowColor at silhouette. Restrained per spec (luxury first, technology second); 0 = flat diffuse, 1 = full rim. Theme-overridable."
+    }
+  }
+}

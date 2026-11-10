@@ -1,0 +1,201 @@
+.page {
+    box-sizing: border-box;
+    height: 100%;
+    overflow: auto;
+    scrollbar-gutter: stable;
+    padding: var(--nexus-space-6, 24px);
+    display: flex;
+    flex-direction: column;
+    gap: var(--nexus-space-4, 16px);
+    color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.eyebrow {
+    margin: 0 0 var(--nexus-space-2, 8px);
+    color: var(--nexus-text-accent, #C9A45C);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    letter-spacing: .16em;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--nexus-space-4, 16px);
+}
+
+.panel {
+    padding: var(--nexus-space-5, 20px);
+}
+
+.statusCard {
+    padding: var(--nexus-space-6, 24px);
+    display: flex;
+    align-items: center;
+    gap: var(--nexus-space-6, 24px);
+    overflow: hidden;
+    background: radial-gradient(ellipse at 0% 50%, var(--nexus-surface-elevated, #232329), var(--nexus-surface-panel, #151519) 72%);
+}
+
+.plug {
+    width: 108px;
+    height: 108px;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--nexus-state-warning, #E0A23F);
+    border-radius: 50%;
+    box-shadow: 0 0 36px var(--nexus-state-surface-warning, rgba(224, 162, 63, .2)), inset 0 0 32px rgba(224, 162, 63, .08);
+}
+
+.plug svg {
+    width: 46px;
+    height: 46px;
+    fill: none;
+    stroke: var(--nexus-state-warning, #E0A23F);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+}
+
+.statusCopy {
+    min-width: 0;
+}
+
+.statusCopy .body {
+    max-width: 480px;
+}
+
+.panelTitle {
+    margin: 0 0 var(--nexus-space-3, 12px);
+    font-size: var(--nexus-type-body-font-size, 15px);
+}
+
+.role {
+    margin: 0 0 var(--nexus-space-2, 8px);
+    color: var(--nexus-text-accent, #C9A45C);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.body {
+    margin: 10px 0 0;
+    max-width: 780px;
+    color: var(--nexus-text-secondary, #B0B7C2);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    line-height: 1.6;
+}
+
+.list {
+    margin: 0;
+    padding-left: var(--nexus-space-5, 20px);
+    display: grid;
+    gap: var(--nexus-space-2, 8px);
+    color: var(--nexus-text-secondary, #B0B7C2);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    line-height: 1.6;
+}
+
+/* B.5: security-ops слой — очередь/инциденты на fs-тикетах */
+.panelHead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--nexus-space-3, 12px);
+}
+
+.count {
+    min-width: 24px;
+    padding: 2px var(--nexus-space-2, 8px);
+    border-radius: 999px;
+    border: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.06));
+    color: var(--nexus-text-secondary, #B0B7C2);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    text-align: center;
+}
+
+.tickets {
+    list-style: none;
+    margin: var(--nexus-space-3, 12px) 0 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+}
+
+.ticketRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    padding: var(--nexus-space-3, 12px);
+    border: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.06));
+    border-radius: 10px;
+}
+
+.ticketMeta {
+    min-width: 0;
+    display: grid;
+    gap: var(--nexus-space-1, 4px);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.ticketMeta code {
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    color: var(--nexus-text-accent, #C9A45C);
+    word-break: break-all;
+}
+
+.ticketMeta small {
+    color: var(--nexus-text-tertiary, #7C8494);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.preview summary {
+    cursor: pointer;
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    color: var(--nexus-text-tertiary, #7C8494);
+}
+
+.preview pre {
+    margin: 6px 0 0;
+    padding: var(--nexus-space-2, 8px);
+    border-radius: 6px;
+    background: var(--nexus-surface-panel, #151519);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 140px;
+    overflow: auto;
+    scrollbar-gutter: stable;
+}
+
+.ticketActions {
+    display: flex;
+    gap: var(--nexus-space-2, 8px);
+    flex: 0 0 auto;
+}
+
+.note {
+    margin: var(--nexus-space-3, 12px) 0 0;
+    color: var(--nexus-text-tertiary, #7C8494);
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .statusCard {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 18px;
+    }
+
+    .plug {
+        width: 88px;
+        height: 88px;
+    }
+}

@@ -1,0 +1,1049 @@
+/* Song of Light and Shadow — оракул-экран, канон obsidian+champagne */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-4, 16px);
+  padding: var(--nexus-space-5, 24px) var(--nexus-space-6, 32px);
+  min-height: 100%;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+/* Режимы — чипы */
+.modes {
+  display: flex;
+  gap: var(--nexus-space-2, 8px);
+  flex-wrap: wrap;
+}
+
+.modeChip {
+  padding: 8px 18px;
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--nexus-text-secondary, #B0B7C2);
+  background: transparent;
+  border: 1px solid var(--nexus-border-subtle, rgba(201, 164, 92, 0.25));
+  border-radius: 20px;
+  cursor: pointer;
+  transition:
+    border-color var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1)),
+    color var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1)),
+    box-shadow var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+.modeChip[data-on] {
+  color: var(--nexus-text-primary, #F6F0E4);
+  border-color: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 90%, transparent);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 30%, transparent);
+}
+
+/* Число позиций расклада на чипе — реальная величина из SPREADS */
+.modeCount {
+  margin-left: 8px;
+  font-variant-numeric: tabular-nums;
+  color: var(--nexus-text-accent, #C9A45C);
+  opacity: 0.85;
+}
+
+/* Сцена */
+.stage {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+/* Лендинг сессии — две колонки: слева рамка/колода/тяга, справа
+   карточка выбранного расклада (паттерн CURRENT READING референса) */
+.intro {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  align-items: center;
+  gap: var(--nexus-space-6, 32px);
+  padding: var(--nexus-space-6, 32px);
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.introMain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nexus-space-4, 16px);
+  text-align: center;
+  min-width: 0;
+}
+
+/* Hero-цитата — честная рамка «язык возможностей» */
+.heroQuote {
+  margin: 0;
+  font-size: 19px;
+  font-style: italic;
+  line-height: 1.55;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.heroCite {
+  display: block;
+  margin-top: 10px;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-style: normal;
+  letter-spacing: 0.22em;
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.introActions {
+  display: flex;
+  gap: var(--nexus-space-3, 12px);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Reading options — фактические параметры сессии */
+.optionsLine {
+  margin: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+/* Карточка превью расклада */
+.template {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-3, 12px);
+  padding: var(--nexus-space-4, 16px);
+  border-radius: 14px;
+  border: 1px solid var(--nexus-border-subtle, rgba(201, 164, 92, 0.25));
+  background: var(--nexus-surface-glass, rgba(255, 255, 255, 0.02));
+  min-width: 0;
+}
+
+.templateHead {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.templateLabel {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.templateName {
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--nexus-text-accent, #C9A45C);
+}
+
+.templateMeta {
+  margin-left: auto;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+  font-variant-numeric: tabular-nums;
+}
+
+.templateDiagram {
+  position: relative;
+  width: min(230px, 100%);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 164, 92, 0.35);
+  background:
+    radial-gradient(circle at 50% 42%, #20284a 0%, #141a33 55%, #0c1024 76%, #090b16 100%);
+  box-shadow: inset 0 0 34px rgba(0, 0, 0, 0.5);
+}
+
+.templatePositions {
+  margin: 0;
+  padding: 0 0 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1.5;
+  color: var(--nexus-text-secondary, #B0B7C2);
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  max-height: 180px;
+}
+
+.deckRow {
+  display: flex;
+  gap: var(--nexus-space-4, 16px);
+}
+
+/* Рубашка-кнопка — селектор пространства (deck-carousel из референса,
+   адаптировано под одну колоду с тремя секциями) */
+.deckPick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  font: inherit;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.deckBack {
+  height: 200px;
+  width: auto;
+  border-radius: var(--nexus-radius-lg, 12px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(201, 164, 92, 0.3);
+  transition:
+    transform var(--nexus-duration-normal, 240ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1)),
+    box-shadow var(--nexus-duration-normal, 240ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+.deckPick:hover .deckBack {
+  transform: translateY(-8px);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.7), 0 0 24px rgba(201, 164, 92, 0.35);
+}
+
+.deckPick:focus-visible {
+  outline: 2px solid var(--nexus-accent-primary, #C9A45C);
+  outline-offset: 4px;
+  border-radius: var(--nexus-radius-sm, 4px);
+}
+
+.deckName {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  /* Подпись под рубашкой лежит на intro GlassPanel (theme-chrome), не на
+     сукне — pinned onArt здесь обратный edge-case NQ-074: светлый текст на
+     светлом стекле под alice. Theme-tracking — правильная роль. */
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.deckPick[data-on] .deckBack {
+  transform: translateY(-8px);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.7), 0 0 0 2px rgba(201, 164, 92, 0.85), 0 0 26px rgba(201, 164, 92, 0.4);
+}
+
+.deckPick[data-on] .deckName {
+  /* accent-цветной текст на glass-панели — text.accent (NQ-074: primary=4.32 под alice) */
+  color: var(--nexus-text-accent, #C9A45C);
+}
+
+.deckPick[data-section='light'] .deckBack {
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6), 0 0 18px rgba(240, 228, 196, 0.18);
+}
+
+.deckPick[data-section='gnosis'] .deckBack {
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6), 0 0 18px rgba(94, 199, 178, 0.16);
+}
+
+.introText {
+  margin: 0;
+  max-width: 560px;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1.65;
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+/* Расклад — стол: тёмная поверхность с мягкой виньеткой. Скатерть —
+   отдельный диск (.cloth): референс показывает navy velvet + тонкую
+   золотую геометрию, а не яркий фон; карта — главный слой. */
+.spread {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-4, 16px);
+  padding: var(--nexus-space-5, 24px);
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  min-height: 0;
+  position: relative;
+  background:
+    radial-gradient(ellipse 80% 72% at 50% 46%, rgba(22, 27, 46, 0.9) 0%, rgba(13, 15, 28, 0.96) 58%, rgba(7, 8, 15, 1) 100%);
+}
+
+.spread>* {
+  position: relative;
+  z-index: 1;
+}
+
+/* Сессионная строка над скатертью — режим, seed, число карт, рамка */
+.session {
+  display: flex;
+  gap: var(--nexus-space-4, 16px);
+  flex-wrap: wrap;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  /* внутри .spread — authored-тёмное поле → pinned onArt (NQ-072) */
+  color: var(--nexus-text-on-art-muted, #8E97A5);
+}
+
+.sessionIntention {
+  color: var(--nexus-text-on-art-dim, #B0B7C2);
+  text-transform: none;
+  letter-spacing: 0.04em;
+}
+
+/* Сессионный футер: таймер + чипы секций — фактический состав тяги */
+.sessionTimer {
+  color: var(--nexus-text-on-art-dim, #B0B7C2);
+  font-variant-numeric: tabular-nums;
+}
+
+.sessionSec {
+  padding: calc(var(--nexus-space-1, 4px) / 2) calc(var(--nexus-space-2, 8px) + 1px);
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 35%, transparent);
+  color: var(--nexus-text-on-art-dim, #B0B7C2);
+}
+
+.sessionSec[data-section='light'] {
+  border-color: rgba(240, 228, 196, 0.5);
+  color: #F6EECC;
+}
+
+.sessionSec[data-section='gnosis'] {
+  border-color: rgba(94, 199, 178, 0.55);
+  color: #BFEAE0;
+}
+
+.sessionSec[data-section='shadow'] {
+  border-color: rgba(154, 140, 200, 0.55);
+  color: #D5CBF0;
+}
+
+/* Скатерть — круглый бархатный диск (navy), тонкая золотая геометрия —
+   авторский SVG-слой ClothArt. Краевое затемнение и внутренняя тень дают
+   глубину ткани; внешняя тень отделяет диск от стола. */
+.cloth {
+  position: relative;
+  width: min(700px, 94%);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 42%,
+      #232b4a 0%,
+      #171d38 46%,
+      #10142a 68%,
+      #0b0e20 76%,
+      #090b16 100%);
+  box-shadow:
+    inset 0 0 70px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1px rgba(201, 164, 92, 0.2),
+    0 20px 60px rgba(0, 0, 0, 0.65);
+}
+
+.clothSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+/* Геометрия скатерти — штрихи держатся ниже карт по яркости */
+.cgRim {
+  fill: none;
+  stroke: rgba(201, 164, 92, 0.5);
+  stroke-width: 0.4;
+}
+
+.cgThin {
+  fill: none;
+  stroke: rgba(201, 164, 92, 0.26);
+  stroke-width: 0.28;
+}
+
+.cgFaint {
+  fill: none;
+  stroke: rgba(201, 164, 92, 0.16);
+  stroke-width: 0.3;
+}
+
+.cgMoonFull {
+  fill: rgba(201, 164, 92, 0.72);
+  stroke: none;
+}
+
+.cgMoonOpen {
+  fill: none;
+  stroke: rgba(201, 164, 92, 0.45);
+  stroke-width: 0.3;
+}
+
+.cgCore {
+  fill: rgba(240, 228, 196, 0.8);
+  stroke: none;
+}
+
+/* Слот карты: центр в точке геометрии; ось поворота — центр карты */
+.slot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  perspective: 1400px;
+  z-index: 1;
+}
+
+.slot:hover {
+  z-index: 2;
+}
+
+.flip {
+  position: relative;
+  display: block;
+  /* Ширина обязана равняться ширине карты (аспект 931×1690 ≈ 0.5509) —
+     иначе контейнер схлопывается и rotateY крутит вокруг края, не центра. */
+  height: var(--cardH, 300px);
+  width: calc(var(--cardH, 300px) * 0.5509);
+  transform-style: preserve-3d;
+  transform-origin: 50% 50%;
+  transition: transform var(--nexus-motion-flip, 1040ms) cubic-bezier(var(--nexus-easing-arc, 0.3, 0.85, 0.35, 1));
+}
+
+.slot[data-revealed] .flip {
+  transform: rotateY(180deg);
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--nexus-radius-lg, 12px);
+  backface-visibility: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(201, 164, 92, 0.35);
+}
+
+.faceFront {
+  transform: rotateY(180deg);
+}
+
+/* Подпись позиции — прямо на ткани, как в референсе: номер золотом,
+   роль приглушённым капсом; тёмный text-shadow отделяет текст от узора */
+.slotPos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  max-width: 150px;
+  padding: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.14em;
+  line-height: 1.35;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--nexus-text-on-art-dim, #B0B7C2);
+  background: none;
+  border: none;
+  white-space: normal;
+  overflow: visible;
+  text-shadow: 0 1px 5px rgba(5, 7, 12, 0.95), 0 0 14px rgba(5, 7, 12, 0.8);
+}
+
+.slotNum {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-weight: 600;
+  color: var(--nexus-accent-on-art, #C9A45C);
+  font-variant-numeric: tabular-nums;
+}
+
+.slot[data-revealed] .slotPos {
+  color: var(--nexus-accent-on-art, #C9A45C);
+}
+
+/* Выбранный слот — связка с карточкой разбора в правой колонке */
+.slot[data-focus] .face {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65), 0 0 0 2px rgba(201, 164, 92, 0.9), 0 0 26px rgba(201, 164, 92, 0.4);
+}
+
+.slot[data-focus] {
+  z-index: 2;
+}
+
+/* Толкования — правая колонка, раскрываются после показа всех карт */
+.readings {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--nexus-space-4, 16px);
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity var(--nexus-motion-reveal, 400ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1)),
+    transform var(--nexus-motion-reveal, 400ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+.readings[data-ready] {
+  opacity: 1;
+  transform: none;
+}
+
+.reading {
+  padding: var(--nexus-space-4, 16px);
+  border-radius: var(--nexus-radius-lg, 12px);
+  background: var(--nexus-surface-glass, rgba(255, 255, 255, 0.025));
+  border: 1px solid var(--nexus-border-subtle, rgba(201, 164, 92, 0.2));
+  transition:
+    border-color var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1)),
+    box-shadow var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+/* Карточка разбора, связанная с выбранным слотом на столе */
+.reading[data-focus] {
+  border-color: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 85%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 40%, transparent),
+    0 0 22px color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 16%, transparent);
+}
+
+/* Рамка чтения в шапке разбора */
+.readIntention {
+  margin: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-style: italic;
+  line-height: 1.55;
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+.reading[data-section='light'] {
+  border-color: rgba(240, 228, 196, 0.35);
+}
+
+.reading[data-section='gnosis'] {
+  border-color: rgba(94, 199, 178, 0.4);
+}
+
+.reading[data-section='shadow'] {
+  border-color: rgba(154, 140, 200, 0.4);
+}
+
+.readHead {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.readNum {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+  font-variant-numeric: tabular-nums;
+}
+
+.readName {
+  font-size: var(--nexus-type-body-font-size, 15px);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.readEn {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.14em;
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.readSec {
+  margin-left: auto;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.16em;
+  padding: 3px 10px;
+  border-radius: var(--nexus-radius-lg, 12px);
+  border: 1px solid rgba(201, 164, 92, 0.45);
+  color: rgba(240, 228, 196, 0.9);
+}
+
+.readSec[data-section='light'] {
+  border-color: rgba(240, 228, 196, 0.55);
+  color: #F6EECC;
+}
+
+.readSec[data-section='gnosis'] {
+  border-color: rgba(94, 199, 178, 0.6);
+  color: #BFEAE0;
+}
+
+.readSec[data-section='shadow'] {
+  border-color: rgba(154, 140, 200, 0.6);
+  color: #D5CBF0;
+}
+
+.essence {
+  margin: 10px 0 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1.65;
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+.pairRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.pair p {
+  margin: 4px 0 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1.55;
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+.pairLabel {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--nexus-text-accent, #C9A45C);
+}
+
+.pair:last-child .pairLabel {
+  color: color-mix(in srgb, var(--nexus-state-error, #E8837A) 90%, transparent);
+}
+
+.phrase {
+  margin: 12px 0 0;
+  padding-left: 12px;
+  border-left: 2px solid color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 55%, transparent);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.question {
+  margin: 10px 0 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1.55;
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.stageActions {
+  display: flex;
+  justify-content: center;
+  gap: var(--nexus-space-3, 12px);
+}
+
+.gameBtn {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+/* .gameBtn на authored-тёмном .spread — pinned onArt, иначе ghost-текст
+   схлопывается под светлыми темами (NQ-072). Специфичность .spread выше .ghost. */
+.spread .gameBtn {
+  color: var(--nexus-text-on-art-dim, #B0B7C2);
+  border-color: color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 35%, transparent);
+}
+
+.spread .gameBtn:hover:not(:disabled) {
+  color: var(--nexus-text-on-art, #F6F0E4);
+  border-color: color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 60%, transparent);
+}
+
+.honesty {
+  margin: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  text-align: center;
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .modeChip,
+  .sideTab,
+  .intention,
+  .flip,
+  .readings,
+  .reading,
+  .mapItem,
+  .journalItem,
+  .deckBack {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* Описание активного расклада — под строкой чипов */
+.modeDesc {
+  margin: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+  letter-spacing: 0.04em;
+}
+
+/* Размер карт по числу позиций — крупные на малом раскладе; на скатерти
+   геометрии ограничение жёстче, чем у ленты: ярусы подобраны так, чтобы
+   соседние слоты не пересекались при 720px сцене. */
+.cloth[data-count='1'] {
+  --cardH: 430px;
+}
+
+.cloth[data-count='2'] {
+  --cardH: 330px;
+}
+
+.cloth[data-count='3'] {
+  --cardH: 290px;
+}
+
+.cloth[data-count='4'] {
+  --cardH: 255px;
+}
+
+.cloth[data-count='5'] {
+  --cardH: 225px;
+}
+
+.cloth[data-count='6'] {
+  --cardH: 190px;
+}
+
+.cloth[data-count='7'] {
+  --cardH: 190px;
+}
+
+/* Подчипы пространств — цвета секций */
+.modeChip[data-section='light'][data-on] {
+  border-color: rgba(240, 228, 196, 0.8);
+  box-shadow: 0 0 12px rgba(240, 228, 196, 0.25);
+}
+
+.modeChip[data-section='shadow'][data-on] {
+  border-color: rgba(154, 140, 200, 0.8);
+  box-shadow: 0 0 12px rgba(154, 140, 200, 0.25);
+}
+
+.modeChip[data-section='gnosis'][data-on] {
+  border-color: rgba(94, 199, 178, 0.8);
+  box-shadow: 0 0 12px rgba(94, 199, 178, 0.25);
+}
+
+/* ── Компоновка big-iteration (референс-пакет solas): сцена + колонка ── */
+.main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 370px;
+  gap: var(--nexus-space-4, 16px);
+  min-height: 0;
+}
+
+.stageCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-3, 12px);
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Правая колонка анализа — табы в каноне NQ-054 */
+.side {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.sideTabs {
+  display: flex;
+  gap: 4px;
+  padding: 10px 12px 0;
+  border-bottom: 1px solid var(--nexus-border-subtle, rgba(201, 164, 92, 0.2));
+  flex-shrink: 0;
+}
+
+.sideTab {
+  padding: 8px 14px 10px;
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--nexus-text-tertiary, #8E97A5);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition:
+    color var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1)),
+    border-color var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+.sideTab[data-active] {
+  color: var(--nexus-text-accent, #C9A45C);
+  border-bottom-color: var(--nexus-text-accent, #C9A45C);
+}
+
+.sidePanel {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  padding: var(--nexus-space-4, 16px);
+  display: block;
+}
+
+.sideEmpty {
+  margin: 24px 8px;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1.6;
+  text-align: center;
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+/* Рамка чтения — поле интенции в intro */
+.intentionLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(460px, 100%);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.intention {
+  font: inherit;
+  font-size: 14px;
+  letter-spacing: normal;
+  text-transform: none;
+  text-align: center;
+  padding: calc(var(--nexus-space-2, 8px) + var(--nexus-space-1, 4px) / 2) var(--nexus-space-4, 16px);
+  color: var(--nexus-text-primary, #F6F0E4);
+  background: var(--nexus-surface-glass, rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--nexus-border-subtle, rgba(201, 164, 92, 0.3));
+  border-radius: 10px;
+  outline: none;
+  transition:
+    border-color var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1)),
+    box-shadow var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+/* Фокус — accent-кольцо по решению W2 (focus на authored-surfaces следует
+   accent.primary): сильнее прежнего 0.15-glow, соответствует .mapItem:focus-visible. */
+.intention:focus {
+  border-color: var(--nexus-accent-primary, #C9A45C);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 25%, transparent),
+    0 0 14px color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 30%, transparent);
+}
+
+/* Полная позиция внутри карточки разбора */
+.readPos {
+  margin: 6px 0 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.06em;
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+/* Таб «Схема» — мини-диаграмма позиций на той же скатерти */
+.mapWrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-4, 16px);
+}
+
+.mapDiagram {
+  position: relative;
+  width: min(300px, 100%);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 164, 92, 0.35);
+  background:
+    radial-gradient(circle at 50% 42%, #20284a 0%, #141a33 55%, #0c1024 76%, #090b16 100%);
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Слоты диаграммы — силуэты карт (аспект колоды), как в референсе */
+.mapDot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 17px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--nexus-radius-sm, 4px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-variant-numeric: tabular-nums;
+  color: var(--nexus-text-on-art-dim, #B0B7C2);
+  background: rgba(8, 10, 14, 0.82);
+  border: 1px solid color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 40%, transparent);
+}
+
+.mapDot[data-revealed] {
+  color: var(--nexus-color-obsidian-950, #0A0A0C);
+  background: var(--nexus-accent-on-art, #C9A45C);
+  border-color: var(--nexus-accent-on-art, #C9A45C);
+}
+
+/* Силуэт позиции окрашен пулом секции — у «Трёх голосов» пулы разные */
+.mapDot[data-section='light'] {
+  border-color: rgba(240, 228, 196, 0.7);
+  color: #F6EECC;
+}
+
+.mapDot[data-section='gnosis'] {
+  border-color: rgba(94, 199, 178, 0.7);
+  color: #BFEAE0;
+}
+
+.mapDot[data-section='shadow'] {
+  border-color: rgba(154, 140, 200, 0.7);
+  color: #D5CBF0;
+}
+
+.mapList {
+  margin: 0;
+  padding: 0 0 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1.5;
+}
+
+.mapListPos {
+  display: block;
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.mapListCard {
+  display: block;
+  color: var(--nexus-text-tertiary, #8E97A5);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+/* Пункт схемы — клик раскрывает карту и подводит к её разбору */
+.mapItem {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 10px;
+  margin-left: -10px;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  background: transparent;
+  border: none;
+  border-radius: var(--nexus-radius-md, 8px);
+  cursor: pointer;
+  transition: background var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+.mapItem:hover {
+  background: var(--nexus-surface-glass, rgba(255, 255, 255, 0.035));
+}
+
+.mapItem:focus-visible {
+  outline: 2px solid var(--nexus-accent-primary, #C9A45C);
+  outline-offset: 1px;
+}
+
+.mapItem[data-focus] .mapListPos {
+  color: var(--nexus-text-accent, #C9A45C);
+}
+
+/* Таб «Журнал» — локальная история, реплей по seed */
+.journal {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--nexus-space-2, 8px) + var(--nexus-space-1, 4px) / 2);
+}
+
+.journalItem {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-1, 4px);
+  padding: calc(var(--nexus-space-2, 8px) + var(--nexus-space-1, 4px) / 2) calc(var(--nexus-space-4, 16px) - var(--nexus-space-1, 4px) / 2);
+  font: inherit;
+  text-align: left;
+  border-radius: 10px;
+  background: var(--nexus-surface-glass, rgba(255, 255, 255, 0.025));
+  border: 1px solid var(--nexus-border-subtle, rgba(201, 164, 92, 0.2));
+  cursor: pointer;
+  transition: border-color var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+.journalItem:hover {
+  border-color: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 55%, transparent);
+}
+
+.journalHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.journalTs {
+  color: var(--nexus-text-tertiary, #8E97A5);
+  font-variant-numeric: tabular-nums;
+}
+
+.journalMeta {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+  font-variant-numeric: tabular-nums;
+}
+
+.journalIntention {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-style: italic;
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+.journalCards {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.1em;
+  color: var(--nexus-text-accent, #C9A45C);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Узкие экраны — колонка под сценой, превью расклада под лендингом */
+@media (max-width: 1100px) {
+  .main {
+    grid-template-columns: 1fr;
+  }
+
+  .side {
+    min-height: 320px;
+  }
+
+  .intro {
+    grid-template-columns: 1fr;
+  }
+}

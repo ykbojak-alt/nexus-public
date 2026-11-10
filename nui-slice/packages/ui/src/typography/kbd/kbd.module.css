@@ -1,0 +1,20 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6em;
+  padding: calc(var(--nexus-space-1, 4px) / 4) var(--nexus-space-1, 4px);
+  border-radius: var(--nexus-radius-sm, 4px);
+  border: 1px solid var(--nexus-border-subtle, var(--nexus-border, transparent));
+  background: var(--nexus-surface-panel, transparent);
+  color: var(--nexus-text-secondary, inherit);
+  font: var(--nexus-type-code-font-weight, 500) var(--nexus-type-code-font-size, 13px)/1.2
+    var(--nexus-type-code-font-family, 'IBM Plex Mono', Consolas, monospace);
+  letter-spacing: var(--nexus-type-code-letter-spacing, 0);
+  white-space: nowrap;
+}
+
+.md {
+  padding: calc(var(--nexus-space-1, 4px) / 2) var(--nexus-space-2, 8px);
+  font-size: var(--nexus-type-body-font-size, 15px);
+}

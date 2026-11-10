@@ -1,0 +1,25 @@
+.grid {
+  stroke-width: 1;
+}
+
+.axis {
+  stroke-width: 1;
+}
+
+.tickLabel {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.series {
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.bar {
+  stroke: none;
+}
+
+.dot {
+  stroke-width: 1;
+}

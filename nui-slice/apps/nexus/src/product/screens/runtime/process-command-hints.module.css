@@ -1,0 +1,14 @@
+.commandInputHint {
+  flex: 1;
+  min-width: 240px;
+}
+
+.commandInputHint > textarea {
+  width: 100%;
+  min-width: 0;
+}
+
+.commandSubmitHint {
+  display: inline-flex;
+  align-self: center;
+}

@@ -1,0 +1,706 @@
+/* Шахматы — канон NEXUS: обсидиан/ivory, золото, glass. */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-4, 16px);
+  height: 100%;
+  min-height: 0;
+}
+
+.headerMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-3, 12px);
+}
+
+/* ---------- setup ---------- */
+
+.setup {
+  padding: var(--nexus-space-5, 20px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-4, 16px);
+  max-width: 780px;
+}
+
+.opponentPick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nexus-space-3, 12px);
+}
+
+.personaChip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--nexus-space-3, 12px) / 2);
+  padding: calc(var(--nexus-space-2, 8px) + var(--nexus-space-1, 4px) / 2) var(--nexus-space-3, 12px);
+  border-radius: 10px;
+  border: 1px solid var(--nexus-border-subtle, rgba(201, 164, 92, 0.25));
+  background: var(--nexus-surface-glass, rgba(255, 255, 255, 0.03));
+  cursor: pointer;
+  transition:
+    border-color var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1)),
+    box-shadow var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+.personaChip[data-on] {
+  border-color: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 90%, transparent);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 35%, transparent);
+}
+
+.personaAvatar {
+  width: 44px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 7px;
+}
+
+.personaName {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.08em;
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+.diffPick {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: var(--nexus-space-4, 16px);
+}
+
+.diffLabel {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.diffChip {
+  padding: calc(var(--nexus-space-3, 12px) / 2 + 1px) var(--nexus-space-4, 16px);
+  border-radius: 999px;
+  border: 1px solid var(--nexus-border-subtle, rgba(201, 164, 92, 0.25));
+  background: var(--nexus-surface-glass, rgba(255, 255, 255, 0.03));
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition:
+    border-color var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1)),
+    box-shadow var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1)),
+    color var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+.diffChip[data-on] {
+  border-color: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 90%, transparent);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 35%, transparent);
+  color: var(--nexus-text-primary, #EDE5D3);
+}
+
+.setupRow {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-4, 16px);
+  flex-wrap: wrap;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.06em;
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.input {
+  width: 110px;
+  padding: calc(var(--nexus-space-3, 12px) / 2) calc(var(--nexus-space-2, 8px) + var(--nexus-space-1, 4px) / 2);
+  border-radius: 6px;
+  border: 1px solid var(--nexus-border-subtle, rgba(201, 164, 92, 0.3));
+  background: var(--nexus-surface-base, rgba(0, 0, 0, 0.35));
+  color: var(--nexus-text-primary, #F6F0E4);
+  font: inherit;
+}
+
+.hint {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+  flex: 1;
+}
+
+/* ---------- game layout ---------- */
+
+.board {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  /* Доска прижата влево; журнал — фиксированная правая колонка под 3 колонки ходов. */
+  grid-template-columns: minmax(0, 1fr) 440px;
+  gap: var(--nexus-space-4, 16px);
+}
+
+.mainCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-3, 12px);
+  min-width: 0;
+}
+
+/* Панель оппонента — фон референса агента без рамки: ::before растворяется
+   по краям (mask). Тонкий authored-подклад держит панель тёмной под светлыми
+   темами — pinned onArt-текст на вош-арте (NQ-072). */
+.page .opponent {
+  position: relative;
+  overflow: hidden;
+  border: none;
+  background: rgba(10, 8, 6, 0.55);
+  box-shadow: none;
+}
+
+.opponent::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--agentBg, none) center 30% / cover no-repeat;
+  opacity: 0.45;
+  filter: saturate(0.95) brightness(0.6);
+  -webkit-mask-image: radial-gradient(130% 160% at 12% 50%, #000 40%, transparent 82%);
+  mask-image: radial-gradient(130% 160% at 12% 50%, #000 40%, transparent 82%);
+  pointer-events: none;
+}
+
+.opponent>* {
+  position: relative;
+  z-index: 1;
+}
+
+.opponent,
+.userBar {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-3, 12px);
+  padding: 8px var(--nexus-space-4, 16px);
+}
+
+.opponent[data-turn] {
+  box-shadow: inset 0 0 0 1px rgba(201, 164, 92, 0.45), 0 0 18px rgba(201, 164, 92, 0.18);
+}
+
+.userBar[data-turn] {
+  box-shadow: inset 0 0 0 1px rgba(201, 164, 92, 0.45), 0 0 18px rgba(201, 164, 92, 0.18);
+}
+
+.avatarWrap {
+  width: 40px;
+  height: 50px;
+  border-radius: var(--nexus-radius-md, 8px);
+  overflow: hidden;
+  border: 1px solid rgba(201, 164, 92, 0.55);
+  box-shadow: 0 0 10px rgba(201, 164, 92, 0.3);
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.opponentName {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.06em;
+  color: var(--nexus-text-on-art, #F6F0E4);
+}
+
+.opponentRole {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--nexus-text-on-art-muted, #8E97A5);
+}
+
+.capturedTray {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 24px;
+  gap: 1px;
+}
+
+.capturedPiece {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+}
+
+/* Малые svg-фигуры (трей взятий, промо-кнопки) — тот же набор цветов,
+   что у .pieceSvg: --pf заливка / --po контур / --pd штрихи. */
+.capturedSvg,
+.promoGlyph {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.capturedSvg [data-part='sil'],
+.promoGlyph [data-part='sil'] {
+  fill: var(--pf);
+  stroke: var(--po);
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+}
+
+.capturedSvg [data-part='det'],
+.promoGlyph [data-part='det'] {
+  fill: none;
+  stroke: var(--pd);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.capturedSvg[data-c='w'],
+.promoGlyph[data-c='w'] {
+  --pf: #F2E7CE;
+  --po: #463723;
+  --pd: #463723;
+}
+
+.capturedSvg[data-c='b'],
+.promoGlyph[data-c='b'] {
+  --pf: #26232B;
+  --po: var(--nexus-color-gold-500, #C9A45C);
+  --pd: var(--nexus-color-gold-500, #C9A45C);
+}
+
+.you {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.06em;
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+.actions {
+  display: flex;
+  gap: var(--nexus-space-2, 8px);
+}
+
+/* ---------- board ---------- */
+
+.boardArea {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  /* Доска — центр стола, как в референсах. */
+  justify-content: center;
+  padding: var(--nexus-space-4, 16px);
+  position: relative;
+  /* Стол — полированный обсидиан с тёплым светом сверху и глубокой
+     виньеткой к низу (мягкие блики по краям, как на референсах GAMES/Chess). */
+  background:
+    radial-gradient(ellipse 72% 46% at 50% -6%, rgba(226, 196, 130, 0.16), transparent 65%),
+    radial-gradient(ellipse 56% 34% at 50% 112%, rgba(58, 45, 24, 0.5), transparent 70%),
+    radial-gradient(ellipse 130% 100% at 50% 50%, transparent 52%, rgba(4, 3, 2, 0.55) 100%),
+    linear-gradient(180deg, #1B1611 0%, #100D0A 46%, #070606 100%);
+  border: 1px solid rgba(201, 164, 92, 0.22);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 235, 190, 0.09),
+    inset 0 -28px 70px rgba(0, 0, 0, 0.55),
+    0 14px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Тёплое золотое свечение за доской — свет лампы над столом */
+.boardArea::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 78%;
+  height: 78%;
+  background: radial-gradient(circle, rgba(201, 164, 92, 0.13), transparent 70%);
+  pointer-events: none;
+}
+
+/* Отражение доски на полировке — мягкий блик под рамой */
+.boardArea::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 2%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 12%;
+  background: radial-gradient(ellipse, rgba(201, 164, 92, 0.1), transparent 70%);
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+/* Металлическая рама доски — титан + шампань;
+   container-type → размеры фигур привязаны к клетке через cqw. */
+.boardFrame {
+  /* Явная ширина обязательна: container-type: inline-size зануляет
+     auto-ширину флекс-элемента — рамка не может мерить себя по контенту. */
+  width: min(100%, calc(100vh - 340px));
+  box-sizing: border-box;
+  padding: 16px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #6B5B3E, #2E2820 42%, #16130F 58%, #5A4D36);
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 235, 190, 0.28),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.65),
+    0 0 30px rgba(201, 164, 92, 0.16);
+  position: relative;
+  container-type: inline-size;
+}
+
+.chessBoard {
+  display: grid;
+  /* Статичная сетка: и колонки, и строки жёстко по 1/8 — иначе implicit-
+     строки auto сжимаются под контент и клетки «плывут» по высоте. */
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 7px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.7);
+  box-shadow:
+    inset 0 0 0 1px rgba(201, 164, 92, 0.3),
+    inset 0 4px 18px rgba(0, 0, 0, 0.45);
+}
+
+.square {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  /* Тёмный мрамор — обсидиан с холодным бликом */
+  background:
+    radial-gradient(130% 130% at 30% 22%, rgba(140, 152, 180, 0.12), transparent 52%),
+    linear-gradient(160deg, #1D222B, #11141B);
+  transition: box-shadow var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+.square[data-light] {
+  /* Светлый мрамор — тёплая шампань-бронза */
+  background:
+    radial-gradient(130% 130% at 30% 22%, rgba(255, 243, 205, 0.16), transparent 52%),
+    linear-gradient(160deg, #7A6A4A, #5D5138);
+}
+
+.square:hover {
+  box-shadow: inset 0 0 0 2px rgba(201, 164, 92, 0.4);
+  z-index: 1;
+}
+
+/* Последний ход — тёплая подсветка клеток */
+.square[data-last] {
+  box-shadow: inset 0 0 0 999px rgba(201, 164, 92, 0.14);
+}
+
+/* Выбранная фигура */
+.square[data-selected] {
+  box-shadow:
+    inset 0 0 0 2px rgba(201, 164, 92, 0.95),
+    inset 0 0 22px rgba(201, 164, 92, 0.35);
+  z-index: 2;
+}
+
+/* Легальный ход — золотая точка */
+.square[data-target]::after {
+  content: '';
+  position: absolute;
+  width: 22%;
+  height: 22%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201, 164, 92, 0.95), rgba(201, 164, 92, 0.35));
+  box-shadow: 0 0 10px rgba(201, 164, 92, 0.7);
+}
+
+/* Взятие — золотое кольцо вместо точки */
+.square[data-capture]::after {
+  width: 88%;
+  height: 88%;
+  background: transparent;
+  border: 3px solid rgba(201, 164, 92, 0.9);
+  box-shadow:
+    0 0 14px rgba(201, 164, 92, 0.55),
+    inset 0 0 14px rgba(201, 164, 92, 0.3);
+}
+
+/* Король под шахом — красная пульсация */
+.square[data-check] {
+  box-shadow:
+    inset 0 0 0 2px rgba(212, 87, 76, 0.9),
+    inset 0 0 24px rgba(212, 87, 76, 0.45);
+  animation: checkPulse var(--nexus-motion-pulse, 1100ms) cubic-bezier(var(--nexus-easing-symmetric, 0.42, 0, 0.58, 1)) infinite;
+}
+
+@keyframes checkPulse {
+
+  0%,
+  100% {
+    box-shadow: inset 0 0 0 2px rgba(212, 87, 76, 0.6), inset 0 0 16px rgba(212, 87, 76, 0.3);
+  }
+
+  50% {
+    box-shadow: inset 0 0 0 2px rgba(212, 87, 76, 1), inset 0 0 28px rgba(212, 87, 76, 0.55);
+  }
+}
+
+/* Координаты на краях */
+.coord i,
+.coord b {
+  position: absolute;
+  font-style: normal;
+  font-weight: 600;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  /* authored gold, alpha .75 — AA на тёмном frame/deep-square (NQ-072: .5 давал 2.86:1) */
+  color: rgba(201, 164, 92, 0.75);
+  pointer-events: none;
+}
+
+.coord i {
+  top: 2px;
+  left: 4px;
+}
+
+.coord b {
+  bottom: 2px;
+  right: 5px;
+}
+
+/* Фигуры — классические Staunton-силуэты (svg, viewBox 45×45).
+   Клетка = 12.5cqw, фигура ~9.6cqw (~77% клетки), как на турнирных
+   диаграммах. Цвета через --pf (заливка) / --po (контур) / --pd (штрихи). */
+.piece {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 9.6cqw;
+  aspect-ratio: 1;
+  user-select: none;
+  pointer-events: none;
+  position: relative;
+  z-index: 1;
+}
+
+.pieceSvg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.pieceSvg [data-part='sil'] {
+  fill: var(--pf);
+  stroke: var(--po);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.pieceSvg [data-part='det'] {
+  fill: none;
+  stroke: var(--pd);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+}
+
+/* Белые — слоновая кость, бронзовый контур */
+.piece[data-c='w'] {
+  --pf: #F2E7CE;
+  --po: #463723;
+  --pd: #463723;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.55));
+}
+
+/* Чёрные — обсидиан, золотой контур и штрихи */
+.piece[data-c='b'] {
+  --pf: #26232B;
+  --po: var(--nexus-color-gold-500, #C9A45C);
+  --pd: var(--nexus-color-gold-500, #C9A45C);
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.65));
+}
+
+/* Взятие — золотое кольцо-пинг на клетке */
+.square[data-cap] {
+  animation: capRing var(--nexus-motion-ring, 560ms) cubic-bezier(var(--nexus-easing-exit, 0.4, 0, 1, 1));
+}
+
+@keyframes capRing {
+  0% {
+    box-shadow:
+      inset 0 0 0 3px rgba(214, 178, 106, 0.95),
+      inset 0 0 34px rgba(201, 164, 92, 0.55);
+  }
+
+  100% {
+    box-shadow: inset 0 0 0 999px rgba(201, 164, 92, 0.14);
+  }
+}
+
+/* ---------- log ---------- */
+
+.log {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: var(--nexus-space-4, 16px);
+}
+
+.logTitle {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--nexus-text-accent, #C9A45C);
+  margin: 0 0 var(--nexus-space-3, 12px);
+}
+
+.logList {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  /* Ровно 3 колонки: balance распределяет ходы равномерно между ними,
+     поэтому журнал трёхколоночный и на короткой партии; при переполнении
+     порождаются новые колонки — скролл вправо, вертикально журнал не уходит. */
+  overflow-x: auto;
+  overflow-y: hidden;
+  column-fill: balance;
+  column-count: 3;
+  column-gap: calc(var(--nexus-space-5, 20px) - var(--nexus-space-1, 4px) / 2);
+  column-rule: 1px solid var(--nexus-border-subtle, rgba(201, 164, 92, 0.15));
+  margin: 0;
+  /* Собственные номера ol убраны — нотация SAN уже несёт номера ходов. */
+  padding: 0;
+  list-style: none;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1.75;
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .square[data-check],
+  .square[data-cap],
+  .promoPop {
+    animation: none;
+  }
+
+  .square,
+  .promoBtn {
+    transition: none;
+  }
+}
+
+/* Фигура игрока, которой есть куда ходить — едва заметный маркер
+   в углу клетки (не точка хода — это не цель, а источник). */
+.square[data-canmove]::before {
+  content: '';
+  position: absolute;
+  right: 6%;
+  bottom: 6%;
+  width: 12%;
+  height: 12%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201, 164, 92, 0.65), transparent 70%);
+}
+
+/* Подсказка движка — нефритовое кольцо на клетках from/to */
+.square[data-hint] {
+  box-shadow:
+    inset 0 0 0 2px rgba(94, 199, 178, 0.85),
+    inset 0 0 18px rgba(94, 199, 178, 0.3);
+}
+
+/* Материальный баланс — чип в лотке взятых фигур */
+.matChip {
+  margin-left: 10px;
+  padding: 2px 9px;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.08em;
+  color: #F0E4C4;
+  background: linear-gradient(180deg, rgba(52, 44, 24, 0.9), rgba(16, 13, 9, 0.92));
+  border: 1px solid rgba(201, 164, 92, 0.55);
+  border-radius: var(--nexus-radius-lg, 12px);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Диалог превращения пешки — мини-попап под доской */
+.promoPop {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: linear-gradient(180deg, rgba(30, 26, 18, 0.96), rgba(14, 12, 9, 0.97));
+  border: 1px solid rgba(201, 164, 92, 0.6);
+  border-radius: var(--nexus-radius-lg, 12px);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.65), 0 0 24px color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 18%, transparent);
+  animation: promoIn var(--nexus-duration-normal, 240ms) cubic-bezier(var(--nexus-easing-pop, 0.3, 0.9, 0.3, 1.15));
+}
+
+@keyframes promoIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px) scale(0.92);
+  }
+}
+
+.promoTitle {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--nexus-text-on-art-muted, #8E97A5);
+}
+
+.promoBtns {
+  display: flex;
+  gap: 8px;
+}
+
+.promoBtn {
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* authored-dark кнопка на .promoPop — pinned onArt (NQ-072) */
+  border: 1px solid color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 45%, transparent);
+  border-radius: 9px;
+  background: rgba(20, 17, 12, 0.8);
+  cursor: pointer;
+  transition:
+    border-color var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1)),
+    box-shadow var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1)),
+    transform var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+.promoBtn:hover {
+  border-color: rgba(226, 196, 130, 0.95);
+  box-shadow: 0 0 14px rgba(201, 164, 92, 0.4);
+  transform: translateY(-2px);
+}
+
+.promoGlyph {
+  width: 34px;
+  height: 34px;
+}

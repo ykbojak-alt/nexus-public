@@ -1,0 +1,15 @@
+/* Type role utilities bound to type.* tokens (spec §9). Apply via
+   className="nx-type-hero" etc.; never inline font literals. */
+:root {
+  --nexus-font-ui: var(--nexus-font-ui, 'Inter Tight', Inter, system-ui, sans-serif);
+}
+
+.nx-type-hero         { font: var(--nexus-type-hero-font-weight, 300) var(--nexus-type-hero-font-size, 56px)/var(--nexus-type-hero-line-height, 64px) var(--nexus-type-hero-font-family, 'Playfair Display', Georgia, serif); letter-spacing: var(--nexus-type-hero-letter-spacing, -0.02em); }
+.nx-type-page-title   { font: var(--nexus-type-page-title-font-weight, 300) var(--nexus-type-page-title-font-size, 40px)/var(--nexus-type-page-title-line-height, 48px) var(--nexus-type-page-title-font-family, 'Inter Tight', system-ui, sans-serif); letter-spacing: var(--nexus-type-page-title-letter-spacing, -0.01em); }
+.nx-type-section-title{ font: var(--nexus-type-section-title-font-weight, 400) var(--nexus-type-section-title-font-size, 28px)/var(--nexus-type-section-title-line-height, 36px) var(--nexus-type-section-title-font-family, 'Inter Tight', system-ui, sans-serif); }
+.nx-type-panel-title  { font: var(--nexus-type-panel-title-font-weight, 500) var(--nexus-type-panel-title-font-size, 18px)/var(--nexus-type-panel-title-line-height, 26px) var(--nexus-type-panel-title-font-family, 'Inter Tight', system-ui, sans-serif); letter-spacing: var(--nexus-type-panel-title-letter-spacing, 0.01em); }
+.nx-type-body         { font: var(--nexus-type-body-font-weight, 400) var(--nexus-type-body-font-size, 15px)/var(--nexus-type-body-line-height, 24px) var(--nexus-type-body-font-family, 'Inter Tight', system-ui, sans-serif); }
+.nx-type-caption      { font: var(--nexus-type-caption-font-weight, 500) var(--nexus-type-caption-font-size, 12px)/var(--nexus-type-caption-line-height, 16px) var(--nexus-type-caption-font-family, 'Inter Tight', system-ui, sans-serif); letter-spacing: var(--nexus-type-caption-letter-spacing, 0.02em); }
+.nx-type-metric       { font: var(--nexus-type-metric-font-weight, 300) var(--nexus-type-metric-font-size, 34px)/var(--nexus-type-metric-line-height, 40px) var(--nexus-type-metric-font-family, 'IBM Plex Mono', Consolas, monospace); letter-spacing: var(--nexus-type-metric-letter-spacing, -0.01em); }
+.nx-type-code         { font: var(--nexus-type-code-font-weight, 400) var(--nexus-type-code-font-size, 13px)/var(--nexus-type-code-line-height, 20px) var(--nexus-type-code-font-family, 'IBM Plex Mono', Consolas, monospace); }
+.nx-type-status       { font: var(--nexus-type-status-font-weight, 600) var(--nexus-type-status-font-size, 11px)/var(--nexus-type-status-line-height, 16px) var(--nexus-type-status-font-family, 'Inter Tight', system-ui, sans-serif); letter-spacing: var(--nexus-type-status-letter-spacing, 0.08em); text-transform: uppercase; }

@@ -1,0 +1,125 @@
+/* NEU dock motion: one curve/duration drives both grid tracks. */
+
+.layout {
+  --nexus-plugin-panel-duration: 240ms;
+  --nexus-plugin-panel-easing: cubic-bezier(0.2, 0, 0, 1);
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, var(--nexus-plugin-panel-width, 45%));
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  transition: grid-template-columns var(--nexus-plugin-panel-duration) var(--nexus-plugin-panel-easing);
+}
+
+.layout[data-mode='hidden'] {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0fr);
+}
+
+.layout[data-mode='fullscreen'] {
+  grid-template-columns: minmax(0, 0fr) minmax(0, 1fr);
+}
+
+.layout[data-resizing='true'] {
+  transition: none;
+}
+
+.layout[data-reduced-motion='true'] {
+  transition-duration: 0ms;
+}
+
+.center,
+.dock {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.dock {
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity var(--nexus-plugin-panel-duration) var(--nexus-plugin-panel-easing),
+    transform var(--nexus-plugin-panel-duration) var(--nexus-plugin-panel-easing);
+}
+
+.layout[data-mode='hidden'] .dock {
+  opacity: 0;
+  transform: translateX(12px);
+  pointer-events: none;
+}
+
+.layout[data-resizing='true'] .dock {
+  transition: none;
+}
+
+.center {
+  transition: min-width var(--nexus-plugin-panel-duration) var(--nexus-plugin-panel-easing);
+}
+
+/* Tabs enter/leave without changing the containing row's intrinsic size. */
+.item {
+  min-width: 0;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 180ms var(--nexus-plugin-panel-easing),
+    transform 180ms var(--nexus-plugin-panel-easing);
+}
+
+.item[data-present='true'] {
+  opacity: 1;
+  transform: none;
+}
+
+.tab {
+  display: inline-flex;
+}
+
+/* Floating panels are out of document flow: their entrance cannot push siblings. */
+.floating {
+  position: absolute;
+  z-index: var(--nexus-z-popover, 90);
+  transition-duration: var(--nexus-plugin-panel-duration, 240ms);
+}
+
+/* The inner 0fr track clips content during plugin enable/disable. */
+.pluginBlock {
+  display: grid;
+  min-height: 0;
+  overflow: hidden;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    grid-template-rows 240ms var(--nexus-plugin-panel-easing),
+    opacity 240ms var(--nexus-plugin-panel-easing),
+    transform 240ms var(--nexus-plugin-panel-easing);
+}
+
+.pluginBlock > * {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.pluginBlock[data-present='true'] {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layout,
+  .dock,
+  .center,
+  .item,
+  .pluginBlock {
+    transition: none;
+  }
+
+  .item,
+  .layout[data-mode='hidden'] .dock,
+  .pluginBlock {
+    transform: none;
+  }
+}

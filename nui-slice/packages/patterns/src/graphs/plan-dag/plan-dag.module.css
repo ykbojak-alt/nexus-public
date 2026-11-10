@@ -1,0 +1,83 @@
+/* PlanDag — plan steps as a topological DAG (neu-ux V-1 / refs3 R-W4.1).
+ * Transform-only motion: the active-step pulse scales the marker, never
+ * repaints layout; reduced-motion freezes it to a static ring. */
+
+.wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.node {
+  transition: transform 160ms ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.node:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, #539EFF);
+  outline-offset: 2px;
+}
+
+.pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Pulse only when the embedder allows motion — probes render the static
+ * ring, which is also the reduced-motion rendering. An infinite CSS
+ * transform animation on an SVG element keeps a compositor layer alive
+ * and re-rasterizes the tile the arc crosses (±1px AA, 6–10 px diff). */
+.wrap[data-animated] .pulse {
+  animation: planDagPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes planDagPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+
+  50% {
+    transform: scale(1.18);
+    opacity: 0.45;
+  }
+}
+
+.zoomBtn {
+  cursor: pointer;
+}
+
+.zoomBtn rect {
+  fill: color-mix(in srgb, var(--nexus-surface, #14161c) 82%, transparent);
+  stroke: var(--nexus-chart-axis, #B0B7C2);
+  stroke-width: 1;
+}
+
+.zoomBtn text {
+  fill: var(--nexus-chart-label, #8E97A5);
+  font-size: 14px;
+  user-select: none;
+}
+
+.zoomBtn:hover rect {
+  stroke: var(--nexus-state-active, #D0B169);
+}
+
+.zoomBtn:focus-visible rect {
+  stroke: var(--nexus-focus-ring, #539EFF);
+  stroke-width: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  /* Same specificity as .wrap[data-animated] .pulse — later rule wins. */
+  .wrap[data-animated] .pulse {
+    animation: none;
+  }
+
+  .node {
+    transition: none;
+  }
+}

@@ -1,0 +1,1473 @@
+.page {
+  padding: var(--nexus-space-4, 16px) var(--nexus-space-5, 20px);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: var(--nexus-space-3, 12px);
+  /* Не height:100%+hidden: при высоком столе (переводной, 3+ агента)
+     контент раньше обрезался без скролла. Страница растёт за пределы
+     вьюпорта — скроллит shell-workspace (overflow:auto там есть). */
+  min-height: 100%;
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+/* ---------- setup ---------- */
+
+.setup {
+  display: grid;
+  place-items: center;
+  height: 100%;
+}
+
+.setupCard {
+  max-width: 560px;
+  width: 100%;
+  padding: var(--nexus-space-8, 32px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-4, 16px);
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1.5;
+}
+
+.setupRow {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-4, 16px);
+}
+
+.setupLabel {
+  min-width: 130px;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.personaPick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nexus-space-2, 8px);
+}
+
+.personaChip {
+  padding: calc(var(--nexus-space-3, 12px) / 2) var(--nexus-space-3, 12px) calc(var(--nexus-space-3, 12px) / 2) calc(var(--nexus-space-3, 12px) / 2);
+  border: 1px solid var(--nexus-border-subtle, rgba(201, 164, 92, 0.25));
+  border-radius: 10px;
+  background: transparent;
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+}
+
+.personaAvatar {
+  width: 28px;
+  height: 36px;
+  border-radius: 6px;
+  object-fit: cover;
+  display: block;
+}
+
+.personaChip[data-active] {
+  border-color: var(--nexus-accent-primary, #C9A45C);
+  /* Акцент примешан к основному тексту темы — контраст на soft-тинте ≥ 4.5:1
+     на всех персонах (NQ-062, приём color-mix по образцу NQ-046). */
+  color: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 30%, var(--nexus-text-primary, #F6F0E4) 70%);
+  background: var(--nexus-accent-primary-soft, rgba(201, 164, 92, 0.12));
+}
+
+.seedInput {
+  width: 140px;
+  padding: calc(var(--nexus-space-3, 12px) / 2) calc(var(--nexus-space-2, 8px) + var(--nexus-space-1, 4px) / 2);
+  border: 1px solid var(--nexus-border-subtle, rgba(201, 164, 92, 0.25));
+  border-radius: var(--nexus-radius-sm, 6px);
+  background: var(--nexus-surface-panel, rgba(255, 255, 255, 0.03));
+  color: var(--nexus-text-primary, #F6F0E4);
+  font: inherit;
+}
+
+.honesty {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-3, 12px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+/* ---------- header ---------- */
+
+.headerMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-4, 16px);
+}
+
+/* ---------- board ---------- */
+
+.board {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: var(--nexus-space-4, 16px);
+  min-height: 0;
+}
+
+.opponents {
+  display: grid;
+  /* min() не даёт колонке упереться в узкий вьюпорт — до этого панель
+     агента 220px+ выталкивала всю строку за край экрана. */
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: var(--nexus-space-3, 12px);
+}
+
+/* Панель агента — не прямоугольник: фон референса лежит в ::before и
+   растворяется по краям (mask), рамки нет. Тонкий authored-подклад держит
+   панель тёмной под светлыми темами — pinned onArt-текст лежит на вош-арте
+   (NQ-072), без него под alice был бы mid-tone без гарантии контраста. */
+.page .opponent {
+  padding: var(--nexus-space-3, 12px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-2, 8px);
+  position: relative;
+  overflow: hidden;
+  border: none;
+  background: rgba(10, 8, 6, 0.55);
+  box-shadow: none;
+}
+
+.opponent::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--agentBg, none) center 22% / cover no-repeat;
+  opacity: 0.5;
+  filter: saturate(0.95) brightness(0.62);
+  /* Края растворяются — панель плавно уходит в фон рантайма. */
+  -webkit-mask-image: radial-gradient(115% 120% at 50% 30%, #000 38%, transparent 80%);
+  mask-image: radial-gradient(115% 120% at 50% 30%, #000 38%, transparent 80%);
+  pointer-events: none;
+}
+
+.opponent>* {
+  position: relative;
+  z-index: 1;
+}
+
+.avatarWrap {
+  width: 56px;
+  height: 72px;
+  border-radius: var(--nexus-radius-md, 8px);
+  overflow: hidden;
+  border: 1px solid var(--nexus-accent-on-art, #C9A45C);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 25%, transparent),
+    0 0 12px color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 30%, transparent);
+  flex-shrink: 0;
+  background: var(--nexus-surface-base, #0b0d10);
+}
+
+.avatarWrap[data-out] {
+  filter: grayscale(1) brightness(0.55);
+  border-color: var(--nexus-text-on-art-muted, #8E97A5);
+}
+
+/* Тема агента теперь несёт фоновая картинка из референса (::before выше) —
+   прямоугольных градиентов и кайм намеренно нет. */
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Роли — мягкое внутреннее свечение без рамки: края остаются растворёнными. */
+.opponent[data-role='атакует'] {
+  box-shadow: inset 0 0 34px color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 30%, transparent);
+}
+
+.opponent[data-role='атакует'] .avatarWrap {
+  border-color: color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 95%, transparent);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 55%, transparent);
+}
+
+.opponent[data-role='защищается'] {
+  box-shadow: inset 0 0 34px color-mix(in srgb, var(--nexus-state-info, #4E8FE0) 30%, transparent);
+}
+
+.opponent[data-role='защищается'] .avatarWrap {
+  border-color: color-mix(in srgb, var(--nexus-state-info, #4E8FE0) 80%, transparent);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--nexus-state-info, #4E8FE0) 50%, transparent);
+}
+
+.opponentTop {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-3, 12px);
+}
+
+.opponentTop .opponentName {
+  flex: 1;
+}
+
+.opponentName {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.06em;
+  color: var(--nexus-text-on-art, #F6F0E4);
+}
+
+.opponentRole {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--nexus-text-on-art-muted, #8E97A5);
+}
+
+/* Агент на ходе — дыхание аватара и курсивная подпись */
+.opponent[data-thinking] .avatarWrap {
+  animation: thinkPulse var(--nexus-motion-pulse, 1100ms) cubic-bezier(var(--nexus-easing-symmetric, 0.42, 0, 0.58, 1)) infinite;
+}
+
+.opponent[data-thinking] .opponentRole {
+  color: var(--nexus-accent-on-art, #C9A45C);
+}
+
+@keyframes thinkPulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.opponentHand {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  position: relative;
+}
+
+.cardBackImg {
+  height: calc(var(--cardH, 150px) * 0.35);
+  width: auto;
+  /* Перехлёст веера — в масштабе карт, иначе на узком окне рубашки
+     схлопываются в нечитаемую полосу. */
+  margin-right: calc(var(--cardH, 150px) * -0.17);
+  border-radius: var(--nexus-radius-sm, 4px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+/* Счётчик карт в руке агента — медальон-чип, тонирован в цвет его темы */
+.opponentCount {
+  margin-left: auto;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #F2E7C8;
+  background: radial-gradient(circle at 34% 28%, rgba(58, 50, 30, 0.95), rgba(12, 10, 8, 0.94));
+  border: 1px solid rgba(201, 164, 92, 0.65);
+  border-radius: 50%;
+  box-shadow:
+    0 0 12px rgba(201, 164, 92, 0.3),
+    inset 0 1px 2px rgba(255, 240, 200, 0.22),
+    0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.opponent[data-persona='alice'] .opponentCount {
+  border-color: rgba(214, 186, 120, 0.8);
+  box-shadow: 0 0 12px rgba(214, 186, 120, 0.4), inset 0 1px 2px rgba(255, 240, 200, 0.22), 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.opponent[data-persona='forge'] .opponentCount {
+  border-color: rgba(220, 90, 80, 0.8);
+  box-shadow: 0 0 12px rgba(220, 90, 80, 0.4), inset 0 1px 2px rgba(255, 240, 200, 0.22), 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.opponent[data-persona='mech'] .opponentCount {
+  border-color: rgba(90, 160, 235, 0.8);
+  box-shadow: 0 0 12px rgba(90, 160, 235, 0.4), inset 0 1px 2px rgba(255, 240, 200, 0.22), 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.opponent[data-persona='codex'] .opponentCount {
+  border-color: rgba(232, 220, 195, 0.75);
+  box-shadow: 0 0 12px rgba(232, 220, 195, 0.35), inset 0 1px 2px rgba(255, 240, 200, 0.22), 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.opponent[data-persona='arch'] .opponentCount {
+  border-color: rgba(169, 143, 245, 0.8);
+  box-shadow: 0 0 12px rgba(169, 143, 245, 0.4), inset 0 1px 2px rgba(255, 240, 200, 0.22), 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.tableArea {
+  --cardH: var(--tableCardH, 150px);
+  padding: var(--nexus-space-4, 16px);
+  /* Высота стола масштабируется вместе с картами: два ряда пар +
+     вылет карты защиты, без жёстких 430px — стол не уезжает за экран. */
+  min-height: calc(var(--cardH, 150px) * 2.9 + 12px);
+  display: flex;
+  align-items: stretch;
+  gap: var(--nexus-space-4, 16px);
+  position: relative;
+  overflow: hidden;
+  /* Поле-«матрица»: глубокий обсидиан + тёплое ядро; поток символов — canvas .matrix.
+     surface.art под полупрозрачными волнами — authored-стол всегда тёмный, иначе
+     под светлой темой (alice) фетр смывается в mid-tone и текст теряет контраст (NQ-072). */
+  background-color: var(--nexus-surface-art, #0F0F13);
+  background-image:
+    radial-gradient(90% 85% at 50% 46%, rgba(201, 164, 92, 0.06), transparent 58%),
+    linear-gradient(170deg, rgba(16, 20, 26, 0.6), rgba(8, 10, 13, 0.45));
+}
+
+/* Поток символов — фон под картами */
+.matrix {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+/* Уголки-скобки по краям поля — тактический планшет */
+.corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgba(201, 164, 92, 0.55);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.corner[data-c='tl'] {
+  top: 8px;
+  left: 8px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.corner[data-c='tr'] {
+  top: 8px;
+  right: 8px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.corner[data-c='bl'] {
+  bottom: 8px;
+  left: 8px;
+  border-right: none;
+  border-top: none;
+}
+
+.corner[data-c='br'] {
+  bottom: 8px;
+  right: 8px;
+  border-left: none;
+  border-top: none;
+}
+
+.tableMain {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* Призраки кона — карты, улетевшие со стола (бито / взятие AI) */
+.ghostsLayer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nexus-space-4, 16px);
+  pointer-events: none;
+  z-index: 6;
+}
+
+.ghostPair {
+  position: relative;
+  display: inline-flex;
+  animation: ghostFly 620ms cubic-bezier(0.35, 0.6, 0.4, 1) forwards;
+}
+
+.ghostPair .cardImg {
+  height: var(--cardH, 150px);
+}
+
+.ghostDefense {
+  position: absolute;
+  top: calc(var(--cardH, 150px) * 0.15);
+  left: calc(var(--cardH, 150px) * 0.19);
+  transform: rotate(8deg);
+}
+
+.ghostsLayer[data-dir='discard'] .ghostPair {
+  animation-name: ghostToDiscard;
+}
+
+.ghostsLayer[data-dir='opponent'] .ghostPair {
+  animation-name: ghostToOpponent;
+}
+
+/* Конечная точка разлёта — через --gx/--gy/--gr из inline-стиля:
+   каждая пара уходит собственной дугой, не единой прямой. */
+@keyframes ghostToDiscard {
+  from {
+    transform: none;
+    opacity: 1;
+  }
+
+  to {
+    /* --tx/--ty — вектор до реальной стопки отбоя (ставит JS по rect'ам),
+       --jx/--jy — индивидуальный разброс каждой пары */
+    transform: translate(calc(var(--tx, -430px) + var(--jx, 0px)), calc(var(--ty, 24px) + var(--jy, 0px))) scale(0.42) rotate(var(--gr, -9deg));
+    opacity: 0;
+  }
+}
+
+@keyframes ghostToOpponent {
+  from {
+    transform: none;
+    opacity: 1;
+  }
+
+  to {
+    transform: translate(calc(var(--tx, 0px) + var(--jx, 0px)), calc(var(--ty, -190px) + var(--jy, 0px))) scale(0.55) rotate(var(--gr, 0deg));
+    opacity: 0;
+  }
+}
+
+@keyframes ghostFly {
+  from {
+    transform: none;
+  }
+}
+
+.deckZone {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  position: relative;
+  z-index: 2;
+  border-left: 1px dashed var(--nexus-border-subtle, rgba(201, 164, 92, 0.3));
+}
+
+.deckStack {
+  position: relative;
+  /* Колода в масштабе карт стола + запас под выступ
+     повёрнутого козыря слева и снизу. */
+  width: calc(var(--cardH, 150px) * 0.62 + 50px);
+  height: calc(var(--cardH, 150px) + 35px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.trumpUnder {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  /* rotate(90°) кладёт карту поперёк; translateY в повёрнутой системе =
+     сдвиг влево — козырь заметно выступает из-под колоды, как на столе */
+  transform: translateX(-50%) rotate(90deg) translateY(calc(var(--cardH, 150px) * 0.24));
+  z-index: 1;
+  display: block;
+  transition: transform var(--nexus-motion-fly, 280ms) ease, opacity var(--nexus-motion-fly, 280ms) ease;
+}
+
+/* Козырь — в размер карт поля и рубашек колоды над ним */
+.trumpUnder .cardImg {
+  height: var(--cardH, 150px);
+  filter: brightness(1.1);
+}
+
+/* Цвет козыря — свечение подкозырной карты по масти */
+.trumpUnder[data-suit='hearts'] .cardImg {
+  box-shadow: 0 0 16px rgba(212, 87, 76, 0.6), 0 0 0 1px rgba(212, 87, 76, 0.5);
+}
+
+.trumpUnder[data-suit='diamonds'] .cardImg {
+  box-shadow: 0 0 16px rgba(217, 166, 46, 0.6), 0 0 0 1px rgba(217, 166, 46, 0.5);
+}
+
+.trumpUnder[data-suit='spades'] .cardImg {
+  box-shadow: 0 0 16px rgba(142, 111, 240, 0.6), 0 0 0 1px rgba(142, 111, 240, 0.5);
+}
+
+.trumpUnder[data-suit='clubs'] .cardImg {
+  box-shadow: 0 0 16px rgba(78, 143, 224, 0.6), 0 0 0 1px rgba(78, 143, 224, 0.5);
+}
+
+.deckBacks {
+  position: absolute;
+  /* inset (не top): рубашки прибиваются к НИЗУ контейнера, чтобы
+     стопка росла вверх над козырем и ложилась на него ровно. */
+  inset: 0;
+  z-index: 2;
+  display: block;
+  pointer-events: none;
+}
+
+/* Рубашки настоящей стопки — одна img на каждую реальную карту deck[1..];
+   пропорция лицевой карты ~0.613, арт рубашки кадрирован по центру.
+   Сдвиг каждой карты — inline translateY: стопка ровная и тает при доборе. */
+.deckBackImg {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  height: var(--cardH, 150px);
+  /* Пропорция карт — 9:16 (канон генераций 941×1672, ar 0.563) */
+  width: calc(var(--cardH, 150px) * 0.563);
+  object-fit: cover;
+  border-radius: 9px;
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(201, 164, 92, 0.28);
+  transition: transform var(--nexus-motion-fly, 280ms) ease;
+}
+
+.deckBackImg[data-decktop] {
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(226, 196, 130, 0.45);
+}
+
+/* Счётчик колоды — золотой медальон поверх стопки */
+.deckCount {
+  position: absolute;
+  top: calc(var(--cardH, 150px) * 0.38);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--nexus-type-body-font-size, 15px);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #F2E7C8;
+  background: radial-gradient(circle at 34% 28%, rgba(58, 50, 30, 0.95), rgba(12, 10, 8, 0.94));
+  border: 1px solid rgba(201, 164, 92, 0.7);
+  border-radius: 50%;
+  box-shadow:
+    0 0 14px rgba(201, 164, 92, 0.4),
+    inset 0 1px 2px rgba(255, 240, 200, 0.25),
+    0 2px 8px rgba(0, 0, 0, 0.65);
+  pointer-events: none;
+}
+
+/* Козырь ушёл в руку — под колодой остаётся полупрозрачный след-указатель масти */
+.deckStack[data-empty] .trumpUnder {
+  opacity: 0.32;
+  transition: transform var(--nexus-motion-fly, 280ms) ease, opacity var(--nexus-motion-reveal, 400ms) ease;
+}
+
+.deckStack[data-empty] .trumpUnder .cardImg {
+  filter: grayscale(0.5) brightness(0.85);
+}
+
+/* Микро-лейблы телеметрии — uppercase, ромбик-прицел */
+.deckMeta,
+.discardCount {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--nexus-text-on-art-dim, #B0B7C2) 75%, transparent);
+  white-space: nowrap;
+}
+
+.deckMeta::before,
+.discardCount::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin-right: calc(var(--nexus-space-3, 12px) / 2);
+  vertical-align: 2px;
+  transform: rotate(45deg);
+  background: color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 70%, transparent);
+}
+
+.trumpMeta {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.08em;
+  color: var(--nexus-accent-on-art, #C9A45C);
+  padding: calc(var(--nexus-space-1, 4px) / 2) var(--nexus-space-2, 8px);
+  border: 1px solid color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 45%, transparent);
+  border-radius: var(--nexus-radius-sm, 4px);
+  background: color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 8%, transparent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 20%, transparent);
+}
+
+/* Цвет значка козыря по масти */
+.trumpMeta[data-suit='hearts'] {
+  color: #E8837A;
+  border-color: rgba(212, 87, 76, 0.55);
+  background: rgba(212, 87, 76, 0.1);
+  box-shadow: 0 0 10px rgba(212, 87, 76, 0.3);
+}
+
+.trumpMeta[data-suit='diamonds'] {
+  color: #E8C25C;
+  border-color: rgba(217, 166, 46, 0.55);
+  background: rgba(217, 166, 46, 0.1);
+  box-shadow: 0 0 10px rgba(217, 166, 46, 0.3);
+}
+
+.trumpMeta[data-suit='spades'] {
+  color: #A98FF5;
+  border-color: rgba(142, 111, 240, 0.55);
+  background: rgba(142, 111, 240, 0.1);
+  box-shadow: 0 0 10px rgba(142, 111, 240, 0.3);
+}
+
+.trumpMeta[data-suit='clubs'] {
+  color: #7FB0EA;
+  border-color: rgba(78, 143, 224, 0.55);
+  background: rgba(78, 143, 224, 0.1);
+  box-shadow: 0 0 10px rgba(78, 143, 224, 0.3);
+}
+
+/* Зона отбоя — слева от игрового поля: неровная стопка последних карт.
+   Карты в размер карт поля (150px) — отбой читается как настоящая стопка. */
+.discardZone {
+  flex-shrink: 0;
+  width: calc(var(--cardH, 150px) * 0.62 + 62px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 10px;
+  position: relative;
+  z-index: 2;
+  border-right: 1px dashed var(--nexus-border-subtle, rgba(201, 164, 92, 0.3));
+}
+
+.discardZone[data-empty] {
+  opacity: 0.4;
+}
+
+.discardStack {
+  position: relative;
+  width: calc(var(--cardH, 150px) * 0.62 + 46px);
+  height: calc(var(--cardH, 150px) + 28px);
+}
+
+.discardCard {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: var(--cardH, 150px);
+  width: auto;
+  border-radius: 9px;
+  transform: translate(-50%, -50%);
+  box-shadow:
+    0 3px 9px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(201, 164, 92, 0.18);
+  filter: saturate(0.85) brightness(0.92);
+}
+
+/* Попап выбора — «побить или перевести» */
+.choicePop {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  border-radius: var(--nexus-radius-lg, 12px);
+  background: linear-gradient(180deg, rgba(26, 23, 16, 0.97), rgba(14, 12, 9, 0.97));
+  border: 1px solid rgba(201, 164, 92, 0.6);
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.65),
+    0 0 22px rgba(201, 164, 92, 0.2);
+  animation: choiceIn var(--nexus-motion-snappy, 180ms) cubic-bezier(var(--nexus-easing-exit, 0.4, 0, 1, 1)) backwards;
+}
+
+@keyframes choiceIn {
+  from {
+    transform: translateX(-50%) translateY(10px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(-50%);
+    opacity: 1;
+  }
+}
+
+.choiceText {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-on-art, #f6f0e4);
+  white-space: nowrap;
+}
+
+.choiceBtns {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+}
+
+.choiceCancel {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  border: 1px solid rgba(201, 164, 92, 0.35);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--nexus-text-on-art-dim, #b0b7c2);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.choiceCancel:hover {
+  border-color: rgba(201, 164, 92, 0.8);
+  color: var(--nexus-text-on-art, #f6f0e4);
+}
+
+.tableEmpty {
+  color: var(--nexus-text-on-art-muted, #8E97A5);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.pairs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: center;
+  gap: var(--nexus-space-4, 16px);
+  justify-content: center;
+  width: 100%;
+}
+
+.pair {
+  position: relative;
+  /* Резерв под вылет карты защиты масштабируется с картой —
+     иначе побитая карта наезжает на соседнюю пару справа. */
+  padding: 4px calc(var(--cardH, 150px) * 0.26) calc(var(--cardH, 150px) * 0.2) 4px;
+  border-radius: var(--nexus-radius-md, 8px);
+}
+
+/* Живой стол — лёгкий наклон пар, как брошенные на сукно */
+.pairs .pair:nth-child(3n + 1) {
+  transform: rotate(-1.3deg);
+}
+
+.pairs .pair:nth-child(3n) {
+  transform: rotate(1.1deg);
+}
+
+.pairs .pair:nth-child(3n + 2) {
+  transform: rotate(-0.5deg);
+}
+
+.pair[data-open] {
+  outline: 1px dashed var(--nexus-border-subtle, rgba(201, 164, 92, 0.3));
+}
+
+.pair[data-target] {
+  outline: 2px solid var(--nexus-accent-energy, #00C8FF);
+}
+
+/* Пара покрыта — короткая золотая вспышка бойца */
+.pair:not([data-open]) {
+  animation: pairBeat var(--nexus-motion-beat, 480ms) ease-out;
+}
+
+@keyframes pairBeat {
+  0% {
+    filter: drop-shadow(0 0 14px rgba(201, 164, 92, 0.95)) brightness(1.35);
+  }
+
+  100% {
+    filter: none;
+  }
+}
+
+.defenseCard {
+  position: absolute;
+  top: calc(var(--cardH, 150px) * 0.17);
+  left: calc(var(--cardH, 150px) * 0.23);
+  transform: rotate(8deg);
+  animation: coverFlyIn 280ms cubic-bezier(0.22, 0.9, 0.35, 1) backwards;
+}
+
+/* Анимация перемещения карт по полю */
+@keyframes cardFlyIn {
+  from {
+    transform: translateY(-52px) rotate(-7deg);
+    opacity: 0;
+  }
+
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes coverFlyIn {
+  from {
+    transform: translateY(54px) rotate(26deg);
+    opacity: 0;
+  }
+
+  to {
+    transform: rotate(8deg);
+    opacity: 1;
+  }
+}
+
+.pair>.card {
+  animation: cardFlyIn 280ms cubic-bezier(0.22, 0.9, 0.35, 1) backwards;
+}
+
+/* Веера оппонентов и рука игрока — раздача анимируется JS-полётом
+   из [data-deck] (WAAPI, reduced-motion aware). CSS-заглушка dealIn убрана. */
+
+/* Открытая атака, которую можно покрыть — золотая цель */
+.pair[data-defendable] {
+  outline: 2px solid color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 85%, transparent);
+  outline-offset: 3px;
+  animation: targetPulse var(--nexus-motion-seek, 1400ms) cubic-bezier(var(--nexus-easing-symmetric, 0.42, 0, 0.58, 1)) infinite;
+}
+
+@keyframes targetPulse {
+
+  0%,
+  100% {
+    outline-color: color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 50%, transparent);
+  }
+
+  50% {
+    outline-color: var(--nexus-accent-on-art, #C9A45C);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .pair>.card,
+  .defenseCard,
+  .choicePop,
+  .pair[data-defendable],
+  .ghostPair,
+  .card.usable .cardImg,
+  .handArea[data-active],
+  .opponent[data-thinking] .avatarWrap,
+  .pair:not([data-open]),
+  .modalOverlay,
+  .resultModal {
+    animation: none;
+  }
+
+  .trumpUnder,
+  .deckStack[data-empty] .trumpUnder,
+  .card.clickable,
+  .page .handArea,
+  .hand .card,
+  .page .gameBtn,
+  .modalClose {
+    transition: none;
+  }
+}
+
+/* ---------- cards ---------- */
+
+.card {
+  position: relative;
+  display: inline-flex;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  user-select: none;
+  line-height: 0;
+}
+
+.cardImg {
+  /* Все карточные размеры — от --cardH: его выставляет адаптивный
+     ResizeObserver из screen.tsx по свободному месту стола. */
+  height: var(--cardH, 150px);
+  width: auto;
+  border-radius: 9px;
+  box-shadow:
+    0 3px 10px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(201, 164, 92, 0.25);
+  display: block;
+}
+
+.card.small .cardImg {
+  height: calc(var(--cardH, 150px) * 0.56);
+}
+
+.card.clickable {
+  cursor: pointer;
+  transition: transform var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+.card.clickable:hover .cardImg {
+  transform: translateY(calc(var(--cardH, 150px) * -0.04));
+}
+
+.card.selected {
+  transform: translateY(calc(var(--cardH, 150px) * -0.067));
+}
+
+.card.selected .cardImg {
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.6),
+    0 0 0 2px var(--nexus-accent-energy, #00C8FF);
+}
+
+/* Карта может участвовать в бое — золотая подсветка */
+.card.usable .cardImg {
+  box-shadow:
+    0 3px 12px rgba(0, 0, 0, 0.6),
+    0 0 0 2px rgba(201, 164, 92, 1),
+    0 0 22px rgba(201, 164, 92, 0.75),
+    0 0 44px rgba(201, 164, 92, 0.35);
+  animation: usableGlow var(--nexus-motion-glow, 1600ms) cubic-bezier(var(--nexus-easing-symmetric, 0.42, 0, 0.58, 1)) infinite;
+}
+
+@keyframes usableGlow {
+
+  0%,
+  100% {
+    box-shadow:
+      0 3px 12px rgba(0, 0, 0, 0.6),
+      0 0 0 2px rgba(201, 164, 92, 0.85),
+      0 0 16px rgba(201, 164, 92, 0.55),
+      0 0 32px rgba(201, 164, 92, 0.25);
+  }
+
+  50% {
+    box-shadow:
+      0 3px 12px rgba(0, 0, 0, 0.6),
+      0 0 0 3px rgba(214, 178, 106, 1),
+      0 0 28px rgba(201, 164, 92, 0.9),
+      0 0 56px rgba(201, 164, 92, 0.45);
+  }
+}
+
+.card.usable:hover .cardImg {
+  transform: translateY(calc(var(--cardH, 150px) * -0.067));
+  animation: none;
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.65),
+    0 0 0 3px rgba(226, 196, 130, 1),
+    0 0 32px rgba(201, 164, 92, 1),
+    0 0 64px rgba(201, 164, 92, 0.55);
+}
+
+.card.trumpCard .cardImg {
+  box-shadow:
+    0 3px 10px rgba(0, 0, 0, 0.55),
+    0 0 0 2px var(--nexus-color-gold-500, #C9A45C),
+    0 0 14px rgba(201, 164, 92, 0.5);
+}
+
+/* ---------- hand ---------- */
+
+.page .handArea {
+  padding: var(--nexus-space-3, 12px) var(--nexus-space-4, 16px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-3, 12px);
+  /* Нижняя зона стола — authored-фон как у соседнего .log: веер карт лежит на
+     войлоке, под светлой темой стекло не должно светлеть (NQ-072). .page —
+     специфичность над вариантом .panel у GlassPanel. */
+  background: linear-gradient(180deg, rgba(20, 17, 12, 0.72), rgba(10, 8, 6, 0.78));
+  transition:
+    box-shadow var(--nexus-duration-normal, 240ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1)),
+    border-color var(--nexus-duration-normal, 240ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+/* Ход игрока — золотое дыхание панели руки */
+.handArea[data-active] {
+  border-color: color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 65%, transparent);
+  animation: handPulse var(--nexus-motion-breathe, 1800ms) cubic-bezier(var(--nexus-easing-symmetric, 0.42, 0, 0.58, 1)) infinite;
+}
+
+@keyframes handPulse {
+
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 20%, transparent),
+      0 0 18px color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 10%, transparent);
+  }
+
+  50% {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 45%, transparent),
+      0 0 34px color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 28%, transparent);
+  }
+}
+
+.handTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--nexus-space-3, 12px);
+}
+
+.you {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.06em;
+  color: var(--nexus-text-on-art-dim, #B0B7C2);
+}
+
+.handCount {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--nexus-text-on-art-muted, #8E97A5);
+}
+
+/* Низ стола: поле игрока на всю ширину, лог под ним. */
+.bottomRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: var(--nexus-space-4, 16px);
+  min-height: 0;
+}
+
+.bottomRow[data-finished] {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+/* Управляющие кнопки — отдельный ряд ПОД картами руки (ТЗ п.1) */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--nexus-space-2, 8px);
+  min-height: 34px;
+}
+
+.hand {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nexus-space-2, 8px);
+  /* Карты руки ×1.77 (см. ниже) — резерв высоты под фактический размер,
+     иначе первая раздача дёргала бы панель. */
+  min-height: calc(var(--cardH, 150px) * 1.77 + 12px);
+  padding-left: 18px;
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Карты руки увеличены на 77% (x1.33 × x1.33 ≈ x1.77). */
+.hand .cardImg {
+  height: calc(var(--cardH, 150px) * 1.33 * 1.33);
+}
+
+/* Веер руки — умеренный нахлёст; порядок наложения естественный,
+   ломать его z-index нельзя, иначе карты проваливаются под соседей. */
+.hand .card+.card {
+  margin-left: calc(var(--cardH, 150px) * -0.17);
+}
+
+.hand .card {
+  position: relative;
+  transition: transform var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+.hand .card:hover {
+  z-index: 4;
+  transform: translateY(calc(var(--cardH, 150px) * -0.08));
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-on-art-muted, #8E97A5);
+}
+
+/* Игровые кнопки — металлические чипы канона: обсидиан + шампань-золото.
+   Вложенность под .page поднимает специфичность над базовым Button. */
+.page .gameBtn {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-weight: 600;
+  border-radius: 9px;
+  padding: var(--nexus-space-2, 8px) calc(var(--nexus-space-4, 16px) + var(--nexus-space-1, 4px) / 2);
+  color: #F0E4C4;
+  background: linear-gradient(180deg, rgba(52, 44, 24, 0.9), rgba(16, 13, 9, 0.92));
+  border: 1px solid color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 55%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 200, 0.18),
+    0 2px 8px rgba(0, 0, 0, 0.5),
+    0 0 10px color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 14%, transparent);
+  transition:
+    border-color var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1)),
+    box-shadow var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1)),
+    color var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+.page .gameBtn:hover:not(:disabled) {
+  color: #FFF3D8;
+  border-color: rgba(226, 196, 130, 0.95);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 200, 0.3),
+    0 2px 10px rgba(0, 0, 0, 0.55),
+    0 0 18px color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 40%, transparent);
+}
+
+.page .gameBtn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.page .gameBtn:disabled {
+  opacity: var(--nexus-disabled-opacity, 0.45);
+}
+
+/* ---------- result modal ---------- */
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--nexus-layer-menu, 60);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--nexus-depth-overlay-bg, rgba(4, 5, 9, 0.68));
+  backdrop-filter: blur(var(--nexus-depth-overlay-blur, 6px));
+  animation: modalFade var(--nexus-duration-normal, 240ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+.page .resultModal {
+  position: relative;
+  min-width: 340px;
+  padding: var(--nexus-space-7, 32px) var(--nexus-space-8, 44px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nexus-space-3, 12px);
+  text-align: center;
+  /* Модалка итога — часть authored-сцены: фон pinned-dark как у choicePop,
+     иначе под светлой темой стекло светлеет и pinned-текст теряется (NQ-072). */
+  background: linear-gradient(180deg, rgba(26, 23, 16, 0.97), rgba(14, 12, 9, 0.97));
+  color: var(--nexus-text-on-art, #F6F0E4);
+  border: 1px solid rgba(201, 164, 92, 0.55);
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.75),
+    0 0 60px rgba(201, 164, 92, 0.18),
+    inset 0 1px 0 rgba(255, 240, 200, 0.12);
+  animation: modalPop var(--nexus-motion-promote, 320ms) cubic-bezier(var(--nexus-easing-pop, 0.3, 0.9, 0.3, 1.15));
+}
+
+.resultModal .subtitle {
+  color: var(--nexus-text-on-art-dim, #B0B7C2);
+}
+
+.modalClose {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  padding: var(--nexus-space-1, 4px) var(--nexus-space-2, 8px);
+  border: none;
+  background: transparent;
+  color: var(--nexus-text-on-art-muted, #8E97A5);
+  font-size: 14px;
+  cursor: pointer;
+  transition: color var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+.modalClose:hover {
+  color: var(--nexus-text-on-art, #EDE5D3);
+}
+
+@keyframes modalFade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.94);
+  }
+}
+
+.heading {
+  margin: 0;
+  font-size: var(--nexus-type-code-line-height, 20px);
+  letter-spacing: 0.08em;
+  color: var(--nexus-accent-on-art, #C9A45C);
+}
+
+/* Итог партии — строчки игроков с аватарами */
+.standings {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--nexus-space-3, 12px) / 2);
+  align-items: center;
+}
+
+.standing {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.04em;
+  color: var(--nexus-text-on-art-dim, #B0B7C2);
+}
+
+.standing[data-loser] {
+  color: color-mix(in srgb, var(--nexus-state-error, #E8837A) 95%, transparent);
+}
+
+.standingAvatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 55%, transparent);
+}
+
+/* ---------- log ---------- */
+
+.log {
+  min-height: 0;
+  overflow: auto;
+  scrollbar-gutter: stable;
+  padding: var(--nexus-space-3, 12px) var(--nexus-space-4, 16px);
+  border: 1px solid var(--nexus-border-subtle, rgba(201, 164, 92, 0.3));
+  border-radius: var(--nexus-radius-md, 10px);
+  background: linear-gradient(180deg, rgba(20, 17, 12, 0.72), rgba(10, 8, 6, 0.78));
+}
+
+.logTitle {
+  margin: 0 0 var(--nexus-space-2, 8px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--nexus-text-on-art-muted, #8E97A5);
+}
+
+.logList {
+  margin: 0;
+  padding-left: 18px;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-on-art-dim, #B0B7C2);
+  columns: 5;
+  column-gap: var(--nexus-space-5, 20px);
+  column-rule: 1px solid color-mix(in srgb, var(--nexus-accent-on-art, #C9A45C) 14%, transparent);
+}
+
+/* Свежая запись лога — золотой акцент */
+.logList li[data-fresh] {
+  color: var(--nexus-accent-on-art, #C9A45C);
+}
+
+/* Счётчик кона — чип по центру верхнего края стола */
+.boutChip {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  padding: 4px 14px;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(240, 228, 196, 0.9);
+  background: linear-gradient(180deg, rgba(52, 44, 24, 0.85), rgba(16, 13, 9, 0.9));
+  border: 1px solid rgba(201, 164, 92, 0.55);
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), 0 0 12px rgba(201, 164, 92, 0.2);
+}
+
+/* Регулятор темпа анимаций в шапке */
+.speedCtl {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--nexus-text-tertiary, #8E97A5);
+  white-space: nowrap;
+}
+
+.speedRange {
+  width: 96px;
+  height: 4px;
+  appearance: none;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 55%, transparent), color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 15%, transparent));
+  border-radius: var(--nexus-radius-xs, 2px);
+  outline-offset: 3px;
+  cursor: pointer;
+}
+
+.speedRange::-webkit-slider-thumb {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #F2E7C8, var(--nexus-accent-primary, #C9A45C) 60%, #6E5A2E);
+  border: 1px solid color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 80%, transparent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 50%, transparent);
+}
+
+.speedRange::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #F2E7C8, var(--nexus-accent-primary, #C9A45C) 60%, #6E5A2E);
+  border: 1px solid color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 80%, transparent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 50%, transparent);
+}
+
+.speedVal {
+  min-width: 30px;
+  color: var(--nexus-text-accent, #C9A45C);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Переключатель стиля колоды (v1 Таро / v2 CGI) в шапке */
+.deckStyleBtn {
+  padding: 4px 10px;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--nexus-text-tertiary, #8E97A5);
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 35%, transparent);
+  border-radius: var(--nexus-radius-sm, 4px);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1)),
+    border-color var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+.deckStyleBtn:hover {
+  color: var(--nexus-text-accent, #C9A45C);
+  border-color: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 70%, transparent);
+}
+
+.deckStyleBtn[aria-pressed="true"] {
+  color: var(--nexus-text-accent, #C9A45C);
+  border-color: var(--nexus-accent-primary, #C9A45C);
+}
+
+/* Пикер стилей колоды — сетка чипов с превью рубашки (back-*.webp). */
+.stylePick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nexus-space-2, 8px);
+  align-items: center;
+}
+
+.styleChip {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nexus-space-1, 4px);
+  padding: var(--nexus-space-2, 8px);
+  border: 1px solid var(--nexus-border-subtle, rgba(201, 164, 92, 0.25));
+  border-radius: var(--nexus-radius-md, 8px);
+  background: transparent;
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  cursor: pointer;
+  min-width: 72px;
+}
+
+.styleChip:hover {
+  border-color: var(--nexus-border-subtle, rgba(201, 164, 92, 0.5));
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.styleChip:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, var(--nexus-accent-primary, #C9A45C));
+  outline-offset: -2px;
+}
+
+.styleChip[data-active] {
+  border-color: var(--nexus-accent-primary, #C9A45C);
+  color: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 30%, var(--nexus-text-primary, #F6F0E4) 70%);
+  background: var(--nexus-accent-primary-soft, rgba(201, 164, 92, 0.12));
+}
+
+.styleChipImg {
+  width: 44px;
+  height: 60px;
+  border-radius: var(--nexus-radius-sm, 6px);
+  object-fit: cover;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.styleChipLabel {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Сессионный счёт в шапке */
+.score {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.1em;
+  color: var(--nexus-text-accent, #C9A45C);
+  white-space: nowrap;
+}
+
+/* Колода на исходе — медальон сигналит алым */
+.deckStack[data-low] .deckCount {
+  border-color: rgba(232, 131, 122, 0.9);
+  color: #F0B8B0;
+  box-shadow:
+    0 0 12px rgba(232, 131, 122, 0.45),
+    inset 0 1px 0 rgba(255, 220, 210, 0.2);
+}
+
+/* ---------- узкие вьюпорты ---------- */
+
+/* Рука над логом в один столбец — табло остаётся в пределах экрана. */
+@media (max-width: 880px) {
+  .bottomRow {
+    grid-template-columns: 1fr;
+  }
+
+  .bottomRow[data-finished] {
+    grid-template-columns: 1fr;
+  }
+}

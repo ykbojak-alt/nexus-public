@@ -1,0 +1,27 @@
+{
+  "$description": "Navigation component contract — TopBar / Sidebar / NavItem per canonical shell geometry (spec §8).",
+  "topBar": {
+    "height":   { "$type": "dimension", "$value": "{layout.topbar}" },
+    "bg":       { "$type": "color", "$value": "color-mix(in srgb, {color.obsidian.850} 80%, transparent)" },
+    "blur":     { "$type": "dimension", "$value": "{blur.lg}" },
+    "border":   { "$type": "color", "$value": "{border.subtle}" },
+    "paddingX": { "$type": "dimension", "$value": "{layout.safeArea}" }
+  },
+  "sidebar": {
+    "width":        { "$type": "dimension", "$value": "{layout.sidebar}" },
+    "bg":           { "$type": "color", "$value": "{surface.environment}" },
+    "border":       { "$type": "color", "$value": "{border.subtle}" },
+    "paddingY":     { "$type": "dimension", "$value": "{space.4}" }
+  },
+  "navItem": {
+    "height":        { "$type": "dimension", "$value": "40px" },
+    "radius":        { "$type": "dimension", "$value": "{radius.md}" },
+    "paddingX":      { "$type": "dimension", "$value": "{space.3}" },
+    "gap":           { "$type": "dimension", "$value": "{space.3}" },
+    "bgHover":       { "$type": "color", "$value": "color-mix(in srgb, {color.ivory.100} 4%, transparent)" },
+    "bgActive":      { "$type": "color", "$value": "{accent.primarySoft}" },
+    "borderActive":  { "$type": "color", "$value": "color-mix(in srgb, {accent.primary} 45%, transparent)" },
+    "iconActive":    { "$type": "color", "$value": "{accent.primary}" },
+    "textActive":    { "$type": "color", "$value": "{text.accent}" }
+  }
+}

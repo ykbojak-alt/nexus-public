@@ -1,0 +1,33 @@
+{
+  "name": "@nexus/motion",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": ["**/*.css"],
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./boot-components": "./src/boot-components.tsx",
+    "./rail-components": "./src/rail-components.tsx",
+    "./feed-components": "./src/feed-components.tsx",
+    "./plugin-panel-components": "./src/plugin-panel-components.tsx",
+    "./scenario-components": "./src/scenario-components.tsx",
+    "./glass-backdrop-components": "./src/glass-backdrop-components.tsx",
+    "./hero-components": "./src/hero-components.tsx",
+    "./adaptive-window-components": "./src/adaptive-window-components.tsx",
+    "./*": [
+      "./src/*.ts",
+      "./src/*/index.ts",
+      "./src/*.tsx",
+      "./src/*/index.tsx"
+    ]
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

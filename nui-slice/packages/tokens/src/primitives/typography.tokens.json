@@ -1,0 +1,56 @@
+{
+  "$description": "Typography primitives: three font roles (display/UI sans/mono) and canonical type roles from spec §9. Display serif is restricted to agent identity; UI default is Inter Tight, telemetry/code is IBM Plex Mono.",
+  "font": {
+    "$type": "fontFamily",
+    "ui":      { "$value": ["Inter Tight", "Inter", "system-ui", "sans-serif"] },
+    "mono":    { "$value": ["IBM Plex Mono", "Consolas", "monospace"] },
+    "display": { "$value": ["Playfair Display", "Georgia", "serif"] }
+  },
+  "weight": {
+    "$type": "fontWeight",
+    "light":    { "$value": 300 },
+    "regular":  { "$value": 400 },
+    "medium":   { "$value": 500 },
+    "semibold": { "$value": 600 }
+  },
+  "type": {
+    "hero": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{font.display}", "fontSize": "56px", "lineHeight": "64px", "fontWeight": "{weight.light}", "letterSpacing": "-0.02em" }
+    },
+    "pageTitle": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{font.ui}", "fontSize": "40px", "lineHeight": "48px", "fontWeight": "{weight.light}", "letterSpacing": "-0.01em" }
+    },
+    "sectionTitle": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{font.ui}", "fontSize": "28px", "lineHeight": "36px", "fontWeight": "{weight.regular}", "letterSpacing": "0" }
+    },
+    "panelTitle": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{font.ui}", "fontSize": "18px", "lineHeight": "26px", "fontWeight": "{weight.medium}", "letterSpacing": "0.01em" }
+    },
+    "body": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{font.ui}", "fontSize": "15px", "lineHeight": "24px", "fontWeight": "{weight.regular}", "letterSpacing": "0" }
+    },
+    "caption": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{font.ui}", "fontSize": "13px", "lineHeight": "18px", "fontWeight": "{weight.medium}", "letterSpacing": "0.01em" },
+      "$description": "Labels/chips/hints floor is 13px (Yury legibility priority, 2026-10-16) — never below; tracking kept low for readability."
+    },
+    "metric": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{font.mono}", "fontSize": "34px", "lineHeight": "40px", "fontWeight": "{weight.light}", "letterSpacing": "-0.01em" }
+    },
+    "code": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{font.mono}", "fontSize": "13px", "lineHeight": "20px", "fontWeight": "{weight.regular}", "letterSpacing": "0" }
+    },
+    "status": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{font.ui}", "fontSize": "13px", "lineHeight": "18px", "fontWeight": "{weight.semibold}", "letterSpacing": "0.08em", "textTransform": "uppercase" },
+      "$description": "Caps labels: min 13px, tracking capped at 0.08em (Yury legibility priority, 2026-10-16)."
+    }
+  }
+}

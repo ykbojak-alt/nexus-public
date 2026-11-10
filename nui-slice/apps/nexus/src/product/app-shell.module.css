@@ -1,0 +1,2680 @@
+/* --- frameless window chrome ------------------------------------------------
+   Окно без системного заголовка (frameless на хосте): перетаскивание — за
+   шапку приложения (pywebview-drag-region), оконные символы управления справа;
+   зоны ресайза по краям зовут мост setBounds. Отдельной серой полосы
+   тайтлбара нет — верх окна = top-бар WindowFrame. */
+.windowRoot {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  /* Амбиентное свечение рамки (frameShadow::before, inset -34px) торчит за
+     край окна и добавляло документу 22px скролла на каноне 1920×1080.
+     clip — не создаёт скролл-контейнер, обрезает только декор по краю;
+     hidden — фолбэк для движков без overflow: clip. */
+  overflow: hidden;
+  overflow: clip;
+}
+
+.shellWrap {
+  flex: 1;
+  min-height: 0;
+  /* Модульные бары: края-возврат и кромка ресайза шапки — оверлей
+     относительно этой обёртки. */
+  position: relative;
+  /* Плавающая рамка WindowFrame (визуал-3 V3): фон root показывается по
+     краям, свечение/chamfer читаются в зазоре. */
+  padding: var(--nexus-space-3, 12px);
+  box-sizing: border-box;
+  background: var(--nexus-surface-root, #0A0A0C);
+  /* Геометрия слотов рамки = канонический сайдбар 272px (как у старого
+     shell): переменные наследуются внутрь WindowFrame. */
+  --nexus-frame-left: 272px;
+}
+
+/* Приоритет 16.10: три состояния левой панели. Ширина — через тот же
+   --nexus-frame-left, что задаёт колонка WindowFrame: переключение
+   full→strip→hidden анимируется одним свойством, контент справа не
+   прыгает (transition на самой колонке). */
+.shellWrap[data-nav='strip']:not([data-nav-side='right']) {
+  --nexus-frame-left: var(--nexus-icon-strip-width, 56px);
+}
+
+.shellWrap[data-nav='hidden']:not([data-nav-side='right']) {
+  --nexus-frame-left: 0px;
+}
+
+/* Потребитель переменной: колонка рейла обязана читать --nexus-frame-left,
+   а не фиксированную ширину — иначе data-nav меняется, а панель не
+   сужается (дефект 18.10). Специфичность выше frameLeft[data-nav] в
+   @nexus/ui, чтобы этот контракт выигрывал всегда; контейнерные правила
+   ниже по файлу перекрывают её на узких окнах. */
+.shellWrap[data-nav] [class*='frameLeft'] {
+  width: var(--nexus-frame-left);
+}
+
+.shellWrap [class*='frameLeft'] {
+  transition: width var(--nexus-duration-normal, 240ms) var(--nexus-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+  min-width: 0;
+}
+
+/* W4-1012 railMotion: контент рейла — mount-enter fade 140 enter при
+   флипе full↔strip и восстановлении из hidden (входящий проявляется, пока
+   колонка двигает ширину). data-nav-exit — замороженный рейл на окне
+   railOut keep-alive: подписи/иконки гаснут 140 exit до схлопывания.
+   Только opacity: transform-анимация конфликтовала бы с drag-lift. */
+@keyframes railContentIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes railContentOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.navDock,
+.strip {
+  animation: railContentIn var(--nexus-duration-fast, 140ms) var(--nexus-easing-enter, cubic-bezier(0, 0, 0.2, 1)) both;
+}
+
+[data-nav-exit] .navDock,
+[data-nav-exit] .strip {
+  animation: railContentOut var(--nexus-duration-fast, 140ms) var(--nexus-easing-exit, cubic-bezier(0.4, 0, 1, 1)) both;
+}
+
+.shellWrap[data-nav='hidden']:not([data-nav-side='right']) [class*='frameLeft'] {
+  border-right-color: transparent;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .tl,
+  .shellWrap [class*='frameLeft'],
+  .stripWrap {
+    transition: none;
+  }
+
+  .navDock,
+  .strip,
+  [data-nav-exit] .navDock,
+  [data-nav-exit] .strip {
+    animation: none;
+  }
+}
+
+/* Узкая полоса разделов — колонка иконок ~56px (W3). Иконки из единого
+   набора NexusIcon (те же имена, что у полного рейла), кнопки 40x40 —
+   зона нажатия по спеке; активный — акцентная плашка nav-item. */
+.strip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  min-height: 0;
+  padding: var(--nexus-space-2, 8px) 0;
+}
+
+.stripList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nexus-icon-strip-gap, 2px);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  /* Полоса 56 px: собственный скроллбар (и reserved gutter у него) съедает
+     треть ширины и уводит колонку иконок от центра. Прокрутка остаётся —
+     колесо/свайп работают, след нет. */
+  scrollbar-width: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stripList::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.stripItem {
+  position: relative;
+}
+
+.stripBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--nexus-icon-strip-tap-size, 40px);
+  height: var(--nexus-icon-strip-tap-size, 40px);
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--nexus-radius-lg, 12px);
+  background: transparent;
+  color: var(--nexus-icon-strip-icon-idle, #B0B7C2);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.stripBtn:hover {
+  background: var(--nexus-icon-strip-hover-bg, rgba(246, 240, 228, 0.04));
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.stripBtn:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, #C9A45C);
+  outline-offset: var(--nexus-focus-ring-offset, 2px);
+}
+
+.stripBtn[data-active] {
+  background: var(--nexus-icon-strip-active-bg, rgba(201, 164, 92, 0.16));
+  color: var(--nexus-icon-strip-icon-active, #C9A45C);
+  border-color: var(--nexus-icon-strip-active-edge, rgba(201, 164, 92, 0.45));
+}
+
+.stripFoot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-top: auto;
+  padding-top: var(--nexus-space-2, 8px);
+  border-top: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.06));
+}
+
+/* Выпадающее меню подразделов — position:fixed (выходит за overflow
+   колонки), координаты от кнопки. */
+.stripMenu {
+  position: fixed;
+  z-index: var(--nexus-z-popover, 90);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 184px;
+  margin: 0;
+  padding: var(--nexus-space-2, 8px);
+  list-style: none;
+  background: var(--nexus-surface-elevated, #1C1C22);
+  border: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-lg, 12px);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.5);
+}
+
+.stripMenuLink {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  min-height: 32px;
+  padding: 0 var(--nexus-space-3, 12px);
+  border-radius: var(--nexus-radius-md, 8px);
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  text-decoration: none;
+}
+
+.stripMenuLink:hover,
+.stripMenuLink:focus-visible {
+  background: var(--nexus-nav-item-bg-hover, rgba(246, 240, 228, 0.06));
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+/* Фокус-кольцо нельзя гасить: цвет фона — не индикатор фокуса (e2e
+   Tab-chain проверяет computed outline/box-shadow). */
+.stripMenuLink:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, var(--nexus-accent-primary, #C9A45C));
+  outline-offset: 2px;
+}
+
+.stripMenuLink[aria-current='page'] {
+  background: var(--nexus-nav-item-bg-active, rgba(201, 164, 92, 0.16));
+  color: var(--nexus-nav-item-text-active, #D8BC76);
+}
+
+.stripHidden {
+  width: 100%;
+  height: 100%;
+}
+
+/* VII V1.5: bare-роуты (welcome/agent-select) — полный вьюпорт без рамки,
+   но с сохранённым main-лендмарком (контракт app-shell.spec). Скролл — у
+   документа: скроллящиеся div (Chromium «keyboard focusable scrollers»)
+   иначе воруют первый Tab без видимого индикатора. */
+.bareMain {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--nexus-surface-root, #0A0A0C);
+  overflow: visible;
+}
+
+.bareMain>[data-screen] {
+  overflow: visible;
+  height: auto;
+  min-height: 100%;
+}
+
+/* W4-1005 pageMotion: единый enter экрана — fade+lift на монтировании
+   корня [data-screen] (App Router мгновенно меняет дерево; exit-глагол
+   спеки не применяется без keep-alive хоста). Только opacity/transform —
+   интерактивность не задерживается.
+   fill-mode `backwards`, не `both`: удержанный после финиша transform
+   оставляет корень экрана промоушенным слоем, и Chromium делает его
+   backdrop-root'ом — стекло панелей перестаёт размывать сцену за ним
+   (ALICE home: шапка/рейл/композер теряли backdrop-filter). */
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+:global(main > [data-screen]),
+:global(main > * > [data-screen]) {
+  animation: pageEnter var(--nexus-duration-normal, 240ms) cubic-bezier(var(--nexus-easing-enter, 0, 0, 0.2, 1)) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  :global(main > [data-screen]),
+  :global(main > * > [data-screen]) {
+    animation: none;
+  }
+}
+
+/* Native window controls: shared titlebar surface when idle; hover paints
+   only the active hit target, with the close action using the familiar red. */
+.traffic {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex: none;
+  height: min(42px, calc(var(--nexus-window-frame-header-height, 72px) - 24px));
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+
+.tl {
+  display: inline-grid;
+  place-items: center;
+  width: 46px;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--nexus-text-primary, #F6F0E4);
+  cursor: pointer;
+  transition: background-color var(--nexus-duration-fast, 140ms) ease;
+}
+
+.tl svg {
+  display: block;
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tl:hover {
+  background: rgba(0, 0, 0, 0.32);
+}
+
+.tlClose:hover {
+  background: #C42B1C;
+}
+
+.tl:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--nexus-focus-ring, var(--nexus-accent-primary, #C9A45C));
+  outline-offset: -3px;
+}
+
+.tl:active {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.tlClose:active {
+  background: #A82016;
+}
+
+.bareDrag .traffic {
+  height: 100%;
+}
+
+/* Bare-роуты (welcome/agent-select): невидимая drag-полоса поверх верха
+   экрана — управление окном без видимой рамки; «светофор» живёт на ней. */
+.bareDrag {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--nexus-layer-drawer, 70);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 32px;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-app-region: drag;
+  app-region: drag;
+  user-select: none;
+}
+
+.resizeZone {
+  position: fixed;
+  z-index: var(--nexus-layer-menu, 60);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .resizeZone {
+    transition: background-color var(--nexus-duration-fast, 140ms) ease;
+  }
+}
+
+.resizeZone:hover {
+  background: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 18%, transparent);
+}
+
+/* --- /frameless window chrome ---------------------------------------------- */
+
+.navToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-md, 8px);
+  background: transparent;
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.navToggle {
+  border-radius: 999px;
+  transition: color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+.navToggle:hover {
+  background: rgba(232, 180, 92, 0.08);
+  border-color: rgba(232, 180, 92, 0.55);
+  color: #F0D6A0;
+  box-shadow: 0 0 10px rgba(232, 180, 92, 0.16);
+}
+
+.navToggle:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, var(--nexus-accent-primary, #C9A45C));
+  outline-offset: 2px;
+}
+
+.navToggle[aria-pressed='true'] {
+  color: var(--nexus-accent-primary, #C9A45C);
+  border-color: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 40%, transparent);
+}
+
+/* Вордмарк шапки — золотой капс с ромбом-насечкой: тот же жест,
+   что заголовки секций доков программ. */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--nexus-accent-primary, #C9A45C);
+  text-shadow:
+    0 0 10px rgba(232, 180, 92, 0.40),
+    0 0 26px rgba(232, 180, 92, 0.18);
+}
+
+.brand::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+  border: 1px solid var(--nexus-accent-primary, #C9A45C);
+  transform: rotate(45deg);
+  box-shadow: 0 0 6px rgba(232, 180, 92, 0.55);
+}
+
+.identity {
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+
+/* Профиль внизу сайдбара — круглый аватар + имя/роль (reference MAIN.png). */
+.sideProfile {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-3, 12px);
+  border-radius: var(--nexus-radius-md, 8px);
+  text-decoration: none;
+  border-top: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.06));
+}
+
+.sideProfile:hover {
+  background: var(--nexus-nav-item-bg-hover, rgba(246, 240, 228, 0.06));
+}
+
+.sideAvatar {
+  position: relative;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-weight: 700;
+  color: var(--nexus-text-primary);
+  border: 1px solid color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 55%, transparent);
+  background: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 12%, transparent);
+}
+
+/* Кольцо аватара (S6 брифа): двойная окружность с четырьмя насечками.
+   Слой аддитивный — без файла остаётся нынешняя волосина border'а. */
+.sideAvatar::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: image-set(url('/art/nav/nav-ring-avatar.webp') 1x, url('/art/nav/nav-ring-avatar@2x.webp') 2x) center / 100% 100% no-repeat;
+  pointer-events: none;
+}
+
+.sideProfileText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.sideProfileName {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-weight: 600;
+  color: var(--nexus-text-primary, #F6F0E4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sideProfileRole {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.08em;
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+/* --- fs-authority: компактный регулятор доступа к ФС в топбаре --------
+   Второй вход в тот же профиль, что и регулятор под композитором Runtime
+   (screens.module.css .fsRow/.prefChoice). Поповер — по паттерну
+   contourMenu (screens.module.css). */
+.fsWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.fsBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 32px;
+  padding: 0 var(--nexus-space-2, 10px);
+  border: 1px solid rgba(232, 180, 92, 0.28);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+.fsBtn:hover {
+  background: rgba(232, 180, 92, 0.08);
+  border-color: rgba(232, 180, 92, 0.55);
+  color: #F0D6A0;
+  box-shadow: 0 0 10px rgba(232, 180, 92, 0.18);
+}
+
+.fsBtn:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, var(--nexus-accent-primary, #C9A45C));
+  outline-offset: 2px;
+}
+
+.fsBtn[aria-expanded='true'] {
+  color: var(--nexus-accent-primary, #C9A45C);
+  border-color: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 40%, transparent);
+}
+
+.fsBtn[data-state='unavailable'] {
+  /* NQ-077: opacity димил text-secondary до ~4.09:1 (axe ловит на всех
+     страницах — бейдж в chrome). Состояние — через токен, не через
+     прозрачность: текст остаётся AA-читаемым и без seam'а. */
+  color: var(--nexus-text-tertiary, #8A93A3);
+}
+
+.fsCount {
+  font-variant-numeric: tabular-nums;
+  color: var(--nexus-text-tertiary, #8A93A3);
+}
+
+.fsPop {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: var(--nexus-layer-menu, 60);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: min(300px, calc(100vw - 16px));
+  max-width: min(400px, calc(100vw - 16px));
+  padding: 8px;
+  border-radius: var(--nexus-radius-md, 10px);
+  border: 1px solid color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 30%, transparent);
+  background: color-mix(in srgb, var(--nexus-surface-panel, #151519) 96%, transparent);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(10px);
+}
+
+.fsPopTitle {
+  padding: 4px 6px 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--nexus-text-tertiary, #8A93A3);
+}
+
+.fsModeRow {
+  display: flex;
+  gap: 6px;
+  padding: 0 6px;
+}
+
+.fsChoice {
+  padding: 3px 10px;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-md, 8px);
+  background: transparent;
+  color: var(--nexus-text-secondary, #B7BEC9);
+  cursor: pointer;
+}
+
+.fsChoice:hover:not(:disabled) {
+  color: var(--nexus-text-primary, #F3EFE6);
+}
+
+.fsChoice:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, var(--nexus-accent-primary, #C9A45C));
+  outline-offset: 1px;
+}
+
+.fsChoice[data-selected='true'] {
+  color: var(--nexus-accent-primary, #C9A45C);
+  border-color: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 45%, transparent);
+  background: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 10%, transparent);
+}
+
+.fsChoice:disabled {
+  opacity: var(--nexus-disabled-opacity, 0.45);
+  cursor: default;
+}
+
+.fsRootsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 0 6px;
+}
+
+.fsChip {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  padding: 2px 8px;
+  border: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-md, 8px);
+  background: color-mix(in srgb, var(--nexus-surface-panel, #151519) 70%, transparent);
+  color: var(--nexus-text-secondary, #B7BEC9);
+  cursor: pointer;
+}
+
+.fsChip:hover {
+  color: var(--nexus-state-error, #E8A0A0);
+  border-color: color-mix(in srgb, var(--nexus-state-error, #E8A0A0) 45%, transparent);
+}
+
+.fsNote {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8A93A3);
+  padding: 0 6px;
+}
+
+.fsAddRow {
+  display: flex;
+  gap: 6px;
+  padding: 0 6px;
+}
+
+.fsInput {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  padding: 4px 8px;
+  border: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.14));
+  border-radius: var(--nexus-radius-md, 8px);
+  background: var(--nexus-surface-panel, #151519);
+  color: var(--nexus-text-primary, #F3EFE6);
+}
+
+.fsInput:focus-visible {
+  outline: 2px solid var(--nexus-accent-primary, #C9A45C);
+  outline-offset: 1px;
+}
+
+.fsErr {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-state-error, #E8A0A0);
+  padding: 0 6px 2px;
+}
+
+/* --- /fs-authority --------------------------------------------------- */
+
+/* --- main-delta #12/#13/#15: sidebar-группы, bell+datetime ---
+   Topbar-комплект эталона MAIN.png: колокольчик и дата/время справа. */
+
+.clock {
+  font-family: 'IBM Plex Mono', 'Inter Tight', monospace;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+  color: rgba(240, 214, 160, 0.78);
+  text-shadow: 0 0 8px rgba(232, 180, 92, 0.18);
+  white-space: nowrap;
+}
+
+/* Светлая тема — тёплое золото не читается на жемчуге. */
+[data-theme='alice'] .clock {
+  font-family: inherit;
+  color: var(--nexus-text-tertiary, #8A93A3);
+  text-shadow: none;
+}
+
+.bellWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.bellBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 var(--nexus-space-2, 8px);
+  border: 1px solid rgba(232, 180, 92, 0.28);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--nexus-text-secondary, #B0B7C2);
+  cursor: pointer;
+  transition: color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+.bellBtn:hover {
+  background: rgba(232, 180, 92, 0.08);
+  border-color: rgba(232, 180, 92, 0.55);
+  color: #F0D6A0;
+  box-shadow: 0 0 10px rgba(232, 180, 92, 0.18);
+}
+
+.bellBtn:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, var(--nexus-accent-primary, #C9A45C));
+  outline-offset: 2px;
+}
+
+.bellBtn[aria-expanded='true'] {
+  color: var(--nexus-accent-primary, #C9A45C);
+  border-color: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 40%, transparent);
+}
+
+.bellBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--nexus-accent-primary, #C9A45C);
+  color: var(--nexus-accent-on-primary, #17140D);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* notifyMotion (W4-1010): popover уведомлений — notifyIn 240 enter
+ * (opacity + падение из кнопки-колокола, --notify-dy отрицательный).
+ * Закрытие мгновенное — по действию пользователя, без keep-alive. */
+@keyframes notifyIn {
+  from {
+    opacity: 0;
+    transform: translateY(var(--notify-dy, 6px));
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.notifPop {
+  --notify-dy: -6px;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  animation: notifyIn var(--nexus-duration-normal, 240ms) var(--nexus-easing-enter, cubic-bezier(0, 0, 0.2, 1)) backwards;
+  z-index: var(--nexus-layer-menu, 60);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: min(320px, calc(100vw - 16px));
+  max-width: min(420px, calc(100vw - 16px));
+  max-height: 70vh;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  padding: 8px;
+  border-radius: var(--nexus-radius-md, 10px);
+  border: 1px solid color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 30%, transparent);
+  background: color-mix(in srgb, var(--nexus-surface-panel, #151519) 96%, transparent);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(10px);
+}
+
+.notifTitle {
+  padding: 4px 6px 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--nexus-text-tertiary, #8A93A3);
+}
+
+.notifNote {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8A93A3);
+  padding: 0 6px;
+}
+
+.notifEmpty {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8A93A3);
+  padding: 10px 6px;
+}
+
+.notifList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.notifItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 7px 8px;
+  border: none;
+  border-radius: var(--nexus-radius-sm, 6px);
+  background: transparent;
+  color: var(--nexus-text-primary, #F6F0E4);
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  text-align: left;
+  cursor: pointer;
+}
+
+.notifItem:hover {
+  background: var(--nexus-nav-item-bg-hover, rgba(246, 240, 228, 0.04));
+}
+
+.notifItem:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, var(--nexus-accent-primary, #C9A45C));
+  outline-offset: -2px;
+}
+
+.notifItemTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notifItemSub {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8A93A3);
+}
+
+/* --- /main-delta shell-комплект ---------------------------------------- */
+/* visual-3: декоративная подложка top-банда рамки (shell-glow из
+   арт-манифеста) — поверх фона полосы, под содержимым; токены не дублируем. */
+.frameTopGlow {
+  background-size: 100% 100%;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+/* ==========================================================================
+   #53 оболочка окна AGENT-A + стеклянные бары (Yury 17.10).
+   Контейнер окна — inline-size: сжатие реагирует на ширину окна, а не
+   вьюпорта. Стекло — временные переменные --nexus-glass-bar-* до токенов
+   W2 52-glass-bars-tokens (TODO в glass-surface.module.css). */
+
+.shellWrap {
+  container-type: inline-size;
+  container-name: nexuswindow;
+}
+
+/* Match the frame glow's horizontal overscan to the shell's 12px inline
+   gutter. The shared -34px inset reaches past the viewport (22px at 1920)
+   and expands document scroll width despite the frame itself fitting. Keep
+   the vertical halo, but end the decorative layer at the shell edges. */
+.shellWrap :global([class*='frameShadow'])::before {
+  inset-block: -34px;
+  inset-inline: calc(0px - var(--nexus-space-3, 12px));
+}
+
+/* --- сцена ALICE ----------------------------------------------------------
+   backalice.png (NEU\Alice) — жемчужно-белые ткани и золото под стеклянными
+   барами. Рисуется на .frame (единственный ребёнок frameEdge): одна
+   непрерывная картина под top/left/right/bottom полосами; жемчужный scrim
+   держит текст читаемым, фон не сдвигается при сжатии (cover/center). */
+[data-theme='alice'] .shellWrap [class*='frameEdge']>div {
+  position: relative;
+  /* Свой stacking-контекст: иначе ::before с z-index:-1 уйдёт под
+     непрозрачный фон .frame и сцена не отрисуется. */
+  isolation: isolate;
+  transition: opacity var(--nexus-duration-cinematic, 700ms) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Сцена — собственный слой ::before (ранее Ken Burns висел transform'ом
+   на самой .frame: вся рамка масштабировалась 1.0→1.05, «плыли» координаты
+   окна, а в скруглённых углах просвечивал тёмный surface-root). Теперь
+   масштабируется только фон: inset -8% — overscan под scale(1.05), чтобы
+   края слоя никогда не входили в кадр; z-index -1 — поверх заливки .frame,
+   под контентом; backdrop-filter баров берёт его за подложку. */
+[data-theme='alice'] .shellWrap [class*='frameEdge']>div::before {
+  content: '';
+  position: absolute;
+  inset: -8%;
+  z-index: -1;
+  border-radius: inherit;
+  /* PNG-фолбэк — браузеры без image-set берут эту декларацию. Значения в
+     одну строку: PostCSS-transform тулчейна не принимает многострочные
+     значения внутри правила псевдоэлемента (Invalid token: WhiteSpace). */
+  background: linear-gradient(180deg, rgba(251, 248, 241, .38), rgba(246, 240, 228, .52)), var(--alice-slide, var(--nexus-alice-scene, url('/art/backalice.png'))) center / cover no-repeat, var(--nexus-surface-panel, #FBF8F1);
+  /* W4/W3 XVII: адаптивные варианты — webp 640/1280/1672 по плотности
+       (-webkit-image-set без type() — старый WebKit), затем полный
+       image-set avif→webp. Браузер без поддержки формы отбрасывает
+       декларацию и остаётся на предыдущем слое (png → webp → avif). */
+  background: linear-gradient(180deg, rgba(251, 248, 241, .38), rgba(246, 240, 228, .52)), var(--alice-slide, var(--nexus-alice-scene, -webkit-image-set(url('/art/backalice-640.webp') 1x, url('/art/backalice-1280.webp') 1.5x, url('/art/backalice-1672.webp') 2x))) center / cover no-repeat, var(--nexus-surface-panel, #FBF8F1);
+  background: linear-gradient(180deg, rgba(251, 248, 241, .38), rgba(246, 240, 228, .52)), var(--alice-slide, var(--nexus-alice-scene, image-set(url('/art/backalice-640.avif') type('image/avif') 1x, url('/art/backalice-1280.avif') type('image/avif') 1.5x, url('/art/backalice-1672.avif') type('image/avif') 2x, url('/art/backalice-640.webp') type('image/webp') 1x, url('/art/backalice-1280.webp') type('image/webp') 1.5x, url('/art/backalice-1672.webp') type('image/webp') 2x))) center / cover no-repeat, var(--nexus-surface-panel, #FBF8F1);
+  /* Замер на GPU: непрерывный Ken Burns бесплатен (60fps, vsync-кап) —
+     compositor-анимация + backdrop-filter в железе. Падение до 1.8fps
+     было артефактом софтверного растера headless-замера. */
+  animation: aliceKenBurns 33s ease-out infinite alternate;
+  will-change: transform;
+  pointer-events: none;
+}
+
+/* Входящий слайд кроссфейда — ::after поверх базового ::before, фейд 1.4с.
+   Ken Burns не дублируется: он живёт на ::before и непрерывен через смену
+   картинки, статичный входящий кадр читается мягче, чем двойной зум.
+   background одной строкой — см. ::before (PostCSS не принимает переносы
+   внутри правил псевдоэлементов). */
+[data-theme='alice'] .shellWrap [class*='frameEdge']>div::after {
+  content: '';
+  position: absolute;
+  inset: -8%;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(251, 248, 241, .38), rgba(246, 240, 228, .52)), var(--alice-slide-2, none) center / cover no-repeat;
+  opacity: 0;
+  transition: opacity var(--nexus-motion-seek, 1.4s) ease-in-out;
+  /* Слой заранее на композиторе: без промоушна фейд гонял растеризацию
+     2Мп-фона каждый кадр (плюс backdrop-filter баров пересчитывался
+     над перерисовываемым слоем) — экран «замирал» на смене. */
+  will-change: opacity;
+  pointer-events: none;
+}
+
+[data-theme='alice'] .shellWrap[data-sliding] [class*='frameEdge']>div::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme='alice'] .shellWrap [class*='frameEdge']>div::before {
+    animation: none;
+  }
+
+  [data-theme='alice'] .shellWrap [class*='frameEdge']>div::after {
+    transition: none;
+  }
+
+  [data-theme='alice'] .shellWrap [class*='frameEdge']>div {
+    transition: none;
+  }
+}
+
+/* --- стеклянные бары -------------------------------------------------------
+   Одна геометрия во всех пяти стилях ассистентов; цвет — токены темы.
+   frameTop — светлый по умолчанию (тёмная заливка только у поиска,
+   композера и плеера голоса — см. home.module.css). */
+.shellWrap [class*='frameTop'],
+.shellWrap [class*='frameLeft'],
+.shellWrap [class*='frameRight'],
+.shellWrap [class*='frameBottom'] {
+  background: var(--nexus-glass-bar-bg,
+      color-mix(in srgb, var(--nexus-surface-elevated, #1C1C22) 58%, transparent));
+  -webkit-backdrop-filter: blur(var(--nexus-glass-bar-blur, 18px)) saturate(1.12);
+  backdrop-filter: blur(var(--nexus-glass-bar-blur, 18px)) saturate(1.12);
+}
+
+/* LUX-шапка: золотая волосина по нижней кромке + отрыв от контента;
+   тёмный скрим внутри стекла — текст читается и на светлых сценах. */
+.shellWrap [class*='frameTop'] {
+  background-image:
+    linear-gradient(180deg, rgba(4, 7, 11, 0.30), rgba(4, 7, 11, 0.12) 60%, rgba(4, 7, 11, 0.22)),
+    radial-gradient(120% 160% at 0% 0%, rgba(232, 180, 92, 0.10), transparent 45%),
+    radial-gradient(120% 160% at 100% 0%, rgba(232, 180, 92, 0.08), transparent 45%);
+  box-shadow:
+    inset 0 -1px 0 rgba(232, 180, 92, 0.22),
+    inset 0 1px 0 rgba(246, 231, 196, 0.05),
+    0 10px 28px rgba(0, 0, 0, 0.28);
+}
+
+/* Светлая тема ALICE — без тёмного скрима, волосина светлее. */
+[data-theme='alice'] .shellWrap [class*='frameTop'] {
+  background-image: none;
+  box-shadow:
+    inset 0 -1px 0 rgba(201, 164, 92, 0.30),
+    0 8px 22px rgba(76, 66, 51, 0.12);
+}
+
+/* topSearch / opacityLabel / sideProfileRole на alice: светлый bg.
+   Базовые правила topSearch/opacityLabel/opacityVal уже читают токены
+   glassPanel.topbarText/topbarTextDim, а alice-тема переопределяет их на
+   тёмные чернила (packages/themes/src/themes/alice.ts). Отдельные scoped-
+   оверрайды здесь больше не нужны — они лишь по специфичности отменяли бы
+   токен-значения. */
+
+/* railLabel на alice: на светлых сценах (слоновая рамка /codex|/arch) —
+   тёмные чернила (obsidian-950), достаточные даже на тёмном крае рамки
+   (4.5+ при bg до ~125). Сцена /home (alice-home) тёмная (кадр окна под
+   рейлом) — подписи светлыми, иначе 1.08–1.56:1. */
+[data-theme='alice'] .shellWrap:not([data-scene='alice-home']) [class*='railLabel'] {
+  color: var(--nexus-color-obsidian-950, #0A0A0C);
+}
+
+/* NQ-081 закрыт на уровне токенов (REAL-BUGS): базовые правила
+   opacityLabel/opacityVal/railLabel читают glassPanel.topbarText/topbarTextDim
+   и text.tertiary, а alice-тема переопределяет их на тёмные чернила
+   (obsidian.900 / graphite.600) — отдельные scoped-оверрайды не нужны. */
+
+[data-theme='alice'] .shellWrap[data-scene='alice-home'] [class*='railLabel'] {
+  color: var(--nexus-text-on-art, #F6F0E4);
+}
+
+/* На светлой теме ALICE бары светлее — scrim в тон сцены. */
+[data-theme='alice'] .shellWrap [class*='frameTop'],
+[data-theme='alice'] .shellWrap [class*='frameLeft'],
+[data-theme='alice'] .shellWrap [class*='frameRight'],
+[data-theme='alice'] .shellWrap [class*='frameBottom'] {
+  background: var(--nexus-glass-bar-bg,
+      color-mix(in srgb, var(--nexus-surface-elevated, #FBF8F1) 55%, transparent));
+  border-color: var(--nexus-glass-bar-border,
+      color-mix(in srgb, var(--nexus-text-primary, #4C4233) 10%, transparent));
+}
+
+/* Сцена окна: арт лежит под всей рамкой, а не только в main — стеклянные
+   рейл и шапка берут его за подложку (эталон ALICEhome: дымчатое стекло
+   поверх сцены). Ключ — `data-scene`, а не конкретный id: `/home` уже его
+   ставит, разделы подхватят своим кадром, когда тот появится в public/art.
+   Без `--nexus-frame-scene` слой деградирует чисто в скримы поверх заливки
+   рамки, то есть раздел выглядит как сегодня. */
+.shellWrap[data-scene] [class*='frameEdge']>div {
+  position: relative;
+  /* Свой stacking-контекст: сцена уходит на ::before с z-index:-1 —
+     поверх заливки рамки, под её содержимым (как у темы alice). */
+  isolation: isolate;
+  background-image: none;
+  background-color: var(--nexus-surface-panel, #14161c);
+}
+
+/* Дефокус снят: сцена одна и она резкая (увеличенный кадр дома, outpaint
+   2048×1152). Раньше под рамкой лежал размытый дубль той же картинки, а в
+   main — второй, резкий кроп: в рейле угадывался сюжет из контента, и
+   владелец прочитал это как «копию бэкграунда» (2026-10-29). Теперь у
+   стекла нет собственной картины — только то, что под ним, поэтому
+   локальное матирование дают сами поверхности (backdrop-filter баров и
+   пластин шаблона), а не расфокус подложки.
+   Тон-скрим — четыре мягких слоя без резкой ступени: два угловых радиала
+   под левый/правый край шапки (там вордмарк, часы и профиль), левая поло-
+   са под подписи рейла и вертикальная под шапку/низ. Середина кадра остаёт-
+   ся светлой — затемнение точечное, а не полоса поверх арта (эталон
+   ALICEhome: тёмные углы шапки при светлом центре).
+   Overscan -2% прячет субпиксельную щель по скруглённым углам.
+   Селектор по `data-scene`: скримы одинаковы для всех сцен, отличается
+   только картинка в `--nexus-frame-scene` (её ставит app-shell). */
+.shellWrap[data-scene] [class*='frameEdge']>div::before {
+  content: '';
+  position: absolute;
+  inset: -2%;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    radial-gradient(72% 30% at 0% 0%, rgba(4, 7, 9, 0.74), transparent 62%),
+    radial-gradient(72% 30% at 100% 0%, rgba(4, 7, 9, 0.74), transparent 62%),
+    linear-gradient(90deg, rgba(6, 9, 12, 0.5) 0%, rgba(6, 9, 12, 0.22) 14%, transparent 32%),
+    linear-gradient(180deg, rgba(8, 11, 15, 0.62) 0%, rgba(6, 9, 12, 0.3) 7%, rgba(6, 9, 12, 0.08) 14%, rgba(6, 9, 12, 0.16) 62%, rgba(6, 9, 12, 0.44) 100%),
+    var(--nexus-frame-scene, none) center / cover no-repeat;
+  /* Кадр дома выстроен под канон 1920×1080, поэтому он неподвижен: Ken
+     Burns наследуется от правила сцены темы alice, а на резком заполняющем
+     арте он уводит композицию под панели. */
+  animation: none;
+  will-change: auto;
+  pointer-events: none;
+}
+
+/* Черта сцены: хром (вордмарк, активный пункт, часы, профиль) лежит прямо
+   на резком арте, и дефолтный золотой/серый тон ramp'а не держит на нём
+   4.5:1 — замер W14 дал 2.48…3.42. Угловые скримы выше гасят фон под
+   region'ами, а ramp сцены поднимает яркость чернил: шампанское вместо
+   золота, светло-серый вместо tertiary. Шаблон переопределяет оба токен-
+   а на .root, поэтому контент в эту правку не попадает. */
+.shellWrap[data-scene='alice-home'] {
+  --nexus-accent-primary: #E8C88A;
+  --nexus-text-tertiary: #D2D9E4;
+  /* Кольцо фокуса — общее (W2-131), и на сцене оно синее: токен темы
+     #1E68D6 не из палитры NEXUS и на золотом стекле читается как чужой
+     стикер. Тема вправе перекрасить кольцо, но не снять его — поэтому
+     шампанское, а не `outline: none`. */
+  --nexus-focus-ring: #E8C88A;
+}
+
+/* Верхняя полоса лежит на той же сцене, что и рейл, а alice-тема отдаёт
+   secondary тёмными чернилами (#54545F): имя профиля и чип «RO» давали
+   ≈2.5:1 и пропадали на арте. Красим только их — остальной secondary
+   живёт на светлом стекле панелей, и токен сцены его не трогает. Имя —
+   светлым гранитом часов (W14), чип готовности ФС — шампанским акцентом,
+   как соседний регулятор окна. */
+.shellWrap[data-scene='alice-home'] .identity {
+  color: var(--nexus-text-tertiary, #8A93A3);
+}
+
+/* :not(:hover) — иначе селектор специфичнее `.fsBtn:hover` и гасит
+   наведение; цвет наведения остаётся у базового правила. */
+.shellWrap[data-scene='alice-home'] .fsBtn[data-state='ready']:not(:hover) {
+  color: var(--nexus-accent-primary, #C9A45C);
+}
+
+/* Баровый хром ⇄/▾/× берёт secondary — в alice-теме это тёмные чернила,
+   и на сцене кнопки сливались с артом (≈2.1:1 при opacity .55). Красим
+   светлым гранитом; наведение остаётся у базового `.barBtn:hover`. */
+.shellWrap[data-scene='alice-home'] .barBtn:not(:hover) {
+  color: color-mix(in srgb, var(--nexus-text-on-art, #F6F0E4) 78%, transparent);
+}
+
+/* --- Верхняя полоса ALICE-home: поиск, группы, тихий хром ----------------
+   Полоса лежит на сцене без собственной заливки (просьба владельца), поэтому
+   порядок держат не рамки, а группировка: центральный поиск эталона,
+   волосины между кластерами и единая нейтральная волосина у контролов
+   вместо золотой «пилюли на пилюле». Акцент остаётся у LIVE и ховеров. */
+
+/* REAL-BUGS (alice contrast, topSearch 1.11:1 / opacityLabel 1.29:1 on the
+   /home topbar): closed at the token level — glassPanel.topbarText /
+   glassPanel.topbarTextDim default to the dark-canon text ramp (every dark
+   theme unchanged), and the light alice shell re-points them to dark obsidian
+   (see packages/themes/src/themes/alice.ts). The generic var() fallback is
+   the role's DEFAULT, so the light value only wins on alice. No scoped-CSS
+   override, no hardcode — same pattern as 0930ba29's glassPanel.text. */
+.topSearch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  /* frameTabs растянут по центральному треку (правило ниже) — пилюля берёт
+     его ширину до 560 px и не переполняет полосу на 1366–1600. */
+  width: min(560px, 100%);
+  min-width: 0;
+  height: 38px;
+  padding: 0 12px 0 14px;
+  border: 1px solid color-mix(in srgb, var(--nexus-text-on-art, #F6F0E4) 13%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--nexus-surface-art, #0F0F13) 46%, transparent);
+  -webkit-backdrop-filter: blur(var(--nexus-glass-bar-blur, 18px)) saturate(1.12);
+  backdrop-filter: blur(var(--nexus-glass-bar-blur, 18px)) saturate(1.12);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--nexus-text-on-art, #F6F0E4) 7%, transparent);
+  color: var(--nexus-glass-panel-topbar-text, var(--nexus-text-on-art, #F6F0E4));
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.02em;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease, color 140ms ease, box-shadow 140ms ease;
+}
+
+.topSearch:hover {
+  border-color: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 48%, transparent);
+  background: color-mix(in srgb, var(--nexus-surface-art, #0F0F13) 56%, transparent);
+  color: var(--nexus-glass-panel-topbar-text, var(--nexus-text-on-art, #F6F0E4));
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--nexus-text-on-art, #F6F0E4) 9%, transparent),
+    0 0 18px color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 14%, transparent);
+}
+
+.topSearch:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, #539EFF);
+  outline-offset: 2px;
+}
+
+.topSearch svg {
+  flex: none;
+  opacity: 0.72;
+}
+
+.topSearchLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topSearchKbd {
+  flex: none;
+  padding: 1px 7px;
+  border: 1px solid color-mix(in srgb, var(--nexus-text-on-art, #F6F0E4) 16%, transparent);
+  border-radius: var(--nexus-radius-sm, 4px);
+  font-family: 'IBM Plex Mono', 'Inter Tight', monospace;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1.35;
+  color: var(--nexus-glass-panel-topbar-text-dim, var(--nexus-text-on-art-muted, #8E97A5));
+}
+
+/* Центральный слот: растянуть трек и центрировать пилюлю в нём. */
+.shellWrap[data-scene='alice-home'] [class*='frameTabs'] {
+  justify-self: stretch;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* На средней ширине подпись поиска важнее клавиши-подсказки. */
+@container nexuswindow (max-width: 1500px) {
+
+  .topSearchKbd {
+    display: none;
+  }
+}
+
+/* На узком окне центр уступает место бренду и статусу — палитра живёт на Ctrl+K. */
+@container nexuswindow (max-width: 1180px) {
+
+  .topSearch {
+    display: none;
+  }
+}
+
+.topToolGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nexus-space-1, 4px);
+}
+
+.topDivider {
+  flex: none;
+  width: 1px;
+  height: 18px;
+  margin: 0 var(--nexus-space-1, 2px);
+  background: var(--nexus-border-subtle, rgba(246, 240, 228, 0.1));
+}
+
+/* Опора полосы: пилюля дымчатого стекла в духе эталона и панелей сцены.
+   Контролы больше не «висят» на арте, сцена просвечивает сквозь 50 % +
+   blur. Полоса остаётся drag-регионом: слой декоративный, без событий. */
+.shellWrap[data-scene='alice-home'] header[data-bar-surface='top'] {
+  position: relative;
+}
+
+.shellWrap[data-scene='alice-home'] header[data-bar-surface='top']::before {
+  content: '';
+  position: absolute;
+  inset: 9px 18px;
+  border-radius: calc(var(--nexus-radius-md, 8px) * 2);
+  background: color-mix(in srgb, var(--nexus-surface-art, #0F0F13) 50%, transparent);
+  border: 1px solid color-mix(in srgb, var(--nexus-text-on-art, #F6F0E4) 10%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--nexus-text-on-art, #F6F0E4) 7%, transparent),
+    0 12px 32px color-mix(in srgb, var(--nexus-surface-root, #0A0A0C) 55%, transparent);
+  -webkit-backdrop-filter: blur(var(--nexus-glass-bar-blur, 18px)) saturate(1.12);
+  backdrop-filter: blur(var(--nexus-glass-bar-blur, 18px)) saturate(1.12);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Дети — над псевдослоем стекла (z-index:0 перекрыл бы текст). */
+.shellWrap[data-scene='alice-home'] header[data-bar-surface='top']>* {
+  position: relative;
+  z-index: 1;
+}
+
+/* slim-шапка 44 px: 38 px поиска и оправа не помещаются — центр уступает. */
+.shellWrap[data-scene='alice-home'] header[data-bar-mode='slim'] .topSearch {
+  display: none;
+}
+
+.shellWrap[data-scene='alice-home'] header[data-bar-mode='slim']::before {
+  content: none;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+
+  .shellWrap[data-scene='alice-home'] header[data-bar-surface='top']::before {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: color-mix(in srgb, var(--nexus-surface-art, #0F0F13) 94%, transparent);
+  }
+}
+
+@media (forced-colors: active) {
+
+  .shellWrap[data-scene='alice-home'] header[data-bar-surface='top']::before {
+    content: none;
+  }
+}
+
+/* Тоггл панели разделов: рамка и secondary-чернила темы терялись на арте —
+   кнопка читалась пустым кружком. Прессованное состояние остаётся золотым. */
+.shellWrap[data-scene='alice-home'] .navToggle[aria-pressed='false']:not(:hover):not(:focus-visible) {
+  color: var(--nexus-text-on-art-dim, #B0B7C2);
+  border-color: transparent;
+}
+
+/* Ручка перемещения шапки — тихий гриф без тяжёлого золотого кольца. */
+.shellWrap[data-scene='alice-home'] [data-bar-surface='top'] .barDragGrip {
+  width: 24px;
+  height: 24px;
+  border-color: transparent;
+  background: transparent;
+  color: var(--nexus-text-on-art-muted, #8E97A5);
+}
+
+.shellWrap[data-scene='alice-home'] [data-bar-surface='top'] .barDragGrip:hover,
+.shellWrap[data-scene='alice-home'] [data-bar-surface='top'] .barDragGrip:focus-visible {
+  border-color: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 55%, transparent);
+  background: color-mix(in srgb, var(--nexus-surface-art, #0F0F13) 46%, transparent);
+  color: var(--nexus-accent-primary, #C9A45C);
+}
+
+/* ⇄/▾/× — 26 px и телесный кегль: 24 px с капительным 13 px выглядели точками. */
+.shellWrap[data-scene='alice-home'] [data-bar-surface='top'] .barBtn {
+  width: 26px;
+  height: 26px;
+  font-size: var(--nexus-type-body-font-size, 15px);
+}
+
+/* Нейтральная волосина у пилюль: золотая рамка у каждой дробила полосу на
+   четыре конкурирующих акцента. Ховеры сохраняют золото. */
+.shellWrap[data-scene='alice-home'] [data-bar-surface='top'] .bellBtn,
+.shellWrap[data-scene='alice-home'] [data-bar-surface='top'] .fsBtn,
+.shellWrap[data-scene='alice-home'] [data-bar-surface='top'] .opacityCtl,
+.shellWrap[data-scene='alice-home'] [data-bar-surface='top'] [data-testid='right-dock-toggle']:not([aria-pressed='true']) {
+  border-color: color-mix(in srgb, var(--nexus-text-on-art, #F6F0E4) 15%, transparent);
+}
+
+.shellWrap[data-scene='alice-home'] [data-bar-surface='top'] [data-testid='right-dock-toggle']:not([aria-pressed='true']) {
+  color: var(--nexus-text-on-art-dim, #B0B7C2);
+}
+
+/* Одна высота у всех пилюль кластера: 23 px у «Окно» против 32 px у соседей
+   давали ступеньку. */
+.shellWrap[data-scene='alice-home'] [data-bar-surface='top'] .bellBtn,
+.shellWrap[data-scene='alice-home'] [data-bar-surface='top'] .fsBtn,
+.shellWrap[data-scene='alice-home'] [data-bar-surface='top'] .opacityCtl {
+  height: 30px;
+}
+
+/* Регулятор прозрачности — компактнее: метка и значение тише, слайдер короче. */
+.shellWrap[data-scene='alice-home'] [data-bar-surface='top'] .opacityCtl {
+  gap: 6px;
+  padding: 0 10px;
+  background: color-mix(in srgb, var(--nexus-surface-art, #0F0F13) 36%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--nexus-text-on-art, #F6F0E4) 6%, transparent);
+}
+
+.shellWrap[data-scene='alice-home'] [data-bar-surface='top'] .opacityRange {
+  width: 64px;
+}
+
+/* main7 (ALICE light): тёмные золотые дуги shell-glow — арт тёмного макета
+   NUE1 (art/MANIFEST.md), на светлой полосе они дают чёрный банд. Подложка
+   остаётся только в тёмных темах; в ALICE полосу несёт светлое стекло выше.
+   !important — перекрывает inline backgroundImage из topProps (app-shell.tsx). */
+[data-theme='alice'] .shellWrap [class*='frameTopGlow'] {
+  background-image: none !important;
+}
+
+/* Активный пункт рельса: заливку и волосины задаёт финишная кожа сайдбара
+   (блок «Sidebar finish» ниже — он специфичнее и старше). Здесь только
+   стек и спрайт-фактура, чтобы не спорить с ней за одни и те же свойства.
+   Слой ::before с z-index:-1 — под иконкой и подписью, поверх заливки;
+   пока файла нет, браузер слой просто не рисует. */
+.shellWrap [class*='railItem'] {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Плашка — только у листа-страницы. Раскрытый родитель группы помечает
+   раздел цветом (финишная кожа), но не получает вторую такую же плашку:
+   два «выбранных» пункта ломают иерархию. */
+.shellWrap [class*='railItem'][data-active]:not([aria-expanded='true'])::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: image-set(url('/art/nav/nav-plaque-gold.webp') 1x, url('/art/nav/nav-plaque-gold@2x.webp') 2x) center / 100% 100% no-repeat;
+  opacity: 0.92;
+  pointer-events: none;
+}
+
+/* Открытая активная группа — второй уровень иерархии: циановая плашка-подложка
+   (S13). Золото остаётся за выбранным листом, группа лишь подсвечена, чтобы
+   было видно, внутри какого раздела находится текущая страница. */
+.shellWrap [class*='railItem'][aria-expanded='true'][data-active]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: image-set(url('/art/nav/nav-plaque-cyan.webp') 1x, url('/art/nav/nav-plaque-cyan@2x.webp') 2x) center / 100% 100% no-repeat;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Эмблема раздела (юзер-арт crest-<id>) — водяной знак за иконкой строки.
+   Слой под содержимым (railItem уже даёт isolation), в покое едва читается,
+   у активного раздела/страницы выходит на полную. */
+.shellWrap [class*='railItemRow'][data-crest]::after {
+  content: '';
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  width: 46px;
+  height: 46px;
+  transform: translateY(-50%);
+  z-index: -1;
+  background: url('/art/nav/crest-dialogs.png') center / contain no-repeat;
+  opacity: 0.42;
+  pointer-events: none;
+}
+
+.shellWrap [class*='railItemRow'][data-crest='mission']::after { background-image: url('/art/nav/crest-mission.png'); }
+.shellWrap [class*='railItemRow'][data-crest='dialogs']::after { background-image: url('/art/nav/crest-dialogs.png'); }
+.shellWrap [class*='railItemRow'][data-crest='knowledge']::after { background-image: url('/art/nav/crest-knowledge.png'); }
+.shellWrap [class*='railItemRow'][data-crest='tools']::after { background-image: url('/art/nav/crest-tools.png'); }
+.shellWrap [class*='railItemRow'][data-crest='memory']::after { background-image: url('/art/nav/crest-memory.png'); }
+.shellWrap [class*='railItemRow'][data-crest='processes']::after { background-image: url('/art/nav/crest-processes.png'); }
+.shellWrap [class*='railItemRow'][data-crest='evals']::after { background-image: url('/art/nav/crest-evals.png'); }
+.shellWrap [class*='railItemRow'][data-crest='settings']::after { background-image: url('/art/nav/crest-settings.png'); }
+
+/* @2x — только на ретине; на 1x браузер всё равно декодирует 512-px мастер,
+   но 1024-px грузить незачем. */
+@media (min-resolution: 1.5dppx) {
+  .shellWrap [class*='railItemRow'][data-crest='mission']::after { background-image: url('/art/nav/crest-mission@2x.png'); }
+  .shellWrap [class*='railItemRow'][data-crest='dialogs']::after { background-image: url('/art/nav/crest-dialogs@2x.png'); }
+  .shellWrap [class*='railItemRow'][data-crest='knowledge']::after { background-image: url('/art/nav/crest-knowledge@2x.png'); }
+  .shellWrap [class*='railItemRow'][data-crest='tools']::after { background-image: url('/art/nav/crest-tools@2x.png'); }
+  .shellWrap [class*='railItemRow'][data-crest='memory']::after { background-image: url('/art/nav/crest-memory@2x.png'); }
+  .shellWrap [class*='railItemRow'][data-crest='processes']::after { background-image: url('/art/nav/crest-processes@2x.png'); }
+  .shellWrap [class*='railItemRow'][data-crest='evals']::after { background-image: url('/art/nav/crest-evals@2x.png'); }
+  .shellWrap [class*='railItemRow'][data-crest='settings']::after { background-image: url('/art/nav/crest-settings@2x.png'); }
+}
+
+.shellWrap [class*='railItemRow'][data-crest][data-active]::after {
+  opacity: 0.75;
+  filter: drop-shadow(0 0 6px rgba(217, 184, 117, 0.35));
+}
+
+/* Рейл разделов внутри оболочки — стеклянная пластина, как в эталоне
+   ALICEhome. Фон даёт колонка frameLeft (58% + blur) поверх размытой
+   сцены, пластина добавляет собственный материал: тёплый уход у верха,
+   дым к низу и микрофактуру. Спрайт короны (S5) — первым слоем; пока
+   файла нет, слои градиентов работают сами. */
+/* Селектор по элементу nav, а не по подстроке класса: `[class*='iconRail']`
+   матчил ещё и iconRailHeader/List/Footer — каждый из них получал свою
+   копию «короны» и градиента, из-за чего колонка распадалась на полосы. */
+.shellWrap nav[class*='iconRail'] {
+  position: relative;
+  /* Свой stacking-контекст: «корона» уходит на ::before с z-index:-1 —
+     выше фоновых слоёв пластины, но под вордмарком и пунктами. */
+  isolation: isolate;
+  background:
+    url('/art/nav/nav-grain-384.webp') repeat 0 0 / 384px 384px,
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 7%, transparent),
+      transparent 26%),
+    linear-gradient(180deg, rgba(10, 14, 18, 0.04), rgba(6, 9, 11, 0.16));
+  /* Зерно смешивается с градиентом под ним; остальные слои — как есть. */
+  background-blend-mode: overlay, normal, normal;
+  box-shadow:
+    inset 1px 0 0 rgba(255, 255, 255, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* «Корона» панели (S5): золотой веер, растворяющийся к низу. Отдельным
+   слоем, а не в списке background, — нужна управляемая прозрачность:
+   орнамент не должен конкурировать с вордмарком и первой строкой. */
+.shellWrap nav[class*='iconRail']::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: -1;
+  height: 56px;
+  background: image-set(url('/art/nav/nav-cap-top.webp') 1x, url('/art/nav/nav-cap-top@2x.webp') 2x) top center / 120% 100% no-repeat;
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+/* Световая каустика у внутренней кромки пластины (S8): свет проходит по
+   стеклу и гаснет к низу. 24px — ширина спрайта; подписи и шевроны лежат
+   левее, поэтому слой не задевает текст. */
+.shellWrap nav[class*='iconRail']::after {
+  content: '';
+  position: absolute;
+  inset-block: 4px;
+  right: 0;
+  width: 24px;
+  background: image-set(url('/art/nav/nav-edge-caustic.webp') 1x, url('/art/nav/nav-edge-caustic@2x.webp') 2x) center / 100% 100% no-repeat;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* Каустика кромок окна (§4 брифа `edge-caustic-h`): нижняя кромка — новый
+   горизонтальный спрайт, правая — тот же вертикальный, что у рейла, чтобы
+   характер света был один. Полосы отступают от скруглений на радиус рамки,
+   иначе свет ложится на дугу угла. Внешняя половина спрайтов прозрачна,
+   поэтому линия садится на волосину, не споря с ней. */
+.shellWrap [class*='frameEdge'] {
+  position: relative;
+}
+
+.shellWrap [class*='frameEdge']::before,
+.shellWrap [class*='frameEdge']::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.shellWrap [class*='frameEdge']::before {
+  left: var(--nexus-window-frame-radius, 24px);
+  right: var(--nexus-window-frame-radius, 24px);
+  bottom: 0;
+  height: 24px;
+  background-image: url('/art/edge-caustic-h.png');
+}
+
+.shellWrap [class*='frameEdge']::after {
+  top: var(--nexus-window-frame-radius, 24px);
+  bottom: var(--nexus-window-frame-radius, 24px);
+  right: 0;
+  width: 24px;
+  background-image: image-set(url('/art/nav/nav-edge-caustic.webp') 1x, url('/art/nav/nav-edge-caustic@2x.webp') 2x);
+}
+
+/* Высокий контраст: декор каустики выключается, кромка остаётся системной. */
+@media (forced-colors: active) {
+
+  .shellWrap [class*='frameEdge']::before,
+  .shellWrap [class*='frameEdge']::after {
+    content: none;
+  }
+}
+
+/* Маркер стеклянного top-бара (вешается через topProps) — DOM-тест
+   проверяет наличие стеклянного слоя в шапке. */
+.frameTopGlass {}
+
+/* Fallback без backdrop-filter — плотная заливка, геометрия та же. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+
+  .shellWrap [class*='frameTop'],
+  .shellWrap [class*='frameLeft'],
+  .shellWrap [class*='frameRight'],
+  .shellWrap [class*='frameBottom'] {
+    background: var(--nexus-glass-bar-bg-strong,
+        color-mix(in srgb, var(--nexus-surface-elevated, #1C1C22) 94%, transparent));
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+
+  .shellWrap [class*='frameTop'],
+  .shellWrap [class*='frameLeft'],
+  .shellWrap [class*='frameRight'],
+  .shellWrap [class*='frameBottom'] {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--nexus-glass-bar-bg-strong,
+        color-mix(in srgb, var(--nexus-surface-elevated, #1C1C22) 94%, transparent));
+  }
+}
+
+/* --- Linked Agents + NEXUS CORE (футер полного рельса) -------------------- */
+.linkedAgents {
+  position: relative;
+  margin-top: var(--nexus-space-3, 12px);
+  padding-top: var(--nexus-space-3, 12px);
+  border-top: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.08));
+}
+
+/* Разделитель с ромбом (S4 брифа) поверх волосины border-top: линия
+   орнамента центрирована на той же высоте, поэтому при отсутствии файла
+   остаётся обычная граница, а при наличии — двойного штриха не видно. */
+.linkedAgents::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 8px;
+  right: 8px;
+  height: 16px;
+  background: url('/art/nav/nav-divider-gold.webp') center / 100% 100% no-repeat;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.linkedTitle {
+  margin: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--nexus-text-tertiary, #8A93A3);
+}
+
+/* Триггер меню агентов: строка была заголовком списка, стала кнопкой
+   раскрытия — та же типографика, плюс маркер сводного состояния и счётчик. */
+.agentsTrigger {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  width: 100%;
+  padding: 6px var(--nexus-space-2, 8px);
+  border: 1px solid transparent;
+  border-radius: var(--nexus-radius-md, 8px);
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--nexus-duration-fast, 140ms) ease,
+    border-color var(--nexus-duration-fast, 140ms) ease;
+}
+
+.agentsTrigger:hover {
+  border-color: var(--nexus-border-subtle, rgba(246, 240, 228, 0.1));
+}
+
+.agentsTrigger:focus-visible {
+  outline: none;
+  border-color: var(--nexus-border-focus, #8DEEF5);
+}
+
+.agentsTone {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--nexus-text-tertiary, #8A93A3);
+}
+
+.agentsTone[data-tone='live'] {
+  background: #61BD91;
+  box-shadow: 0 0 8px rgba(97, 189, 145, .5);
+}
+
+.agentsTone[data-tone='attention'] {
+  background: var(--nexus-state-error, #F97F66);
+  box-shadow: 0 0 8px rgba(249, 127, 102, .45);
+}
+
+.agentsTone[data-tone='idle'] {
+  background: var(--nexus-state-paused, #AFA89D);
+}
+
+.agentsCount {
+  margin-left: auto;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-variant-numeric: tabular-nums;
+  color: var(--nexus-text-tertiary, #8A93A3);
+}
+
+.agentsChevron {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: var(--nexus-text-tertiary, #8A93A3);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform var(--nexus-duration-fast, 140ms) ease;
+}
+
+.agentsTrigger[aria-expanded='true'] .agentsChevron {
+  transform: rotate(180deg);
+}
+
+/* Меню растёт вверх: блок живёт в подвале рельса, и вниз ему некуда —
+   за краем окна. Стеклянная подложка — GlassSurface card. */
+.agentsPopover {
+  position: absolute;
+  right: 4px;
+  bottom: calc(100% + 6px);
+  left: 4px;
+  z-index: 6;
+  /* GlassSurface card красит слой, но паддингов не задаёт — свои. */
+  padding: 10px var(--nexus-space-2, 8px) var(--nexus-space-2, 8px);
+  animation: agents-drop var(--nexus-duration-fast, 140ms) cubic-bezier(0.2, 0, 0, 1);
+}
+
+@keyframes agents-drop {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agentsPopover {
+    animation: none;
+  }
+
+  .agentsTrigger,
+  .agentsChevron {
+    transition: none;
+  }
+}
+
+/* Разделитель меню состояний (§5 брифа `divider-agents`): холодная нить с
+   золотым ромбом поверх волосины border-top — та же геометрия, что у
+   `linkedAgents::before`: без файла остаётся обычная граница, с файлом
+   двойного штриха не видно. */
+.agentsAll {
+  position: relative;
+  display: block;
+  margin-top: 6px;
+  padding: 6px var(--nexus-space-2, 8px) 0;
+  border-top: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.1));
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8A93A3);
+  text-decoration: none;
+}
+
+.agentsAll::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 0;
+  right: 0;
+  height: 16px;
+  background: image-set(url('/art/divider-agents.png') 1x, url('/art/divider-agents@2x.png') 2x) center / 100% 100% no-repeat;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.agentsAll:hover {
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.linkedNote {
+  margin: 0;
+  padding: 0 var(--nexus-space-2, 8px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8A93A3);
+}
+
+.linkedList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.linkedRow {
+  display: grid;
+  grid-template-columns: 8px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 5px var(--nexus-space-2, 8px);
+  border-radius: var(--nexus-radius-md, 8px);
+  color: var(--nexus-text-primary, #F6F0E4);
+  text-decoration: none;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.linkedRow:hover {
+  background: var(--nexus-nav-item-bg-hover, rgba(246, 240, 228, 0.06));
+}
+
+.linkedRow i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--nexus-text-tertiary, #8A93A3);
+}
+
+.linkedRow i[data-state='running'],
+.linkedRow i[data-state='ready'] {
+  background: #61BD91;
+  box-shadow: 0 0 8px rgba(97, 189, 145, .5);
+}
+
+.linkedRow i[data-state='failed'],
+.linkedRow i[data-state='blocked'] {
+  background: var(--nexus-state-error, #F97F66);
+}
+
+.linkedState {
+  color: var(--nexus-text-tertiary, #8A93A3);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.coreCard {
+  margin-top: var(--nexus-space-3, 12px);
+  padding: var(--nexus-space-3, 12px);
+}
+
+.coreCardRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--nexus-text-primary, #F6F0E4);
+  text-decoration: none;
+}
+
+.coreCardName {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: .14em;
+  font-weight: 600;
+}
+
+.coreDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--nexus-text-tertiary, #8A93A3);
+}
+
+.coreDot[data-tone='ok'] {
+  background: #61BD91;
+  box-shadow: 0 0 8px rgba(97, 189, 145, .55);
+}
+
+.coreDot[data-tone='warn'] {
+  background: var(--nexus-state-warning, #E5B85C);
+}
+
+.coreDot[data-tone='error'] {
+  background: var(--nexus-state-error, #F97F66);
+}
+
+.coreCardStatus {
+  display: block;
+  margin-top: 4px;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8A93A3);
+}
+
+/* --- адаптивность окна (контейнер, не вьюпорт) -----------------------------
+   ≥1000px: полный рельс + правая колонка баров (по умолчанию).
+   ≤1000px: рельс — только иконки 72px; правые бары экранов — сеткой под
+   контентом (правила экранов живут в их module.css на том же контейнере). */
+@container nexuswindow (max-width: 1000px) {
+  .shellWrap[data-nav='full'] [class*='frameLeft'] {
+    width: 72px;
+  }
+
+  /* IconRail полного режима схлопывается в иконострип: подписи,
+       подсписки, шапка и футер прячутся — навигация через иконки; клик по
+       разделу ведёт на первый лист (sectionHref). */
+  .shellWrap[data-nav='full'] [class*='iconRail'] [class*='railLabel'],
+  .shellWrap[data-nav='full'] [class*='iconRail'] [class*='railSub'],
+  .shellWrap[data-nav='full'] [class*='iconRailHeader'],
+  .shellWrap[data-nav='full'] [class*='iconRailFooter'],
+  .shellWrap[data-nav='full'] [class*='railItem'] svg:last-child {
+    display: none;
+  }
+
+  .shellWrap[data-nav='full'] [class*='iconRail'] [class*='railItem'] {
+    justify-content: center;
+    width: var(--nexus-icon-strip-tap-size, 40px);
+    height: var(--nexus-icon-strip-tap-size, 40px);
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  .shellWrap[data-nav='full'] [class*='iconRailList'] {
+    align-items: center;
+  }
+}
+
+/* ≤560px: одна колонка — рельс становится горизонтальной полосой иконок
+   над контентом; фон сцены не сдвигается (cover/center выше). */
+@container nexuswindow (max-width: 560px) {
+
+  .shellWrap[data-nav='full'] [class*='frameBody'],
+  .shellWrap[data-nav='strip'] [class*='frameBody'] {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+
+  .shellWrap[data-nav='full'] [class*='frameLeft'],
+  .shellWrap[data-nav='strip'] [class*='frameLeft'] {
+    width: 100%;
+    height: 56px;
+    border-right: 0;
+    border-bottom: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.1));
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  /* IconRail → горизонтальная полоса иконок. */
+  .shellWrap[data-nav='full'] [class*='iconRail'],
+  .shellWrap[data-nav='strip'] .strip {
+    flex-direction: row;
+    align-items: center;
+    height: 100%;
+    padding: 0 var(--nexus-space-2, 8px);
+  }
+
+  .shellWrap[data-nav='full'] [class*='iconRailList'],
+  .shellWrap[data-nav='strip'] .stripList {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .shellWrap[data-nav='full'] [class*='iconRailList']>li,
+  .shellWrap[data-nav='strip'] .stripList>li {
+    display: inline-flex;
+    flex: none;
+  }
+
+  .shellWrap[data-nav='strip'] .stripFoot {
+    flex-direction: row;
+    margin-top: 0;
+    margin-left: auto;
+    padding-top: 0;
+    padding-left: var(--nexus-space-2, 8px);
+    border-top: 0;
+    border-left: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.06));
+  }
+
+  /* Горизонтальная полоса: «корона» и каустика рассчитаны на вертикальную
+     пластину. Каустика у правого края читалась бы как случайный шов, а
+     корона — как широкая засветка над иконками; на полосе оставляем только
+     зерно и тёплую кромку карточки. */
+  .shellWrap[data-nav='full'] nav[class*='iconRail']::before,
+  .shellWrap[data-nav='full'] nav[class*='iconRail']::after {
+    display: none;
+  }
+}
+
+@keyframes aliceKenBurns {
+  from {
+    transform: scale(1.0);
+  }
+
+  to {
+    transform: scale(1.05);
+  }
+}
+
+/* Регулятор прозрачности окна — компактная пилюля в кластере topTools. */
+.opacityCtl {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(232, 180, 92, 0.28);
+  background: rgba(7, 11, 17, 0.42);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.opacityCtl:hover {
+  border-color: rgba(232, 180, 92, 0.5);
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.4),
+    0 0 10px rgba(232, 180, 92, 0.15);
+}
+
+.opacityLabel {
+  font-family: 'IBM Plex Mono', 'Inter Tight', monospace;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  /* glassPanel.topbarText — dark-canon default (gold on dark), alice re-points
+     to dark obsidian on its light shell (see glass-panel.tokens.json + alice.ts). */
+  color: var(--nexus-glass-panel-topbar-text, rgba(232, 180, 92, 0.6));
+}
+
+/* Золотой слайдер: тонкий рельс с ручкой-орбом. */
+.opacityRange {
+  width: 76px;
+  height: 4px;
+  margin: 0;
+  accent-color: var(--nexus-accent-primary, #C9A45C);
+  -webkit-appearance: none;
+  appearance: none;
+  background: linear-gradient(90deg, rgba(232, 180, 92, 0.4), rgba(232, 180, 92, 0.14));
+  border-radius: 999px;
+  outline-offset: 3px;
+  cursor: pointer;
+}
+
+.opacityRange::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 1px solid #E8B45C;
+  background: radial-gradient(circle at 35% 30%, #F6E7C4, #C9973F 70%);
+  box-shadow:
+    0 0 6px rgba(232, 180, 92, 0.7),
+    0 0 14px rgba(232, 180, 92, 0.35);
+}
+
+.opacityRange::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid #E8B45C;
+  background: radial-gradient(circle at 35% 30%, #F6E7C4, #C9973F 70%);
+  box-shadow:
+    0 0 6px rgba(232, 180, 92, 0.7),
+    0 0 14px rgba(232, 180, 92, 0.35);
+}
+
+.opacityRange:disabled {
+  opacity: var(--nexus-disabled-opacity, 0.45);
+  cursor: default;
+}
+
+.opacityVal {
+  min-width: 34px;
+  font-family: 'IBM Plex Mono', 'Inter Tight', monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-glass-panel-topbar-text-dim, rgba(240, 214, 160, 0.85));
+  text-align: right;
+}
+
+/* --- Модульные бары NUE (приоритет 18.10) --------------------------------
+   Каждый край оболочки — отдельный бар: хром ⇄/▾/× (BarTools), тонкая
+   полоса-возврат у закрытого края (BarEdge), кромки-ресайз (BarHandle). */
+
+.barTools {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  opacity: 0.55;
+  transition: opacity var(--nexus-duration-fast, 140ms) ease;
+}
+
+.barTools:hover,
+.barTools:focus-within {
+  opacity: 1;
+}
+
+.barBtn {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1;
+  cursor: pointer;
+  transition: color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+.barBtn:hover {
+  border-color: rgba(232, 180, 92, 0.4);
+  background: rgba(232, 180, 92, 0.08);
+  color: #F0D6A0;
+  box-shadow: 0 0 8px rgba(232, 180, 92, 0.14);
+}
+
+.barBtn:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, #539EFF);
+  outline-offset: 1px;
+  opacity: 1;
+}
+
+.barDragGrip {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid rgba(232, 180, 92, 0.24);
+  border-radius: 999px;
+  background: rgba(7, 11, 17, 0.5);
+  color: rgba(232, 180, 92, 0.6);
+  font-size: var(--nexus-type-body-font-size, 15px);
+  line-height: 1;
+  cursor: grab;
+  touch-action: none;
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+
+.barDragGrip:hover,
+.barDragGrip:focus-visible {
+  border-color: rgba(232, 180, 92, 0.7);
+  color: #F0D6A0;
+  box-shadow: 0 0 10px rgba(232, 180, 92, 0.22);
+}
+.barDragGrip:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, var(--nexus-accent-primary, #C9A45C));
+  outline-offset: 2px;
+}
+
+/* Ручка перемещения шапки — тоже фокусируемая кнопка: рамка+цвет сами по
+   себе индикатором фокуса не считаются, кольцо оставляем. */
+
+.barDragGrip:active {
+  cursor: grabbing;
+}
+
+/* dragMotion (W4-1011): lift-отклик на удерживаемой поверхности —
+ * scale+shadow. Подъём 80 enter (attr ставится при 4px-пороге), опускание
+ * 140 exit (attr снимается на drop/cancel). Live-позиция во время drag не
+ * анимируется — left/top пишутся инлайн 1:1 с курсором. */
+:global([data-bar-surface]) {
+  transition:
+    transform var(--nexus-duration-fast, 140ms) var(--nexus-easing-exit, cubic-bezier(0.4, 0, 1, 1)),
+    box-shadow var(--nexus-duration-fast, 140ms) var(--nexus-easing-exit, cubic-bezier(0.4, 0, 1, 1));
+}
+
+:global([data-bar-surface][data-drag-lift]) {
+  transform: scale(1.015);
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.5);
+  transition-duration: var(--nexus-duration-instant, 80ms);
+  transition-timing-function: var(--nexus-easing-enter, cubic-bezier(0, 0, 0.2, 1));
+}
+
+.floatingBarLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 80;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.floatingBar {
+  position: absolute;
+  display: flex;
+  box-sizing: border-box;
+  max-width: calc(100% - 24px);
+  max-height: calc(100% - 24px);
+  overflow: auto;
+  scrollbar-gutter: stable;
+  pointer-events: auto;
+  border: 1px solid var(--nexus-border-strong, rgba(246, 240, 228, 0.2));
+  border-radius: var(--nexus-radius-lg, 12px);
+  background: var(--nexus-surface-elevated, #1c1c22);
+  color: var(--nexus-text-primary, #F6F0E4);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.42);
+}
+
+.floatingBarTop {
+  position: absolute;
+  align-items: center;
+  gap: var(--nexus-space-4, 16px);
+  min-width: min(680px, calc(100% - 24px));
+  min-height: var(--nexus-window-frame-header-height, 72px);
+  padding: var(--nexus-space-3, 12px) var(--nexus-space-6, 24px);
+}
+
+.floatingTopResize {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: -2px;
+  height: 8px;
+  cursor: row-resize;
+  touch-action: none;
+}
+
+.floatingTopResize::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 3px;
+  height: 2px;
+  background: transparent;
+}
+
+.floatingTopResize:hover::after,
+.floatingTopResize:focus-visible::after {
+  background: var(--nexus-accent-primary, #C9A45C);
+}
+
+.floatingBarNav {
+  height: min(72vh, 680px);
+  min-height: 180px;
+}
+
+.floatingBarNav>* {
+  width: 100%;
+  height: 100%;
+}
+
+.floatingBarDock {
+  height: min(72vh, 760px);
+  min-height: 200px;
+}
+
+.floatingBarDock>* {
+  height: 100%;
+}
+
+/* Полоса-возврат у края закрытого бара — единственный видимый остаток;
+   без неё после «×» шапки UI был бы безвыходным. */
+.barEdge {
+  position: absolute;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.1));
+  background: var(--nexus-surface-elevated, #1C1C22);
+  color: var(--nexus-text-tertiary, #8A93A3);
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.barEdge:hover {
+  color: var(--nexus-text-primary, #F6F0E4);
+  border-color: var(--nexus-border-strong, rgba(246, 240, 228, 0.25));
+}
+
+.barEdge:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, #539EFF);
+  outline-offset: 1px;
+}
+
+.barEdge_top {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 56px;
+  height: 14px;
+  border-top: 0;
+  border-radius: 0 0 var(--nexus-radius-md, 8px) var(--nexus-radius-md, 8px);
+}
+
+.barEdge_bottom {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 56px;
+  height: 14px;
+  border-bottom: 0;
+  border-radius: var(--nexus-radius-md, 8px) var(--nexus-radius-md, 8px) 0 0;
+}
+
+.barEdge_left {
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 56px;
+  border-left: 0;
+  border-radius: 0 var(--nexus-radius-md, 8px) var(--nexus-radius-md, 8px) 0;
+}
+
+.barEdge_right {
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 56px;
+  border-right: 0;
+  border-radius: var(--nexus-radius-md, 8px) 0 0 var(--nexus-radius-md, 8px);
+}
+
+/* Кромки-ресайз: тонкая ручка у внутреннего края бара. */
+.barHandle {
+  position: absolute;
+  z-index: var(--nexus-layer-sticky, 20);
+  touch-action: none;
+}
+
+/* Фокус-кромки должен быть виден на самом элементе: псевдоэлемент ::after
+   не считается индикатором (проверка фокуса смотрит computed outline/
+   box-shadow самого узла) — иначе Tab на кромке «прятал» фокус. */
+.barHandle:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, var(--nexus-accent-primary, #C9A45C));
+  outline-offset: 2px;
+}
+
+.barHandle::after {
+  content: "";
+  position: absolute;
+  background: var(--nexus-border-subtle, rgba(246, 240, 228, 0.1));
+  opacity: 0;
+  transition: opacity var(--nexus-duration-fast, 140ms) ease;
+}
+
+.barHandle:hover::after,
+.barHandle:focus-visible::after {
+  opacity: 1;
+}
+
+.barHandle_left,
+.barHandle_right {
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  cursor: col-resize;
+}
+
+.barHandle_left {
+  left: -4px;
+}
+
+.barHandle_right {
+  right: -4px;
+}
+
+.barHandle_left::after,
+.barHandle_right::after {
+  top: 0;
+  bottom: 0;
+  left: 3px;
+  width: 2px;
+}
+
+.barHandle_top {
+  left: 0;
+  right: 0;
+  top: -4px;
+  height: 8px;
+  cursor: row-resize;
+}
+
+.barHandle_top::after {
+  left: 0;
+  right: 0;
+  top: 3px;
+  height: 2px;
+}
+
+/* Во время драга никаких transition на колонках — иначе ширина
+   «догоняет» курсор с лагом. Флаг ставит beginBarDrag на body. */
+:global(body[data-bar-resizing]) .shellWrap [class*='frameLeft'],
+:global(body[data-bar-resizing]) .shellWrap [class*='frameRight'],
+:global(body[data-bar-resizing]) .shellWrap [class*='frameTop'],
+:global(body[data-bar-resizing]) .shellWrap [class*='frameBottom'] {
+  transition: none !important;
+}
+
+:global(body[data-bar-resizing]) {
+  user-select: none;
+}
+
+:global(body[data-bar-floating-drag]),
+:global(body[data-message-drag]) {
+  user-select: none;
+}
+
+/* Рейл разделов внутри док-обёртки: ручка ресайза у внутреннего края. */
+.navDock {
+  position: relative;
+  display: flex;
+  height: 100%;
+  min-height: 0;
+}
+
+.navDock>nav {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Хром бара в узкой иконополосе (RailStrip). */
+.stripTools {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 0 2px;
+  border-bottom: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.06));
+  margin-bottom: 4px;
+}
+
+.stripTools .barTools {
+  flex-direction: column;
+}
+
+/* Шапка, перенесённая вниз: brand слева, tools справа — тот же
+   стеклянный вид, что и у frameBottom (наследуется). */
+.topbarDock {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-4, 16px);
+  width: 100%;
+  min-height: 44px;
+}
+
+.topbarCluster {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-3, 12px);
+  min-width: 0;
+}
+
+.topbarSpacer {
+  flex: 1;
+}
+
+/* Кромка ресайза высоты шапки — оверлей под нижней границей header'а. */
+.topResize {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--nexus-space-3, 12px) + var(--nexus-window-frame-header-height, 72px) - 3px);
+  height: 8px;
+  z-index: 25;
+  cursor: row-resize;
+  touch-action: none;
+}
+
+.topResize:hover {
+  background: color-mix(in srgb, var(--nexus-accent-glow-color, rgba(201, 164, 92, 0.45)) 30%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .barTools,
+  .barHandle::after {
+    transition: none;
+  }
+
+  .notifPop {
+    animation: none;
+  }
+
+  :global([data-bar-surface]) {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* Sidebar finish — дымчатое стекло и тонкая тёплая кромка из референса
+   ALICEhome. Карточка рейла НЕ повторяет арт сцены: раньше здесь стоял
+   второй cover-кроп `--nexus-frame-scene`, и колонка показывала тот же
+   объект, что и контент, — владелец прочитал это как «копию бэкгранда»
+   (2026-10-29). Теперь пластина только затемняет и рассеивает сцену
+   окна (она уже размыта на ::before рамки), поэтому в стекле читается
+   свет, а не второй кадр. */
+.shellWrap [class*='frameLeft']:not([data-nav='hidden']) {
+  box-sizing: border-box;
+  padding: 6px;
+  border: 1px solid rgba(217, 184, 117, 0.3);
+  border-radius: 20px;
+  background:
+    radial-gradient(120% 38% at 0% 0%, rgba(217, 184, 117, 0.10), transparent 60%),
+    linear-gradient(155deg, rgba(30, 27, 25, 0.34), rgba(12, 15, 18, 0.44));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 248, 230, 0.11),
+    0 12px 32px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(18px) saturate(125%);
+  scrollbar-color: rgba(217, 184, 117, 0.42) rgba(255, 255, 255, 0.035);
+  scrollbar-width: thin;
+}
+
+/* Ползунок скролла пластины (S10). Firefox берёт scrollbar-color выше,
+   Chromium — этот тонкий ползунок с золотой нитью спрайта. */
+.shellWrap [class*='frameLeft']::-webkit-scrollbar {
+  width: 6px;
+}
+
+.shellWrap [class*='frameLeft']::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 3px;
+}
+
+.shellWrap [class*='frameLeft']::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background-color: rgba(217, 184, 117, 0.34);
+  background-image: image-set(url('/art/nav/nav-scroll-thumb.webp') 1x, url('/art/nav/nav-scroll-thumb@2x.webp') 2x);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+/* Reduced transparency: пластина перестаёт быть стеклом и становится
+   плотной панелью — иначе сквозь неё всё равно читается сцена, а
+   пользователь просил ровно обратного. */
+@media (prefers-reduced-transparency: reduce) {
+  .shellWrap [class*='frameLeft']:not([data-nav='hidden']) {
+    background: var(--nexus-surface-panel, #14161c);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+.shellWrap [class*='iconRailHeader'] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 10px 10px 14px;
+  border-bottom: 1px solid rgba(217, 184, 117, 0.2);
+}
+
+/* Ручка перемещения пузыря — у правого края шапки панели; хром BarTools
+   остаётся слева, вордмарк-дубль сверху убран (аннотация 2026-10-29). */
+.railGrip {
+  margin-left: auto;
+  display: inline-flex;
+}
+
+.shellWrap [class*='iconRailList'] {
+  gap: 4px;
+}
+
+.shellWrap [class*='railItemRow'] {
+  min-height: 42px;
+  padding-inline: 11px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: var(--nexus-text-primary, #F6F0E4);
+  font-size: 14px;
+  transition:
+    background-color var(--nexus-duration-fast, 140ms) ease,
+    border-color var(--nexus-duration-fast, 140ms) ease,
+    color var(--nexus-duration-fast, 140ms) ease,
+    box-shadow var(--nexus-duration-fast, 140ms) ease;
+}
+
+.shellWrap [class*='railItemRow']:hover:not([data-active]) {
+  border-color: rgba(217, 184, 117, 0.18);
+  background: rgba(255, 248, 230, 0.055);
+  color: var(--nexus-text-primary, #f6f0e4);
+}
+
+/* Expanded parent marks the current group; the leaf below carries the full
+   active glass highlight so nested routes do not show two selected pills. */
+.shellWrap [class*='railItemRow'][aria-expanded='true'][data-active] {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  color: var(--nexus-accent-primary, #c9a45c);
+  font-weight: 600;
+}
+
+.shellWrap [class*='railItemRow'][data-active]:not([aria-expanded='true']) {
+  border-color: rgba(217, 184, 117, 0.48);
+  background: linear-gradient(120deg, rgba(217, 184, 117, 0.2), rgba(217, 184, 117, 0.075));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 248, 230, 0.16),
+    0 5px 18px rgba(0, 0, 0, 0.16),
+    0 0 18px rgba(217, 184, 117, 0.08);
+  color: #f1d99f;
+  font-weight: 600;
+}
+
+.shellWrap [class*='railSub']:not([class*='railSubItem']) {
+  gap: 3px;
+  margin: 4px 0 8px 10px;
+  padding-left: 10px;
+  border-left: 0;
+  background-image: image-set(url('/art/nav/nav-subitem-hairline.webp') 1x, url('/art/nav/nav-subitem-hairline@2x.webp') 2x);
+  background-position: left 2px top 2px;
+  background-size: 3px calc(100% - 4px);
+  background-repeat: no-repeat;
+}
+
+.shellWrap [class*='railSubItem'] {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-height: 36px;
+  padding-left: 12px;
+  border-radius: 8px;
+  color: var(--nexus-text-primary, #0F0F13);
+  font-size: 13px;
+}
+
+.shellWrap [class*='iconRailList'] > li:nth-child(odd) [class*='railItemRow']:not([data-active]) > svg:first-child {
+  color: #d9b875;
+  filter: drop-shadow(0 0 6px rgba(217, 184, 117, 0.24));
+}
+
+.shellWrap [class*='iconRailList'] > li:nth-child(even) [class*='railItemRow']:not([data-active]) > svg:first-child {
+  color: #82dfe4;
+  filter: drop-shadow(0 0 6px rgba(130, 223, 228, 0.22));
+}
+
+.shellWrap [class*='iconRailFooter'] {
+  padding: 12px 8px 8px;
+  border-top-color: transparent;
+}
+
+.shellWrap [class*='linkedAgents'] {
+  margin-top: 0;
+  border-top-color: rgba(217, 184, 117, 0.2);
+}
+
+.shellWrap [class*='linkedTitle'] {
+  color: rgba(239, 215, 166, 0.84);
+  letter-spacing: 0.18em;
+}
+
+.shellWrap [class*='linkedRow']:hover,
+.shellWrap [class*='agentsTrigger']:hover,
+.shellWrap .sideProfile:hover {
+  background: rgba(255, 248, 230, 0.055);
+}
+
+.shellWrap .sideProfile {
+  border-top-color: rgba(217, 184, 117, 0.18);
+}
+
+/* Подвал рейла на сцене /home лежит на тёмном стекле, но alice-тема
+   отдаёт --nexus-text-primary тёмным чернилам: имя оператора и NEXUS CORE
+   становились почти невидимыми (≈1.1:1). Краска — та же светлая, что у
+   строк рейла; роль и статус уже приходят светлым tertiary. Скоуп — только
+   сцена: на светлых страницах (прочие маршруты) primary остаётся тёмным. */
+.shellWrap[data-scene='alice-home'] .sideProfileName,
+.shellWrap[data-scene='alice-home'] .coreCardRow,
+.shellWrap[data-scene='alice-home'] .agentsAll:hover {
+  color: color-mix(in srgb, var(--nexus-text-on-art, #F6F0E4) 92%, transparent);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .shellWrap [class*='frameLeft']:not([data-nav='hidden']) {
+    background: var(--nexus-surface-elevated, #1c1c22);
+    backdrop-filter: none;
+  }
+}
+
+/* Верхний drag-регион лежит поверх той же сцены, что и содержимое окна. */
+.shellWrap [class*='frameTop'],
+[data-theme='alice'] .shellWrap [class*='frameTop'] {
+  background: transparent;
+  border-bottom-color: transparent;
+  -webkit-backdrop-filter: blur(var(--nexus-glass-bar-blur, 18px)) saturate(1.12);
+  backdrop-filter: blur(var(--nexus-glass-bar-blur, 18px)) saturate(1.12);
+}
+
+/* /home: шапка — не поверхность, а просто зона над сценой. Ни заливки, ни
+   размытия, ни линии: сцена просвечивает как есть (просьба владельца
+   2026-10-29 — «сделать её вообще прозрачной»). Контролы сохраняют свои
+   собственные подложки. */
+.shellWrap[data-scene='alice-home'] [class*='frameTop'] {
+  background: transparent;
+  border-bottom-color: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}

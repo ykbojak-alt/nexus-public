@@ -1,0 +1,211 @@
+.unavailable,
+.compactBlock {
+  min-width: 0;
+  max-width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--nexus-border-subtle);
+  border-radius: 10px;
+  background: var(--nexus-surface-elevated);
+  overflow-wrap: anywhere;
+}
+
+.unavailable {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 12px;
+  align-items: center;
+}
+
+.unavailable h3 {
+  min-width: 0;
+  margin: 0;
+  color: var(--nexus-text-primary);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.unavailable button {
+  min-height: 32px;
+  padding: 4px 10px;
+  border: 1px solid var(--nexus-border-default);
+  border-radius: 7px;
+  color: var(--nexus-text-secondary);
+  background: transparent;
+  font: inherit;
+}
+
+.unavailable p {
+  grid-column: 1 / -1;
+  min-width: 0;
+  margin: 0;
+  color: var(--nexus-text-secondary);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+/* Ошибка хоста — тот же alert-токен, что у прочих ошибок ленты (.error),
+   иначе HTTP-сбой визуально неотличим от noop-статуса. */
+.unavailable p[role='alert'] {
+  color: var(--nexus-state-error, #EE5B3F);
+}
+
+.compactBlock {
+  color: var(--nexus-text-primary);
+}
+
+.compactBlock summary,
+.references summary {
+  cursor: pointer;
+  color: var(--nexus-text-accent);
+  overflow-wrap: anywhere;
+}
+
+.compactBlock summary:focus-visible,
+.references summary:focus-visible,
+.references a:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.summary {
+  margin: 10px 0;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.references {
+  min-width: 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--nexus-border-subtle);
+}
+
+.references ul {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  max-height: 160px;
+  margin: 8px 0 0;
+  padding: 0 0 0 18px;
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
+.references a {
+  color: var(--nexus-text-link);
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 520px) {
+  .unavailable {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.localFallback {
+  min-width: 0;
+  max-width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--nexus-compact-block-border, var(--nexus-border-subtle));
+  border-radius: var(--nexus-compact-block-radius, 12px);
+  background: var(--nexus-compact-block-bg, var(--nexus-surface-elevated));
+  color: var(--nexus-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.localFallback[data-state='collapsed'] {
+  animation: localCompactIn
+    var(--compaction-in-duration, var(--nexus-duration-normal, 240ms))
+    var(--compaction-in-easing, cubic-bezier(var(--nexus-easing-enter, 0, 0, 0.2, 1)));
+}
+
+.localFallback h3 {
+  margin: 0 0 6px;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.localToggle {
+  min-height: 34px;
+  max-width: 100%;
+  padding: 5px 8px;
+  border: 1px solid var(--nexus-compact-block-border, var(--nexus-border-subtle));
+  border-radius: var(--nexus-radius-sm, 6px);
+  background: transparent;
+  color: var(--nexus-text-accent);
+  font: inherit;
+  text-align: left;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.localToggle:disabled {
+  color: var(--nexus-text-tertiary, var(--nexus-text-secondary));
+  cursor: not-allowed;
+}
+
+.localToggle:focus-visible,
+.localRows a:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring);
+  outline-offset: 2px;
+}
+
+.localNote {
+  margin: 6px 0 0;
+  color: var(--nexus-text-tertiary, var(--nexus-text-secondary));
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.localRows {
+  display: grid;
+  gap: 5px;
+  max-height: 180px;
+  margin: 8px 0 0;
+  padding: 0 0 0 18px;
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
+.localRows a {
+  color: var(--nexus-text-link);
+  overflow-wrap: anywhere;
+}
+
+.localPreview {
+  color: var(--nexus-text-tertiary, var(--nexus-text-secondary));
+}
+
+@keyframes localCompactIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .localFallback[data-state='collapsed'] {
+    animation: none;
+  }
+}
+
+/* W3-156 — covered rows carry verbatim text previews when the client or the
+   lazy run-detail seam can provide them; the run link stays beside it. */
+.coveredRow {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.coveredText {
+  color: var(--nexus-ink-2, inherit);
+  display: -webkit-box;
+  font-size: var(--nexus-font-sm, 0.875rem);
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.coveredError {
+  color: var(--nexus-warning, #b8860b);
+  font-size: var(--nexus-font-xs, 0.75rem);
+  margin: 4px 0 0;
+}

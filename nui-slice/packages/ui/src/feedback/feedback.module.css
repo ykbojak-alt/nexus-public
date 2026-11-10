@@ -1,0 +1,400 @@
+/* Feedback family — notice/toast/progress/skeleton/empty/error states. */
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nexus-space-3, 12px);
+  padding: var(--nexus-space-3, 12px) var(--nexus-space-4, 16px);
+  border-radius: var(--nexus-radius-md, 8px);
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.notice[data-tone='info'] {
+  background:
+    color-mix(in srgb, var(--nexus-state-info, #539EFF) 12%, var(--nexus-surface-panel, #1A1A21));
+  border-color: var(--nexus-state-info, #539EFF);
+}
+
+.notice[data-tone='success'] {
+  background:
+    color-mix(in srgb, var(--nexus-state-success, #36BE79) 12%, var(--nexus-surface-panel, #1A1A21));
+  border-color: var(--nexus-state-success, #36BE79);
+}
+
+.notice[data-tone='warning'] {
+  background:
+    color-mix(in srgb, var(--nexus-state-warning, #F5A63B) 12%, var(--nexus-surface-panel, #1A1A21));
+  border-color: var(--nexus-state-warning, #F5A63B);
+}
+
+.notice[data-tone='error'] {
+  background:
+    color-mix(in srgb, var(--nexus-state-error, #F97F66) 12%, var(--nexus-surface-panel, #1A1A21));
+  border-color: var(--nexus-state-error, #F97F66);
+}
+
+.noticeTitle {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+/* notifyMotion (W4-1010): .toast — оболочка-коллапс (grid-rows 0fr↔1fr +
+ * margin-top, съедающий flex-gap — siblings скользят плавно, без скачка
+ * при размонтировании); .toastClip — визуальная плашка с overflow:hidden.
+ * notifyIn 240 enter (mount, расширение снизу), notifyOut 140 exit
+ * (opacity+translate), notifyStack 240 standard (коллапс коробки). */
+@keyframes notifyIn {
+  from {
+    grid-template-rows: 0fr;
+    margin-top: calc(-1 * var(--nexus-space-2, 8px));
+    opacity: 0;
+    transform: translateY(var(--notify-dy, 6px));
+  }
+
+  to {
+    grid-template-rows: 1fr;
+    margin-top: 0;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.toast {
+  display: grid;
+  grid-template-rows: 1fr;
+  margin-top: 0;
+  animation: notifyIn var(--nexus-duration-normal, 240ms) var(--nexus-easing-enter, cubic-bezier(0, 0, 0.2, 1)) backwards;
+  transition:
+    grid-template-rows var(--nexus-duration-normal, 240ms) var(--nexus-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
+    margin-top var(--nexus-duration-normal, 240ms) var(--nexus-easing-standard, cubic-bezier(0.2, 0, 0, 1)),
+    opacity var(--nexus-duration-fast, 140ms) var(--nexus-easing-exit, cubic-bezier(0.4, 0, 1, 1)),
+    transform var(--nexus-duration-fast, 140ms) var(--nexus-easing-exit, cubic-bezier(0.4, 0, 1, 1));
+}
+
+.toastClip {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-3, 12px);
+  min-width: min(280px, calc(100vw - 16px));
+  max-width: min(420px, calc(100vw - 16px));
+  min-height: 0;
+  overflow: hidden;
+  padding: var(--nexus-space-3, 12px) var(--nexus-space-4, 16px);
+  background: var(--nexus-depth-overlay-bg, rgba(10, 10, 12, 0.6));
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-md, 8px);
+  box-shadow: var(--nexus-depth-overlay-shadow, 0 16px 56px rgba(0, 0, 0, 0.52));
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.toast[data-exit] {
+  grid-template-rows: 0fr;
+  margin-top: calc(-1 * var(--nexus-space-2, 8px));
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+}
+
+.toastRegion {
+  position: fixed;
+  bottom: var(--nexus-space-5, 20px);
+  right: var(--nexus-space-5, 20px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-2, 8px);
+  z-index: var(--nexus-layer-overlay, 110);
+}
+
+.toast[data-tone='info'] .toastClip {
+  border-left: 3px solid var(--nexus-state-info, #539EFF);
+}
+
+.toast[data-tone='success'] .toastClip {
+  border-left: 3px solid var(--nexus-state-success, #36BE79);
+}
+
+.toast[data-tone='warning'] .toastClip {
+  border-left: 3px solid var(--nexus-state-warning, #F5A63B);
+}
+
+.toast[data-tone='error'] .toastClip {
+  border-left: 3px solid var(--nexus-state-error, #F97F66);
+}
+
+.toastClose {
+  margin-left: auto;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--nexus-text-tertiary, #8E97A5);
+  padding: var(--nexus-space-1, 4px);
+  border-radius: var(--nexus-radius-sm, 4px);
+  display: inline-flex;
+}
+
+.toastClose:hover {
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+/* W3-158: действие тоста (retry) — та же тихая кнопка, но с акцентом
+   акта; текст лейбла — реальный глагол от caller'а. */
+.toastAction {
+  margin-left: auto;
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  background: transparent;
+  cursor: pointer;
+  color: var(--nexus-state-info, #539EFF);
+  padding: var(--nexus-space-1, 4px) var(--nexus-space-2, 8px);
+  border-radius: var(--nexus-radius-sm, 4px);
+  font: inherit;
+  white-space: nowrap;
+}
+
+.toastAction+.toastClose {
+  margin-left: 0;
+}
+
+.progressTrack {
+  width: 100%;
+  height: var(--nexus-progress-height, 4px);
+  border-radius: var(--nexus-progress-radius, 4px);
+  background: var(--nexus-progress-track, rgba(246, 240, 228, 0.06));
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: var(--nexus-progress-radius, 4px);
+  /* Цвет заливки — по ассистенту через personaAccent (start-screen spec):
+     ближайший предок с data-persona задаёт --nexus-progress-fill. */
+  background: var(--nexus-progress-fill, var(--nexus-accent-primary, #C9A45C));
+  transition: width var(--nexus-duration-normal, 240ms) var(--nexus-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+}
+
+.progressFill[data-tone='success'] {
+  background: var(--nexus-progress-fill-success, #36BE79);
+}
+
+.progressFill[data-tone='error'] {
+  background: var(--nexus-progress-fill-error, #F97F66);
+}
+
+.progressIndeterminate {
+  animation: nexus-progress-slide var(--nexus-progress-indeterminate-duration, 600ms) var(--nexus-easing-standard, cubic-bezier(0.2, 0, 0, 1)) infinite;
+  width: 40% !important;
+}
+
+@keyframes nexus-progress-slide {
+  0% {
+    margin-left: -40%;
+  }
+
+  100% {
+    margin-left: 100%;
+  }
+}
+
+.skeleton {
+  border-radius: var(--nexus-radius-sm, 4px);
+  background: linear-gradient(90deg,
+      var(--nexus-border-subtle, rgba(246, 240, 228, 0.06)) 0%,
+      var(--nexus-nav-item-bg-hover, rgba(246, 240, 228, 0.04)) 50%,
+      var(--nexus-border-subtle, rgba(246, 240, 228, 0.06)) 100%);
+  background-size: 200% 100%;
+  animation: nexus-skeleton-shimmer var(--nexus-motion-glow, 1.6s) linear infinite;
+}
+
+@keyframes nexus-skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.statePanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nexus-space-3, 12px);
+  padding: var(--nexus-space-8, 32px);
+  text-align: center;
+}
+
+.stateIcon {
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.statePanel[data-tone='error'] .stateIcon {
+  color: var(--nexus-state-error, #F97F66);
+}
+
+.stateTitle {
+  margin: 0;
+  font: var(--nexus-type-panel-title-font-weight, 500) var(--nexus-type-panel-title-font-size, 18px)/var(--nexus-type-panel-title-line-height, 26px) var(--nexus-type-panel-title-font-family, 'Inter Tight', system-ui, sans-serif);
+  color: var(--nexus-text-primary, #F6F0E4);
+  max-width: 480px;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+
+.stateBody {
+  margin: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: var(--nexus-type-caption-line-height, 18px);
+  color: var(--nexus-text-secondary, #B0B7C2);
+  max-width: 360px;
+  overflow-wrap: break-word;
+}
+
+/* W2-133: 'full' — состояние на весь контент-регион экрана (route-level
+   empty/error), центрирование и отступы те же, что у 'panel'. */
+.statePanelFull {
+  min-block-size: 100%;
+  flex: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .skeleton,
+  .progressIndeterminate {
+    animation: none;
+  }
+
+  .progressFill {
+    transition: none;
+  }
+
+  .toast {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* Inline state hints (W2-02): text-level empty/error/loading inside panels —
+   the counterpart of statePanel hero blocks and Skeleton shapes. */
+.stateHint {
+  margin: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: var(--nexus-type-caption-line-height, 18px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.stateHintError {
+  color: var(--nexus-state-error, #F97F66);
+}
+
+.loadingDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--nexus-state-syncing, #539EFF);
+  animation: nexus-loading-pulse var(--nexus-motion-pulse, 1.1s) var(--nexus-easing-standard, cubic-bezier(0.2, 0, 0, 1)) infinite alternate;
+  flex-shrink: 0;
+}
+
+@keyframes nexus-loading-pulse {
+  from {
+    opacity: 0.35;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loadingDot {
+    animation: none;
+    opacity: 0.7;
+  }
+}
+
+/* Reason line under the state body — honest cause, secondary tone. */
+.stateReason {
+  margin: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: var(--nexus-type-caption-line-height, 18px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+  max-width: 360px;
+  font-style: italic;
+  overflow-wrap: break-word;
+}
+
+/* UnavailableState inline — offline tone, distinct from empty/error. */
+.stateHintUnavailable {
+  color: var(--nexus-state-offline, #B0B7C2);
+}
+
+/* Persona tint: [data-persona] binds personaText.* (text-safe identity
+   color ≥4.5:1 on panel/elevated — NQ-081/NQ-088 contract). */
+.statePanel[data-persona='alice'],
+.stateHint[data-persona='alice'] {
+  --state-fg: var(--nexus-persona-text-alice, #C9A45C);
+}
+
+.statePanel[data-persona='mech'],
+.stateHint[data-persona='mech'] {
+  --state-fg: var(--nexus-persona-text-mech, #539EFF);
+}
+
+.statePanel[data-persona='forge'],
+.stateHint[data-persona='forge'] {
+  --state-fg: var(--nexus-persona-text-forge, #E08A1E);
+}
+
+.statePanel[data-persona='codex'],
+.stateHint[data-persona='codex'] {
+  --state-fg: var(--nexus-persona-text-codex, #A98848);
+}
+
+.statePanel[data-persona='arch'],
+.stateHint[data-persona='arch'] {
+  --state-fg: var(--nexus-persona-text-arch, #9A82E8);
+}
+
+.statePanel[data-persona='nexus'],
+.stateHint[data-persona='nexus'] {
+  --state-fg: var(--nexus-persona-text-nexus, #C9A45C);
+}
+
+.statePanel[data-persona] .stateIcon,
+.statePanel[data-persona] .stateTitle,
+.stateHint[data-persona] {
+  color: var(--state-fg);
+}
+
+.stateHint[data-persona] .loadingDot {
+  background: var(--state-fg);
+}
+
+/* System colors: keep text readable, drop decorative tints. */
+@media (forced-colors: active) {
+  .statePanel {
+    border: 1px solid CanvasText;
+  }
+
+  .stateIcon,
+  .stateTitle,
+  .stateBody,
+  .stateReason,
+  .stateHint,
+  .stateHintError,
+  .stateHintUnavailable {
+    color: CanvasText;
+  }
+
+  .loadingDot {
+    background: CanvasText;
+  }
+}

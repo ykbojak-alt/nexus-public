@@ -1,0 +1,188 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-2, 8px);
+  font-family: var(--nexus-type-body-font-family, 'Inter Tight', system-ui, sans-serif);
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--nexus-text-tertiary, #8A93A3);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-1, 4px);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-3, 12px);
+  width: 100%;
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-3, 12px);
+  border: 1px solid transparent;
+  border-radius: var(--nexus-radius-md, 8px);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.row:hover {
+  background: var(--nexus-nav-item-bg-hover, rgba(246, 240, 228, 0.04));
+}
+
+.row[data-selected='true'] {
+  border-color: var(--nexus-accent-primary, #C9A45C);
+  background: var(--nexus-nav-item-bg-active, rgba(201, 164, 92, 0.08));
+}
+
+.row:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--nexus-accent-primary-dim, rgba(201, 164, 92, 0.35));
+}
+
+.rowMain {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rowName {
+  font-weight: 500;
+}
+
+.rowSub {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8A93A3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Selected-row accent overlay lifts the panel bg — tertiary dips to
+   4.41:1 there (page-level axe). Secondary keeps WCAG AA (W4, NQ-030). */
+.row[data-selected='true'] .rowSub {
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+.runLink {
+  display: inline;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.runLink:hover {
+  color: var(--nexus-text-secondary, #B0B7C2);
+  text-decoration: underline;
+}
+
+.capabilities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nexus-space-1, 4px);
+}
+
+.cap {
+  padding: 1px var(--nexus-space-2, 8px);
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-full, 9999px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+.facts {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--nexus-space-1, 4px) var(--nexus-space-3, 12px);
+  font-size: 13px;
+}
+
+.facts dt {
+  color: var(--nexus-text-tertiary, #8A93A3);
+}
+
+.facts dd {
+  margin: 0;
+}
+
+/* W14-W4: задача агента в AgentPresence на стекле замерялась 4.16:1 (<4.5).
+   Тёмная подложка-подчёрк под строкой + гало — затемнение, не смена токена. */
+.muted {
+  color: var(--nexus-text-tertiary, #8A93A3);
+  font-size: 13px;
+  margin: 0 -6px;
+  padding: 1px 6px;
+  background: rgba(9, 9, 13, .32); /* tokenlint-ignore: тёмная подложка-подчёрк — затемнение, а не токен */
+  border-radius: 5px; /* tokenlint-ignore: подчёркивание-подложка, не карточка — радиус не по шкале */
+  text-shadow: 0 1px 2px rgba(6, 6, 10, .55); /* tokenlint-ignore: гало под подложкой, цвет тени фиксирован */
+}
+
+.sectionLabel {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--nexus-text-tertiary, #8A93A3);
+  margin: var(--nexus-space-2, 8px) 0 0;
+}
+
+.chain {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.link {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  padding: var(--nexus-space-2, 8px) 0;
+}
+
+.link+.link {
+  border-top: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.08));
+}
+
+.linkAgent {
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.linkAgent:last-child {
+  text-align: right;
+}
+
+.linkArrow {
+  color: var(--nexus-text-tertiary, #8A93A3);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.linkMeta {
+  grid-column: 1 / -1;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8A93A3);
+  display: flex;
+  gap: var(--nexus-space-2, 8px);
+  align-items: center;
+}

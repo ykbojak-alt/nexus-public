@@ -1,0 +1,546 @@
+/* W7 — десктоп-приложение шины. Операционная раскладка: тёмный фон,
+   плотная таблица окон, панели управления. Все цвета — токены палитры
+   (packages/tokens), жёстких hex в макете нет. */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--nexus-surface-root, #0A0A0C);
+  color: var(--nexus-text-primary, #F6F0E4);
+  font-family: var(--nexus-type-body-font-family, 'Inter Tight', system-ui, sans-serif);
+  font-size: 13px;
+}
+
+/* Заголовок окна: рамки нет (frameless) — перетаскивание по конвенции
+   продукта (класс pywebview-drag-region, см. app-shell.tsx). */
+.titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nexus-space-3, 12px);
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-4, 16px);
+  border-bottom: 1px solid var(--nexus-border-subtle, rgba(255, 255, 255, 0.08));
+  background: var(--nexus-surface-base, #141419);
+  flex: 0 0 auto;
+}
+
+.titlebarTitle {
+  display: flex;
+  align-items: baseline;
+  gap: var(--nexus-space-2, 8px);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.titlebarMeta {
+  color: var(--nexus-text-tertiary, #8A93A3);
+  font-weight: 400;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.titlebarActions {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+}
+
+.iconBtn {
+  min-width: 28px;
+  height: 26px;
+  padding: 0 var(--nexus-space-2, 8px);
+  border: 1px solid var(--nexus-border-default, rgba(255, 255, 255, 0.12));
+  border-radius: var(--nexus-radius-sm, 4px);
+  background: var(--nexus-surface-elevated, #232329);
+  color: var(--nexus-text-secondary, #B0B7C2);
+  cursor: pointer;
+  font: inherit;
+}
+
+.iconBtn:hover {
+  color: var(--nexus-text-primary, #F6F0E4);
+  border-color: var(--nexus-border-strong, rgba(255, 255, 255, 0.24));
+}
+
+.body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--nexus-space-4, 16px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-4, 16px);
+  scrollbar-gutter: stable;
+}
+
+/* ── таблица окон ──────────────────────────────────────────────────────── */
+
+.tableWrap {
+  overflow-x: auto;
+  border: 1px solid var(--nexus-border-subtle, rgba(255, 255, 255, 0.08));
+  border-radius: var(--nexus-radius-md, 8px);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  white-space: nowrap;
+}
+
+.table th {
+  text-align: left;
+  font-weight: 600;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--nexus-text-tertiary, #8A93A3);
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-3, 12px);
+  background: var(--nexus-surface-base, #141419);
+  border-bottom: 1px solid var(--nexus-border-subtle, rgba(255, 255, 255, 0.08));
+}
+
+.table td {
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-3, 12px);
+  border-bottom: 1px solid var(--nexus-bus-window-row-edge, var(--nexus-border-subtle, rgba(255, 255, 255, 0.08)));
+  vertical-align: top;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover {
+  background: var(--nexus-surface-glass, rgba(246, 240, 228, 0.06));
+}
+
+.windowCell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  white-space: normal;
+  min-width: 180px;
+}
+
+.windowId {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.windowSession {
+  color: var(--nexus-text-tertiary, #8A93A3);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.stateCell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stateDot {
+  width: var(--nexus-bus-window-dot, 8px);
+  height: var(--nexus-bus-window-dot, 8px);
+  border-radius: var(--nexus-radius-full, 999px);
+  flex: 0 0 auto;
+}
+
+.stateDot[data-state='WORK'] { background: var(--nexus-bus-window-working, #F5A63B); }
+.stateDot[data-state='LONG'] { background: var(--nexus-bus-window-long, #9A82E8); }
+.stateDot[data-state='WAIT'] { background: var(--nexus-bus-window-waiting, #539EFF); }
+.stateDot[data-state='IDLE'] { background: var(--nexus-bus-window-idle, #36BE79); }
+.stateDot[data-state='ERROR'] { background: var(--nexus-bus-window-error, #EE5B3F); }
+.stateDot[data-state='UNKNOWN'] { background: var(--nexus-text-disabled, #8A9098); }
+
+.stateName {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.04em;
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+/* Плашка «сессия открыта в интерфейсе» — штатное состояние, а не сбой. */
+.locked {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 2px 8px;
+  border-radius: var(--nexus-radius-sm, 4px);
+  border: 1px solid var(--nexus-state-warning, #F5A63B);
+  background: var(--nexus-state-surface-warning, rgba(245, 166, 59, 0.14));
+  color: var(--nexus-state-warning, #F5A63B);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  white-space: normal;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+.muted {
+  color: var(--nexus-text-tertiary, #8A93A3);
+}
+
+/* ── вкладки и панели ──────────────────────────────────────────────────── */
+
+.tabs {
+  display: flex;
+  gap: var(--nexus-space-1, 4px);
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--nexus-border-subtle, rgba(255, 255, 255, 0.08));
+  padding-bottom: var(--nexus-space-2, 8px);
+}
+
+.tab {
+  appearance: none;
+  border: 1px solid transparent;
+  border-radius: var(--nexus-radius-sm, 4px);
+  background: transparent;
+  color: var(--nexus-text-tertiary, #8A93A3);
+  padding: 5px 12px;
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  cursor: pointer;
+}
+
+.tab:hover {
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.tab[data-active='true'] {
+  color: var(--nexus-text-accent, #D8BC76);
+  border-color: var(--nexus-border-active, var(--nexus-accent-primary, #C9A45C));
+  background: var(--nexus-state-surface-active, rgba(208, 177, 105, 0.14));
+}
+
+.panel {
+  padding: var(--nexus-space-4, 16px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-3, 12px);
+}
+
+.panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nexus-space-3, 12px);
+  flex-wrap: wrap;
+}
+
+.panelTitle {
+  margin: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--nexus-text-tertiary, #8A93A3);
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: var(--nexus-space-4, 16px);
+  align-items: start;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  flex-wrap: wrap;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+/* ── списки карточек ────────────────────────────────────────────────────── */
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border: 1px solid var(--nexus-border-subtle, rgba(255, 255, 255, 0.08));
+  border-radius: var(--nexus-radius-sm, 4px);
+  overflow: hidden;
+}
+
+.listRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nexus-space-3, 12px);
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-3, 12px);
+  background: var(--nexus-surface-panel, #1A1A21);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.listRow .dispatch-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--nexus-surface-elevated, #232329);
+  border: 1px solid var(--nexus-border-default, rgba(255, 255, 255, 0.12));
+  border-radius: var(--nexus-radius-xs, 3px);
+  padding: 6px 10px;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-secondary, #B0B7C2);
+  caret-color: var(--nexus-text-primary, #F6F0E4);
+  resize: vertical;
+}
+
+.listRow .dispatch-input:focus {
+  outline: 2px solid var(--nexus-accent-primary, #C9A45C);
+  outline-offset: 2px;
+}
+
+.listRow .dispatch-input:focus-visible {
+  outline: 2px solid var(--nexus-accent-primary, #C9A45C);
+  outline-offset: 2px;
+}
+
+.listRow .dispatch-btn {
+  flex: 0 0 auto;
+  min-width: 80px;
+}
+
+.listRow .dispatch-verdict {
+  flex: 0 0 auto;
+  margin-left: 8px;
+  padding: 3px 8px;
+  border-radius: var(--nexus-radius-xs, 3px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-weight: 500;
+}
+
+.listRow .dispatch-verdict.verified {
+  background: rgba(var(--nexus-color-success, 39, 173, 94), 0.1);
+  color: var(--nexus-color-success, #2C9D4E);
+}
+
+.listRow .dispatch-verdict.failed {
+  background: rgba(var(--nexus-color-error, 220, 53, 53), 0.1);
+  color: var(--nexus-color-error, #DC3545);
+}
+
+.listRow:hover {
+  background: var(--nexus-surface-elevated, #232329);
+}
+
+.listMain {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.listName {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  word-break: break-all;
+}
+
+.listMeta {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8A93A3);
+}
+
+.rowActions {
+  display: flex;
+  gap: var(--nexus-space-1, 4px);
+  flex-wrap: wrap;
+}
+
+.miniBtn {
+  appearance: none;
+  border: 1px solid var(--nexus-border-default, rgba(255, 255, 255, 0.12));
+  border-radius: var(--nexus-radius-xs, 3px);
+  background: var(--nexus-surface-elevated, #232329);
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  padding: 3px 8px;
+  cursor: pointer;
+}
+
+.miniBtn:hover:not(:disabled) {
+  color: var(--nexus-text-primary, #F6F0E4);
+  border-color: var(--nexus-border-strong, rgba(255, 255, 255, 0.24));
+}
+
+.miniBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.miniBtn[data-variant='danger'] {
+  border-color: var(--nexus-border-error, var(--nexus-state-error, #F97F66));
+  color: var(--nexus-state-error, #F97F66);
+}
+
+/* ── формы ─────────────────────────────────────────────────────────────── */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 140px;
+}
+
+.label {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.04em;
+  color: var(--nexus-text-tertiary, #8A93A3);
+}
+
+.input,
+.textarea,
+.select {
+  background: var(--nexus-surface-base, #141419);
+  border: 1px solid var(--nexus-border-default, rgba(255, 255, 255, 0.12));
+  border-radius: var(--nexus-radius-sm, 4px);
+  color: var(--nexus-text-primary, #F6F0E4);
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  padding: 6px 8px;
+  min-width: 0;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 96px;
+  font-family: var(--nexus-font-mono, ui-monospace, monospace);
+}
+
+.input:focus-visible,
+.textarea:focus-visible,
+.select:focus-visible,
+.miniBtn:focus-visible,
+.tab:focus-visible,
+.iconBtn:focus-visible {
+  outline: 2px solid var(--nexus-border-focus, var(--nexus-accent-primary, #C9A45C));
+  outline-offset: 1px;
+}
+
+/* ── логи и тексты ─────────────────────────────────────────────────────── */
+
+.log {
+  margin: 0;
+  padding: var(--nexus-space-3, 12px);
+  max-height: 340px;
+  overflow: auto;
+  background: var(--nexus-surface-base, #141419);
+  border: 1px solid var(--nexus-border-subtle, rgba(255, 255, 255, 0.08));
+  border-radius: var(--nexus-radius-sm, 4px);
+  font-family: var(--nexus-font-mono, ui-monospace, monospace);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1.55;
+  color: var(--nexus-text-secondary, #B0B7C2);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.textBox {
+  margin: 0;
+  padding: var(--nexus-space-3, 12px);
+  max-height: 380px;
+  overflow: auto;
+  background: var(--nexus-surface-base, #141419);
+  border: 1px solid var(--nexus-border-subtle, rgba(255, 255, 255, 0.08));
+  border-radius: var(--nexus-radius-sm, 4px);
+  font-family: var(--nexus-font-mono, ui-monospace, monospace);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1.55;
+  color: var(--nexus-text-primary, #F6F0E4);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ── сводка/ключи ──────────────────────────────────────────────────────── */
+
+.kv {
+  display: grid;
+  grid-template-columns: minmax(120px, auto) 1fr;
+  gap: 4px var(--nexus-space-3, 12px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.kv dt {
+  color: var(--nexus-text-tertiary, #8A93A3);
+}
+
+.kv dd {
+  margin: 0;
+  word-break: break-word;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: var(--nexus-radius-full, 999px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  border: 1px solid var(--nexus-border-default, rgba(255, 255, 255, 0.12));
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+.pill[data-tone='error'] {
+  border-color: var(--nexus-state-error, #F97F66);
+  color: var(--nexus-state-error, #F97F66);
+  background: var(--nexus-state-surface-error, rgba(249, 127, 102, 0.14));
+}
+
+.pill[data-tone='warning'] {
+  border-color: var(--nexus-state-warning, #F5A63B);
+  color: var(--nexus-state-warning, #F5A63B);
+  background: var(--nexus-state-surface-warning, rgba(245, 166, 59, 0.14));
+}
+
+.pill[data-tone='ok'] {
+  border-color: var(--nexus-state-success, #36BE79);
+  color: var(--nexus-state-success, #36BE79);
+  background: var(--nexus-state-surface-success, rgba(54, 190, 121, 0.14));
+}
+
+.pill[data-tone='info'] {
+  border-color: var(--nexus-state-info, #539EFF);
+  color: var(--nexus-state-info, #539EFF);
+  background: var(--nexus-state-surface-info, rgba(83, 158, 255, 0.14));
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1.5;
+  color: var(--nexus-text-tertiary, #8A93A3);
+}
+
+.errorText {
+  margin: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1.5;
+  color: var(--nexus-state-error, #F97F66);
+  word-break: break-word;
+}
+
+.notice {
+  padding: var(--nexus-space-3, 12px);
+  border-left: 2px solid var(--nexus-state-info, #539EFF);
+  background: var(--nexus-state-surface-info, rgba(83, 158, 255, 0.12));
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1.5;
+}
+
+.notice[data-tone='error'] {
+  border-left-color: var(--nexus-state-error, #F97F66);
+  background: var(--nexus-state-surface-error, rgba(249, 127, 102, 0.12));
+}
+
+.notice[data-tone='warning'] {
+  border-left-color: var(--nexus-state-warning, #F5A63B);
+  background: var(--nexus-state-surface-warning, rgba(245, 166, 59, 0.12));
+}

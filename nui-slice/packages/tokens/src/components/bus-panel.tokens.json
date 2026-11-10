@@ -1,0 +1,40 @@
+{
+  "$description": "Bus-panel contract (wave-XIV W2, «Окна и шина»): window-row status colors — closed mapping onto the state.* dictionary (contrast contract already gates each state ≥4.5:1 on its badge bg in every theme). 'long' takes validating-violet so it stays hue-distinct from working-amber; 'waiting' takes syncing-blue for an awaiting reply.",
+  "busWindow": {
+    "idle": {
+      "$type": "color",
+      "$value": "{state.online}",
+      "$description": "Свободна — готова принять задачу."
+    },
+    "working": {
+      "$type": "color",
+      "$value": "{state.executing}",
+      "$description": "Работает — активный прогон в окне."
+    },
+    "waiting": {
+      "$type": "color",
+      "$value": "{state.syncing}",
+      "$description": "Ждёт — отправлено, ответа ещё нет."
+    },
+    "long": {
+      "$type": "color",
+      "$value": "{state.validating}",
+      "$description": "Долго — прогон длится дольше порога; violet держит отличие от working-amber."
+    },
+    "error": {
+      "$type": "color",
+      "$value": "{state.error}",
+      "$description": "Ошибка — прогон/доставка упали."
+    },
+    "dot": {
+      "$type": "dimension",
+      "$value": "8px",
+      "$description": "Status dot in the window row."
+    },
+    "rowEdge": {
+      "$type": "color",
+      "$value": "{border.subtle}",
+      "$description": "Row hairline — status carried by dot+label, never by row tint."
+    }
+  }
+}

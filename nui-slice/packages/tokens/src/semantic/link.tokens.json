@@ -1,0 +1,42 @@
+{
+  "$description": "Semantic interaction-state colors for links. Text remains AA in every theme; icon/edge affordances remain ≥3:1. Hover and visited use distinct, theme-resolved roles; focus uses the canonical focus ring; disabled links remain readable rather than relying on opacity.",
+  "link": {
+    "$type": "color",
+    "color": {
+      "$value": "{text.link}",
+      "$description": "Default link foreground."
+    },
+    "hover": {
+      "$value": "{accent.primaryHover}",
+      "$description": "Hovered link foreground; underline remains the non-color cue."
+    },
+    "visited": {
+      "$value": "{text.accent}",
+      "$description": "Visited link foreground."
+    },
+    "focus": {
+      "$value": "{text.link}",
+      "$description": "Focused link text; pair with focusRing."
+    },
+    "disabled": {
+      "$value": "{text.tertiary}",
+      "$description": "Disabled link text, still readable and distinguished semantically by disabled state."
+    },
+    "icon": {
+      "$value": "{text.link}",
+      "$description": "Link icon foreground."
+    },
+    "iconDisabled": {
+      "$value": "{text.tertiary}",
+      "$description": "Disabled link icon foreground."
+    },
+    "edge": {
+      "$value": "{border.active}",
+      "$description": "Link-associated non-text edge; must remain visible against surfaces."
+    },
+    "focusRing": {
+      "$value": "{focus.ring}",
+      "$description": "Keyboard focus indicator."
+    }
+  }
+}

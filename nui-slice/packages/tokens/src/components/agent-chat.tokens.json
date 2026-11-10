@@ -1,0 +1,118 @@
+{
+  "$description": "Agent-chat kit contract (wave-XIV W2, per copilot-chat-for-neu + claude-agent-sdk-for-neu): composer mode/model row, diff-review card, plan list, checkpoint marker, usage meter, #file mention, attachments. Only semantic refs — every color follows the theme cascade, status hues stay inside the state.* dictionary.",
+  "agentComposer": {
+    "rowEdge": {
+      "$type": "color",
+      "$value": "{border.subtle}",
+      "$description": "Hairline between the input area and the mode/model row."
+    },
+    "modelText": {
+      "$type": "color",
+      "$value": "{text.secondary}",
+      "$description": "Model picker label — secondary hierarchy under the input."
+    }
+  },
+  "diffReview": {
+    "addText": {
+      "$type": "color",
+      "$value": "{state.success}",
+      "$description": "Added-line counter — success dictionary, never a raw green."
+    },
+    "delText": {
+      "$type": "color",
+      "$value": "{state.error}"
+    },
+    "headerEdge": {
+      "$type": "color",
+      "$value": "{border.subtle}"
+    },
+    "rowHover": {
+      "$type": "color",
+      "$value": "{navItem.bgHover}"
+    }
+  },
+  "checkpoint": {
+    "edge": {
+      "$type": "color",
+      "$value": "{border.default}",
+      "$description": "Marker hairline across the feed — a restore boundary, not a status."
+    },
+    "dot": {
+      "$type": "color",
+      "$value": "{accent.primary}",
+      "$description": "Checkpoint dot — accent, distinct from state hues (a point, not a status)."
+    },
+    "rewindHover": {
+      "$type": "color",
+      "$value": "{navItem.bgHover}"
+    }
+  },
+  "usage": {
+    "meterTrack": {
+      "$type": "color",
+      "$value": "{progress.track}"
+    },
+    "meterFill": {
+      "$type": "color",
+      "$value": "{progress.fill}"
+    },
+    "meterWarn": {
+      "$type": "color",
+      "$value": "{state.warning}",
+      "$description": "Context fill above the warn threshold."
+    },
+    "meterError": {
+      "$type": "color",
+      "$value": "{state.error}",
+      "$description": "Context fill at/above the error threshold (nearly full)."
+    },
+    "label": {
+      "$type": "color",
+      "$value": "{text.tertiary}",
+      "$description": "Meter captions — tertiary, still ≥4.5:1 by contract."
+    },
+    "trackHeight": {
+      "$type": "dimension",
+      "$value": "{progress.height}"
+    }
+  },
+  "mention": {
+    "bg": {
+      "$type": "color",
+      "$value": "{accent.primarySoft}",
+      "$description": "#file chip ground — accent tint, same family as selected pills."
+    },
+    "text": {
+      "$type": "color",
+      "$value": "{text.accent}",
+      "$description": "Mention path — AA-gated on the primarySoft tint by contract."
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.full}"
+    }
+  },
+  "attachment": {
+    "bg": {
+      "$type": "color",
+      "$value": "{surface.elevated}"
+    },
+    "border": {
+      "$type": "color",
+      "$value": "{border.subtle}"
+    },
+    "icon": {
+      "$type": "color",
+      "$value": "{text.secondary}"
+    },
+    "meta": {
+      "$type": "color",
+      "$value": "{text.tertiary}",
+      "$description": "Size/type meta under the name."
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.md}"
+    }
+  }
+}

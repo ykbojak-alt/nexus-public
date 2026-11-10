@@ -1,0 +1,97 @@
+{
+  "$description": "Spacing scale on 4px base plus canonical layout geometry from spec §8 (1920x1080, topbar 72, sidebar 272, inspector 340-380, inspectorWide 480 for reference-identity wide panels, safe area 32, 12-column grid).",
+  "space": {
+    "$type": "dimension",
+    "0": {
+      "$value": "0px"
+    },
+    "1": {
+      "$value": "4px"
+    },
+    "2": {
+      "$value": "8px"
+    },
+    "3": {
+      "$value": "12px"
+    },
+    "4": {
+      "$value": "16px"
+    },
+    "5": {
+      "$value": "20px"
+    },
+    "6": {
+      "$value": "24px"
+    },
+    "7": {
+      "$value": "28px"
+    },
+    "8": {
+      "$value": "32px"
+    },
+    "9": {
+      "$value": "36px"
+    },
+    "10": {
+      "$value": "40px"
+    },
+    "12": {
+      "$value": "48px"
+    },
+    "14": {
+      "$value": "56px"
+    },
+    "16": {
+      "$value": "64px"
+    },
+    "18": {
+      "$value": "72px"
+    },
+    "20": {
+      "$value": "80px"
+    },
+    "24": {
+      "$value": "96px"
+    }
+  },
+  "layout": {
+    "$type": "dimension",
+    "topbar": {
+      "$value": "72px"
+    },
+    "sidebar": {
+      "$value": "272px"
+    },
+    "inspectorMin": {
+      "$value": "340px"
+    },
+    "inspectorMax": {
+      "$value": "380px"
+    },
+    "inspectorWide": {
+      "$value": "480px"
+    },
+    "safeArea": {
+      "$value": "32px"
+    },
+    "gap": {
+      "$value": "16px"
+    },
+    "gapMajor": {
+      "$value": "24px"
+    },
+    "gapSection": {
+      "$value": "32px"
+    },
+    "viewportW": {
+      "$value": "1920px"
+    },
+    "viewportH": {
+      "$value": "1080px"
+    },
+    "columns": {
+      "$type": "number",
+      "$value": 12
+    }
+  }
+}

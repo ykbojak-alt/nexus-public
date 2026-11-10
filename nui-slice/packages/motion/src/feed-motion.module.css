@@ -1,0 +1,239 @@
+/* Feed-motion (волна XIV, W4) — CSS-зеркало спеки feed-motion.ts.
+   Длительности UI: feedIn/runBar 240 / collapse var(--nexus-duration-normal) /
+   checkpoint 420 / mode var(--nexus-duration-fast); ambient: stream 1200,
+   wait/shimmer 1400 (значения в TS).
+   Темы: цвета через семантические --nexus-* — светлая оболочка (alice)
+   получает свои значения без отдельных правил. */
+
+@keyframes feedItemIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.itemIn {
+  animation: feedItemIn 240ms cubic-bezier(0.22, 0.9, 0.35, 1) both;
+}
+
+/* ── Чекпоинт: галка дорисовывается, кольцо гаснет ── */
+
+.checkpoint {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 18px;
+  block-size: 18px;
+  color: var(--nexus-accent-primary, #C9A45C);
+}
+
+.checkpointStatic {
+  composes: checkpoint;
+}
+
+.checkpoint::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1.5px solid var(--nexus-accent-primary, #C9A45C);
+  opacity: 0;
+  animation: checkpointRing 420ms cubic-bezier(0.35, 0.6, 0.4, 1) both;
+}
+
+.checkpointStatic::after {
+  animation: none;
+  opacity: 0;
+}
+
+.checkpointTick {
+  display: block;
+}
+
+.checkpoint .checkpointTick path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: checkpointDraw 420ms cubic-bezier(0.22, 0.9, 0.35, 1) 60ms forwards;
+}
+
+.checkpointStatic .checkpointTick path {
+  animation: none;
+  stroke-dashoffset: 0;
+}
+
+@keyframes checkpointDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes checkpointRing {
+  0% { opacity: 0; transform: scale(0.6); }
+  35% { opacity: 0.9; }
+  100% { opacity: 0; transform: scale(1.25); }
+}
+
+/* ── Сегмент режима agent|ask|plan ── */
+
+.modePill {
+  position: relative;
+  display: inline-flex;
+  border-radius: 999px;
+  background: var(--nexus-surface-elevated, #1C1C22);
+  border: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.12));
+  padding: 2px;
+}
+
+.modeSlider {
+  position: absolute;
+  inset-block: 2px;
+  inset-inline-start: 0;
+  transform: translateX(var(--mode-slide-ltr, 0%));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 22%, transparent);
+  border: 1px solid color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 55%, transparent);
+  /* Позиция — translateX(idx·100%) из компонента: композитное свойство,
+     переход не трогает layout (замер W26-W4: 13 Layout/переход → 0). */
+  transition: transform var(--nexus-duration-fast) cubic-bezier(0.25, 0.7, 0.3, 1);
+}
+
+:global(:dir(rtl)) .modeSlider {
+  transform: translateX(var(--mode-slide-rtl, 0%));
+}
+
+.modeSliderStatic {
+  composes: modeSlider;
+  transition: none;
+}
+
+.modeLabel {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  padding: 3px 12px;
+  font-size: 12px;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--nexus-text-tertiary, #8E97A5);
+  transition: color var(--nexus-duration-fast) cubic-bezier(0.25, 0.7, 0.3, 1);
+  white-space: nowrap;
+}
+
+.modeLabel[data-active] {
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+/* ── Ожидание подтверждения ── */
+
+.wait {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.waitRing {
+  position: relative;
+  inline-size: 9px;
+  block-size: 9px;
+  border-radius: 50%;
+  background: var(--nexus-state-executing, #F5A63B);
+}
+
+/* Пульс — расходящееся кольцо на ::after (transform+opacity, композит).
+   До W26-W4 кольцо анимировалось box-shadow: перерисовка каждый кадр —
+   406 Paint / 201 UpdateLayoutTree за 3 с наблюдения (trace-metrics). */
+.waitRing::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--nexus-state-executing, #F5A63B) 45%, transparent);
+  opacity: 0;
+  transform: scale(1);
+  animation: waitPulse 1400ms cubic-bezier(0.35, 0.6, 0.4, 1) infinite;
+}
+
+.waitRingStatic {
+  composes: waitRing;
+}
+
+.waitRingStatic::after {
+  animation: none;
+  opacity: 0;
+}
+
+.waitLabel {
+  font-size: 12px;
+  color: var(--nexus-text-secondary, #B8BEC9);
+}
+
+/* Кольцо уходит из кромки точки (~5.5px) на ~11.5px наружу и гаснет —
+   те же 0→7px разлёта, что давал spread тени; 30% паузы сохранены. */
+@keyframes waitPulse {
+  0% { opacity: 0.9; transform: scale(1); }
+  70% { opacity: 0; transform: scale(2.1); }
+  100% { opacity: 0; transform: scale(2.1); }
+}
+
+/* ── Прогресс фонового прогона ── */
+
+.runBar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  inline-size: 100%;
+}
+
+.runTrack {
+  position: relative;
+  flex: 1;
+  block-size: 4px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--nexus-text-tertiary, #8E97A5) 22%, transparent);
+  overflow: hidden;
+}
+
+.runFill {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  background: var(--nexus-accent-primary, #C9A45C);
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 240ms cubic-bezier(0.22, 0.9, 0.35, 1);
+}
+
+.runFillUnknown {
+  position: absolute;
+  inset-block: 0;
+  inline-size: 34%;
+  border-radius: 2px;
+  background: linear-gradient(90deg,
+    transparent,
+    var(--nexus-accent-primary, #C9A45C) 45%,
+    var(--nexus-accent-primary, #C9A45C) 55%,
+    transparent);
+  animation: runShimmer 1400ms cubic-bezier(0.35, 0.6, 0.4, 1) infinite;
+}
+
+.runLabel {
+  font-size: 11px;
+  color: var(--nexus-text-tertiary, #8E97A5);
+  white-space: nowrap;
+}
+
+@keyframes runShimmer {
+  from { transform: translateX(-110%); }
+  to { transform: translateX(310%); }
+}
+
+/* ── prefers-reduced-motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+  .itemIn { animation: none; }
+  .checkpoint::after { animation: none; }
+  .checkpoint .checkpointTick path { animation: none; stroke-dashoffset: 0; }
+  .modeSlider { transition: none; }
+  .modeLabel { transition: none; }
+  .waitRing::after { animation: none; }
+  .runFill { transition: none; }
+  .runFillUnknown { animation: none; }
+}

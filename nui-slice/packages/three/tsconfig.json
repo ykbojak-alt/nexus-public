@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "types": [
+      "vitest/globals"
+    ]
+  },
+  "include": [
+    "src",
+    "../ui/src/css-modules.d.ts"
+  ]
+}

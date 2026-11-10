@@ -1,0 +1,34 @@
+{
+  "$description": "Z-order scale (W2 layer contract): the only permitted stacking values. Anchored dropdowns/menus < floating panels < drawer < modal < global overlays (command palette, toasts) < tooltips. Product CSS must consume var(--nexus-layer-*), never a literal z-index.",
+  "layer": {
+    "$type": "number",
+    "sticky": {
+      "$value": 20,
+      "$comment": "Sticky headers/bars within a scroll container (between content and dropdown)."
+    },
+    "dropdown": {
+      "$value": 50,
+      "$comment": "Anchored to a control: popover, select/combobox list, picker dropdowns."
+    },
+    "menu": {
+      "$value": 60,
+      "$comment": "Detached menus and floating panels (split-button menu, FloatingPanel)."
+    },
+    "drawer": {
+      "$value": 70,
+      "$comment": "Drawer overlay wrap (side panel over workspace)."
+    },
+    "modal": {
+      "$value": 100,
+      "$comment": "Modal/dialog backdrop + dialog."
+    },
+    "overlay": {
+      "$value": 110,
+      "$comment": "Global overlays above modal: command palette, toast region."
+    },
+    "tooltip": {
+      "$value": 120,
+      "$comment": "Topmost — tooltips must stay visible inside modals and overlays."
+    }
+  }
+}

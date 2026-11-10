@@ -1,0 +1,37 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--nexus-surface-overlay, rgba(10,10,12,0.6));
+  backdrop-filter: blur(var(--nexus-blur-sm, 8px));
+  z-index: var(--nexus-layer-modal, 100);
+}
+.dialog {
+  background: var(--nexus-depth-elevated-bg, #232329);
+  border: 1px solid var(--nexus-border-default, rgba(246,240,228,0.12));
+  border-radius: var(--nexus-radius-xl, 16px);
+  box-shadow: var(--nexus-depth-overlay-shadow, 0 16px 56px rgba(0,0,0,0.52));
+  width: min(520px, calc(100vw - 2 * var(--nexus-layout-safe-area, 32px)));
+  max-height: 80vh;
+  overflow: auto;
+  scrollbar-gutter: stable;
+  padding: var(--nexus-space-6, 24px);
+}
+.title {
+  font: var(--nexus-type-panel-title-font-weight, 500) var(--nexus-type-panel-title-font-size, 18px)/var(--nexus-type-panel-title-line-height, 26px) var(--nexus-type-panel-title-font-family, 'Inter Tight', system-ui, sans-serif);
+  color: var(--nexus-text-primary, #F6F0E4);
+  margin-bottom: var(--nexus-space-4, 16px);
+}
+.body { color: var(--nexus-text-secondary, #B0B7C2); }
+.footer {
+  margin-top: var(--nexus-space-6, 24px);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--nexus-space-3, 12px);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .backdrop { backdrop-filter: none; }
+}

@@ -1,0 +1,248 @@
+/* Actions family — split button, action menu, command trigger. */
+.split {
+  display: inline-flex;
+  align-items: stretch;
+  border-radius: var(--nexus-radius-md, 8px);
+  border: 1px solid var(--nexus-accent-primary, #C9A45C);
+  overflow: visible;
+}
+
+.splitMain,
+.splitToggle {
+  border: none;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--nexus-accent-on-primary, #0A0A0C);
+}
+
+.splitMain {
+  padding: 0 var(--nexus-space-4, 16px);
+  height: 36px;
+  background: var(--nexus-accent-primary, #C9A45C);
+  border-radius: var(--nexus-radius-md, 8px) 0 0 var(--nexus-radius-md, 8px);
+}
+
+.splitMain:hover {
+  background: var(--nexus-accent-primary-hover, #D0B169);
+}
+
+.splitToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 36px;
+  box-sizing: border-box;
+  background: var(--nexus-accent-primary, #C9A45C);
+  border-left: 1px solid var(--nexus-accent-on-primary, #0A0A0C);
+  border-radius: 0 var(--nexus-radius-md, 8px) var(--nexus-radius-md, 8px) 0;
+}
+
+.splitToggle:hover {
+  background: var(--nexus-accent-primary-hover, #D0B169);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .splitMain,
+  .splitToggle {
+    transition: background-color var(--nexus-duration-fast, 140ms) ease;
+  }
+}
+
+.split[data-variant='secondary'] {
+  border-color: var(--nexus-border-strong, rgba(246, 240, 228, 0.2));
+}
+
+.split[data-variant='secondary'] .splitMain,
+.split[data-variant='secondary'] .splitToggle {
+  background: var(--nexus-surface-panel, #1A1A21);
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.split[data-variant='secondary'] .splitMain:hover,
+.split[data-variant='secondary'] .splitToggle:hover {
+  background: var(--nexus-nav-item-bg-hover, rgba(246, 240, 228, 0.04));
+}
+
+.split[data-variant='secondary'] .splitToggle {
+  border-left-color: var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+}
+
+@media (forced-colors: active) {
+  .split {
+    border-color: ButtonText;
+  }
+
+  .splitMain,
+  .splitToggle {
+    background: ButtonFace;
+    color: ButtonText;
+  }
+
+  .splitToggle {
+    border-left-color: ButtonText;
+  }
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 180px;
+  background: var(--nexus-depth-overlay-bg, rgba(10, 10, 12, 0.6));
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-md, 8px);
+  box-shadow: var(--nexus-depth-overlay-shadow, 0 16px 56px rgba(0, 0, 0, 0.52));
+  padding: var(--nexus-space-1, 4px);
+  z-index: var(--nexus-layer-menu, 60);
+  animation: nexusMenuPop var(--nexus-duration-fast, 140ms) cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+}
+
+@keyframes nexusMenuPop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu {
+    animation: none;
+  }
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  width: 100%;
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-3, 12px);
+  border: none;
+  border-radius: var(--nexus-radius-sm, 4px);
+  background: transparent;
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--nexus-duration-fast, 140ms) ease,
+    color var(--nexus-duration-fast, 140ms) ease;
+}
+
+.menuItem[data-active],
+.menuItem:hover:not(:disabled) {
+  background: var(--nexus-accent-primary-soft, rgba(201, 164, 92, 0.16));
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.menuItem:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.menuItem[data-danger] {
+  color: var(--nexus-state-error, #F97F66);
+}
+
+.menuShortcut {
+  margin-left: auto;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.commandTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  height: 32px;
+  padding: 0 var(--nexus-space-3, 12px);
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-md, 8px);
+  background: var(--nexus-surface-panel, #1A1A21);
+  color: var(--nexus-text-tertiary, #8E97A5);
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  cursor: pointer;
+  transition: border-color var(--nexus-duration-fast, 140ms) ease,
+    color var(--nexus-duration-fast, 140ms) ease;
+}
+
+.commandTrigger:hover {
+  border-color: var(--nexus-border-strong, rgba(246, 240, 228, 0.2));
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+.kbd {
+  font-family: var(--nexus-type-code-font-family, 'IBM Plex Mono', monospace);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  padding: 1px 5px;
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-sm, 4px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+/* Trigger resets native chrome without suppressing the global
+   focus-ring (inline `all: unset` would win over focus-ring.css). */
+.unstyledTrigger {
+  all: unset;
+  cursor: pointer;
+  display: inline-flex;
+}
+
+/* Chip — selectable filter pill / static tag (codex category filters,
+   forge mode pills, provenance tags). Selected uses the contracted
+   text.accent-on-primarySoft pair; static tags are non-interactive spans. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nexus-space-1, 4px);
+  height: 28px;
+  padding: 0 var(--nexus-space-3, 12px);
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-full, 9999px);
+  background: var(--nexus-surface-panel, #1A1A21);
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color var(--nexus-duration-fast, 140ms) ease,
+    color var(--nexus-duration-fast, 140ms) ease,
+    background-color var(--nexus-duration-fast, 140ms) ease;
+}
+
+.chip:hover:not(:disabled):not([data-static='true']) {
+  border-color: var(--nexus-border-strong, rgba(246, 240, 228, 0.2));
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.chip[data-selected='true'] {
+  background: var(--nexus-accent-primary-soft, rgba(201, 164, 92, 0.16));
+  border-color: var(--nexus-accent-primary, #C9A45C);
+  color: var(--nexus-text-accent, #D8BC76);
+}
+
+.chip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.chip[data-static='true'] {
+  cursor: default;
+}
+
+.chipIcon {
+  display: inline-flex;
+  align-items: center;
+  width: 14px;
+  height: 14px;
+}

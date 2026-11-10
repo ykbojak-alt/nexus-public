@@ -1,0 +1,15 @@
+{
+  "$description": "MetricRing / StatusGauge component contract — value uses accent, track stays quiet.",
+  "metricRing": {
+    "track":       { "$type": "color", "$value": "color-mix(in srgb, {color.ivory.100} 8%, transparent)" },
+    "value":       { "$type": "color", "$value": "{accent.primary}" },
+    "valueWarn":   { "$type": "color", "$value": "{state.warning}" },
+    "valueCrit":   { "$type": "color", "$value": "{state.error}" },
+    "sizeSm":      { "$type": "dimension", "$value": "64px" },
+    "sizeMd":      { "$type": "dimension", "$value": "96px" },
+    "sizeLg":      { "$type": "dimension", "$value": "144px" },
+    "stroke":      { "$type": "dimension", "$value": "8px" },
+    "labelType":   { "$type": "typography", "$value": "{type.metric}" },
+    "captionType": { "$type": "typography", "$value": "{type.caption}" }
+  }
+}

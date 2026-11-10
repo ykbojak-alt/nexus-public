@@ -1,0 +1,104 @@
+/**
+ * Подложка стеклянных баров (волна XVII, W4).
+ * Один слой размытия на экран: арт размывается самим filter: blur()
+ * (дешевле backdrop-filter и работает везде). Бары — демо-реализация
+ * контракта; продовые бары остаются зоной W3 и считаются в бюджете
+ * blur-слоёв отдельно (perf-budgets.json → motion: ≤4 на экран).
+ * Цвета — только через var(--nexus-surface-*)/--nexus-text-*; новых
+ * цветовых токенов здесь нет.
+ */
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.art {
+  position: absolute;
+  inset: -4%;
+  background-size: cover;
+  background-position: center;
+  /* художественная мягкость — арт из AI2_ref уже ткань/свет; умеренный
+     радиус, крупный blur дорог в software-raster (wave XV замеры). */
+  filter: blur(var(--nexus-glass-backdrop-art-blur, 24px));
+  transform: scale(1.08); /* съедает светлые кромки blur по периметру */
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  /* Подложка к panel-цвету темы: в светлой теме засветляет арт,
+     в тёмной — затемняет. Один слой, тема крутит сама. */
+  background: color-mix(
+    in srgb,
+    var(--nexus-surface-panel, #FBF8F1) var(--nexus-glass-backdrop-scrim, 34%),
+    transparent
+  );
+}
+
+.sheen {
+  position: absolute;
+  inset: -20%;
+  background: linear-gradient(
+    var(--nexus-glass-backdrop-sheen-angle, 105deg),
+    transparent 42%,
+    color-mix(in srgb, var(--nexus-surface-inverse, #0F0F13)
+      var(--nexus-glass-backdrop-sheen-alpha, 10%), transparent) 50%,
+    transparent 58%
+  );
+  transform: translateX(-4%);
+  animation: nexus-glass-sheen-drift var(--nexus-glass-backdrop-sheen-duration, 14s)
+    ease-in-out infinite alternate;
+}
+
+@keyframes nexus-glass-sheen-drift {
+  to { transform: translateX(4%); }
+}
+
+/* ── Демо-бар: тот же контракт, что временные --nexus-glass-bar-*
+ *    в app-shell (зона W3 подставит свои размеры/геометрию). ── */
+
+.bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border: 1px solid var(--nexus-glass-bar-border,
+    color-mix(in srgb, var(--nexus-surface-panel, #FBF8F1) 42%, transparent));
+  border-radius: 14px;
+  background: var(--nexus-glass-bar-bg,
+    color-mix(in srgb, var(--nexus-surface-panel, #FBF8F1) 62%, transparent));
+  backdrop-filter: blur(var(--nexus-glass-bar-blur, 18px)) saturate(1.12);
+  -webkit-backdrop-filter: blur(var(--nexus-glass-bar-blur, 18px)) saturate(1.12);
+  color: var(--nexus-text-primary, #0A0A0C);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--nexus-surface-inverse, #0F0F13) 6%, transparent);
+}
+
+.barTitle { font-size: 13px; font-weight: 600; }
+.barMeta { font-size: 12px; color: var(--nexus-text-secondary, #54545F); }
+
+/* Fallback без backdrop-filter — плотная заливка, геометрия та же. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .bar {
+    background: var(--nexus-glass-bar-bg-strong,
+      color-mix(in srgb, var(--nexus-surface-panel, #FBF8F1) 88%, transparent));
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* Повышенный контраст — делаем заливку почти непрозрачной. */
+@media (prefers-contrast: more) {
+  .bar {
+    background: var(--nexus-glass-bar-bg-strong,
+      color-mix(in srgb, var(--nexus-surface-panel, #FBF8F1) 92%, transparent));
+  }
+}
+
+/* ── prefers-reduced-motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .sheen { animation: none; }
+}

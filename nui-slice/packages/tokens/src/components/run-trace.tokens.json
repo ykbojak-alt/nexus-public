@@ -1,0 +1,96 @@
+{
+  "$description": "Run-trace card contract (wave-XI W2.1, Copilot mechanisms) — ToolCallCard and SubagentCard: chrome components on themed surfaces, status colors via statusVar/state.* dictionary, nesting shown by indent + edge, never by invented colors.",
+  "toolCall": {
+    "bg": {
+      "$type": "color",
+      "$value": "{surface.elevated}",
+      "$description": "Card ground — one step above the feed so nested depth is visible."
+    },
+    "border": {
+      "$type": "color",
+      "$value": "{border.subtle}"
+    },
+    "nestEdge": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {accent.primary} 40%, transparent)",
+      "$description": "Left edge marking a call nested under parentCallId — accent hairline, not a new color."
+    },
+    "nestIndent": {
+      "$type": "dimension",
+      "$value": "{space.4}",
+      "$description": "Indent per nesting level under the parent tool call."
+    },
+    "codeBg": {
+      "$type": "color",
+      "$value": "{depth.surface.bg}",
+      "$description": "Input/output payload well — inset, theme-aware."
+    },
+    "meta": {
+      "$type": "color",
+      "$value": "{text.tertiary}",
+      "$description": "Duration / callId / timestamps — mono meta tone."
+    },
+    "fontMono": {
+      "$type": "fontFamily",
+      "$value": "{font.mono}",
+      "$description": "Payload and duration — IBM Plex Mono per type contract."
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.md}"
+    }
+  },
+  "subagent": {
+    "badgeBg": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {accent.violet} 14%, transparent)",
+      "$description": "Subagent badge wash — violet marks a delegated isolated run."
+    },
+    "badgeText": {
+      "$type": "color",
+      "$value": "{accent.violet}"
+    },
+    "summaryEdge": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {accent.violet} 45%, transparent)",
+      "$description": "Edge of the collapsed summary card — only the final result returns to the parent feed."
+    }
+  },
+  "runTimeline": {
+    "axis": {
+      "$type": "color",
+      "$value": "{border.subtle}",
+      "$description": "Vertical time axis of the run-trajectory panel — neutral, never accent."
+    },
+    "axisOffset": {
+      "$type": "dimension",
+      "$value": "{space.4}",
+      "$description": "Horizontal distance between the axis and the card column; children add toolCall.nestIndent per level under it."
+    },
+    "dot": {
+      "$type": "color",
+      "$value": "{accent.primary}",
+      "$description": "Axis node of a live/running call — accent only for the in-flight one; status colors of nodes come from statusVar(state), this is the neutral default."
+    },
+    "dotRing": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {accent.primary} 40%, transparent)",
+      "$description": "Pulse ring on the running node."
+    },
+    "time": {
+      "$type": "color",
+      "$value": "{text.tertiary}",
+      "$description": "Timestamps on the axis — IBM Plex Mono via toolCall.fontMono."
+    },
+    "rowGap": {
+      "$type": "dimension",
+      "$value": "{space.2}",
+      "$description": "Vertical rhythm between timeline nodes."
+    },
+    "groupEdge": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {accent.primary} 40%, transparent)",
+      "$description": "Bracket edge grouping a parent's children on the axis — same gold thread as toolCall.nestEdge."
+    }
+  }
+}

@@ -1,0 +1,36 @@
+.sceneLaunch {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap
+}
+
+.sceneStatus {
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    color: var(--nexus-text-tertiary);
+    letter-spacing: .04em
+}
+
+.sceneReason {
+    font-size: var(--nexus-type-caption-font-size, 13px);
+    color: var(--nexus-text-tertiary);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    /* W14-W4: строка живёт поверх арт-областей шапки (forge — замер 3.76:1).
+       Полупрозрачная тёмная плашка поднимает контраст tertiary-текста
+       на любом кадре подложки, не скрывая арт за краями чипа. */
+    background: rgba(9, 9, 13, .62);
+    padding: 2px var(--nexus-space-2, 8px);
+    border-radius: 6px
+}
+
+.sceneLaunch[data-state="error"] .sceneStatus,
+.sceneLaunch[data-state="not-installed"] .sceneStatus {
+    color: var(--nexus-state-error)
+}
+
+.sceneLaunch[data-state="connected"] .sceneStatus {
+    color: var(--nexus-state-online, #61bd91)
+}

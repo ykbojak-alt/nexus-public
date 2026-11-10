@@ -1,0 +1,63 @@
+{
+  "$description": "Semantic surface tokens — canonical nexus (dark obsidian) defaults; other themes override these roles only. Depth language: environment -> surface -> panel -> elevated -> overlay -> core (spec §8).",
+  "surface": {
+    "$type": "color",
+    "root": {
+      "$value": "{color.obsidian.950}"
+    },
+    "environment": {
+      "$value": "{color.obsidian.900}"
+    },
+    "base": {
+      "$value": "{color.obsidian.850}"
+    },
+    "panel": {
+      "$value": "{color.obsidian.800}"
+    },
+    "elevated": {
+      "$value": "{color.obsidian.700}"
+    },
+    "overlay": {
+      "$value": "color-mix(in srgb, {color.obsidian.950} 60%, transparent)"
+    },
+    "core": {
+      "$value": "color-mix(in srgb, {color.obsidian.950} 0%, transparent)"
+    },
+    "glass": {
+      "$value": "color-mix(in srgb, {color.ivory.100} 6%, transparent)"
+    },
+    "inverse": {
+      "$value": "{color.ivory.50}"
+    },
+    "art": {
+      "$value": "{color.obsidian.900}",
+      "$description": "Always-dark authored stage (game tables, oracle cloth, scene ground). Themes must not override — authored surfaces are theme-invariant, so text-on-art roles stay legible everywhere."
+    }
+  },
+  "glass": {
+    "$type": "color",
+    "scrim": {
+      "$value": "color-mix(in srgb, {color.obsidian.950} 45%, transparent)",
+      "$description": "Minimum backdrop for text legibility over glass surfaces (contrast guard, W2-146). Apply behind text on any backdrop-filter surface."
+    }
+  },
+  "focus": {
+    "$type": "color",
+    "ring": {
+      "$value": "{color.blue.400}"
+    },
+    "ringSoft": {
+      "$value": "color-mix(in srgb, {color.blue.400} 30%, transparent)"
+    }
+  },
+  "focusRing": {
+    "width": {
+      "$type": "dimension",
+      "$value": "2px"
+    },
+    "offset": {
+      "$type": "dimension",
+      "$value": "2px"
+    }
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "$description": "Start-screen + persona contract (waves XIII–XIV W2, ref start.png — «ВЫБОР ИИ АГЕНТА»): per-assistant accent for the select grid, window frame and status labels. personaAccent mirrors each persona theme's accent.primary (decoration: borders, glow — non-text, ≥3:1). personaEdge = persona color for hairlines/frame edges, guaranteed ≥3:1 on the block's own panel (light shells override darker). personaText = persona color used AS text, guaranteed ≥4.5:1 on the block's own panel (light shells override darker — NQ-081 closure: assistant identity legible on the ivory shell). Values = primitive refs only.",
+  "personaAccent": {
+    "alice": {
+      "$type": "color",
+      "$value": "{color.gold.700}",
+      "$description": "AGENT-A — gold.700, accent.primary of theme alice."
+    },
+    "mech": {
+      "$type": "color",
+      "$value": "{color.blue.500}",
+      "$description": "M.E.C.H. — blue.500, accent.primary of theme mech."
+    },
+    "forge": {
+      "$type": "color",
+      "$value": "{color.amber.500}",
+      "$description": "AGENT-B — amber.500, accent.primary of theme forge."
+    },
+    "codex": {
+      "$type": "color",
+      "$value": "{color.gold.600}",
+      "$description": "AGENT-C — gold.600, accent.primary of theme codex."
+    },
+    "arch": {
+      "$type": "color",
+      "$value": "{color.violet.400}",
+      "$description": "A.R.C.H. — violet.400, accent.primary of theme arch."
+    },
+    "nexus": {
+      "$type": "color",
+      "$value": "{color.gold.500}",
+      "$description": "NEXUS (ядро, не в сетке выбора) — gold.500, accent.primary of root theme."
+    }
+  },
+  "personaEdge": {
+    "$description": "Persona color for hairlines and the window-frame edge — ≥3:1 (WCAG 1.4.11 non-text) on the block's surface.panel. Root values = dark-shell canon; the alice block re-points forge/arch/nexus one step darker so the frame stays visible on ivory (NQ-081). Bind: [data-persona] → --nexus-window-frame-hairline.",
+    "alice": {
+      "$type": "color",
+      "$value": "{color.gold.700}"
+    },
+    "mech": {
+      "$type": "color",
+      "$value": "{color.blue.500}"
+    },
+    "forge": {
+      "$type": "color",
+      "$value": "{color.amber.500}"
+    },
+    "codex": {
+      "$type": "color",
+      "$value": "{color.gold.600}"
+    },
+    "arch": {
+      "$type": "color",
+      "$value": "{color.violet.400}"
+    },
+    "nexus": {
+      "$type": "color",
+      "$value": "{color.gold.500}"
+    }
+  },
+  "personaText": {
+    "$description": "Persona color used as TEXT (status labels, signatures, names) — ≥4.5:1 on the block's surface.panel AND surface.elevated, both polarities. Root = dark-shell values (alice steps UP to gold.500: gold.700 is only 3.52:1 on obsidian). The alice block overrides all six to darker steps for the ivory shell; mech/forge/codex re-point still lighter on their lighter elevated (NQ-088 re-check).",
+    "alice": {
+      "$type": "color",
+      "$value": "{color.gold.500}",
+      "$description": "AGENT-A on dark shells — gold.500 (7.37:1); gold.700 reserved for her own light block."
+    },
+    "mech": {
+      "$type": "color",
+      "$value": "{color.blue.400}",
+      "$description": "NQ-088 re-check: blue.500 is 4.20:1 on nexus elevated — blue.400 holds 5.73."
+    },
+    "forge": {
+      "$type": "color",
+      "$value": "{color.amber.500}"
+    },
+    "codex": {
+      "$type": "color",
+      "$value": "{color.gold.600}"
+    },
+    "arch": {
+      "$type": "color",
+      "$value": "{color.violet.400}"
+    },
+    "nexus": {
+      "$type": "color",
+      "$value": "{color.gold.500}"
+    }
+  },
+  "personaGlow": {
+    "$description": "Selected-card halo per assistant — 24px soft glow at 30% of personaAccent, same falloff as glow.active.",
+    "alice": {
+      "$type": "shadow",
+      "$value": "0 0 24px color-mix(in srgb, {personaAccent.alice} 30%, transparent)"
+    },
+    "mech": {
+      "$type": "shadow",
+      "$value": "0 0 24px color-mix(in srgb, {personaAccent.mech} 30%, transparent)"
+    },
+    "forge": {
+      "$type": "shadow",
+      "$value": "0 0 24px color-mix(in srgb, {personaAccent.forge} 30%, transparent)"
+    },
+    "codex": {
+      "$type": "shadow",
+      "$value": "0 0 24px color-mix(in srgb, {personaAccent.codex} 30%, transparent)"
+    },
+    "arch": {
+      "$type": "shadow",
+      "$value": "0 0 24px color-mix(in srgb, {personaAccent.arch} 30%, transparent)"
+    },
+    "nexus": {
+      "$type": "shadow",
+      "$value": "0 0 24px color-mix(in srgb, {personaAccent.nexus} 30%, transparent)"
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$description": "Composer controls contract (wave-XI W2.1) — ModeSwitch (agent/ask/plan) segmented control and HandoffBar buttons under an agent reply. Gold-on-dark per MAIN/NUE1 on dark themes; light themes get the same roles via theme cascade — no literals.",
+  "modeSwitch": {
+    "bg": {
+      "$type": "color",
+      "$value": "{surface.elevated}",
+      "$description": "Segmented container well."
+    },
+    "activeBg": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {accent.primary} 10%, transparent)",
+      "$description": "Active segment wash — accent of the active theme. 10% keeps accent-primary text ≥4.5:1 on the wash in all six themes (18% read 4.15–4.30 on mech/forge/arch — wave-XXV matrix)."
+    },
+    "activeText": {
+      "$type": "color",
+      "$value": "{accent.primary}"
+    },
+    "idleText": {
+      "$type": "color",
+      "$value": "{text.secondary}"
+    },
+    "border": {
+      "$type": "color",
+      "$value": "{border.subtle}"
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.full}",
+      "$description": "Pill segmentation per MAIN composer language."
+    }
+  },
+  "handoffBar": {
+    "gap": {
+      "$type": "dimension",
+      "$value": "{space.2}"
+    },
+    "buttonBorder": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {accent.primary} 45%, transparent)",
+      "$description": "Ghost-button hairline — like hero modePill, gold under nexus."
+    },
+    "buttonBg": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {accent.primary} 10%, transparent)"
+    },
+    "buttonText": {
+      "$type": "color",
+      "$value": "{accent.primary}"
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.full}"
+    }
+  }
+}

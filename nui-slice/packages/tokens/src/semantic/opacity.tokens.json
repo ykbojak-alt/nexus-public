@@ -1,0 +1,10 @@
+{
+  "$description": "Unitless opacity multipliers (0–1). Scene/overlay intensity knobs — bound to color tokens, never standalone colors.",
+  "opacity": {
+    "grid": {
+      "$type": "number",
+      "$value": 0.35,
+      "$comment": "Runtime-scene guide/grid intensity: multiplies Nexus_GridLine* alphas. Subordinate to nodes — guides must never compete with status tones (scene spec: restrained composition). Theme-overridable."
+    }
+  }
+}

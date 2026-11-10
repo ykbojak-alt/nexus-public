@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": [
+      "vitest/globals"
+    ]
+  },
+  "include": [
+    "src",
+    "../ui/src/css-modules.d.ts"
+  ]
+}

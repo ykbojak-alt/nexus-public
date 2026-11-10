@@ -1,0 +1,147 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: var(--nexus-compact-badge-min-width);
+  height: var(--nexus-compact-badge-height);
+  padding-inline: var(--nexus-compact-badge-padding-x);
+  border: 1px solid var(--nexus-compact-badge-border);
+  border-radius: var(--nexus-compact-badge-radius);
+  background: var(--nexus-compact-badge-background);
+  color: var(--nexus-compact-badge-text);
+  font-family: var(--nexus-type-code-font-family);
+  font-size: var(--nexus-type-caption-font-size);
+  font-weight: var(--nexus-type-code-font-weight);
+  line-height: var(--nexus-type-caption-line-height);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.badge:not([data-state='expanded']):hover {
+  border-color: var(--nexus-compact-badge-hover-border);
+  background: var(--nexus-compact-badge-hover-background);
+  color: var(--nexus-compact-badge-hover-text);
+}
+
+.badge[data-state='expanded'] {
+  border-color: var(--nexus-compact-badge-expanded-border);
+  background: var(--nexus-compact-badge-expanded-background);
+  color: var(--nexus-compact-badge-expanded-text);
+}
+
+.row {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--nexus-compact-block-border);
+  border-radius: var(--nexus-compact-block-radius);
+  background: var(--nexus-compact-block-bg);
+  color: var(--nexus-text-primary);
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nexus-space-3);
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: var(--nexus-space-3);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring);
+  outline-offset: -3px;
+}
+
+.copy {
+  display: grid;
+  min-width: 0;
+  gap: var(--nexus-compact-row-gap);
+}
+
+.primary {
+  min-width: 0;
+  color: var(--nexus-compact-row-primary-text);
+  font-family: var(--nexus-type-body-font-family);
+  font-size: var(--nexus-type-body-font-size);
+  font-weight: var(--nexus-weight-semibold);
+  line-height: var(--nexus-type-body-line-height);
+  overflow-wrap: anywhere;
+}
+
+.secondary {
+  min-width: 0;
+  color: var(--nexus-compact-row-secondary-text);
+  font-family: var(--nexus-type-caption-font-family);
+  font-size: var(--nexus-type-caption-font-size);
+  font-weight: var(--nexus-weight-regular);
+  line-height: var(--nexus-type-caption-line-height);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.disclosure {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  margin-inline: 4px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform var(--nexus-duration-fast, 140ms) ease;
+}
+
+.toggle[aria-expanded='true'] .disclosure {
+  transform: rotate(225deg);
+}
+
+.content {
+  min-width: 0;
+  padding: 0 var(--nexus-space-3) var(--nexus-space-3);
+  color: var(--nexus-text-secondary);
+  font-family: var(--nexus-type-body-font-family);
+  font-size: var(--nexus-type-body-font-size);
+  line-height: var(--nexus-type-body-line-height);
+  overflow-wrap: anywhere;
+}
+
+.content > :first-child { margin-top: 0; }
+.content > :last-child { margin-bottom: 0; }
+
+.row[data-expanded='true'] .badge {
+  border-color: var(--nexus-compact-badge-expanded-border);
+  background: var(--nexus-compact-badge-expanded-background);
+  color: var(--nexus-compact-badge-expanded-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .disclosure { transition: none; }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .row { background: var(--nexus-compact-block-bg-opaque); }
+}
+
+@media (forced-colors: active) {
+  .badge {
+    border-color: ButtonText;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+  .badge[data-state='expanded'] {
+    border-color: Highlight;
+    background: Highlight;
+    color: HighlightText;
+  }
+  .row { border-color: CanvasText; background: Canvas; color: CanvasText; }
+  .toggle { color: CanvasText; }
+}

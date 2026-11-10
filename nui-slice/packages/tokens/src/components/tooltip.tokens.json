@@ -1,0 +1,49 @@
+{
+  "$description": "W2-130 · единый слой тултипов: фон/текст/бордер, геометрия и delay на токенах.",
+  "tooltip": {
+    "bg": {
+      "$type": "color",
+      "$value": "{depth.overlay.bg}",
+      "$comment": "стеклянная заливка — общая с depth.overlay"
+    },
+    "text": {
+      "$type": "color",
+      "$value": "{text.primary}"
+    },
+    "border": {
+      "$type": "color",
+      "$value": "{border.default}"
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.sm}"
+    },
+    "paddingBlock": {
+      "$type": "dimension",
+      "$value": "{space.1}"
+    },
+    "paddingInline": {
+      "$type": "dimension",
+      "$value": "{space.2}"
+    },
+    "maxWidth": {
+      "$type": "dimension",
+      "$value": "280px",
+      "$comment": "длинные подсказки переносятся, не вылезая за панель"
+    },
+    "offset": {
+      "$type": "dimension",
+      "$value": "{space.2}",
+      "$comment": "зазор от триггера"
+    },
+    "arrowSize": {
+      "$type": "dimension",
+      "$value": "6px"
+    },
+    "delay": {
+      "$type": "duration",
+      "$value": "{duration.fast}",
+      "$comment": "задержка показа по hover; focus показывает сразу (клавиатурный пользователь уже выразил намерение)"
+    }
+  }
+}

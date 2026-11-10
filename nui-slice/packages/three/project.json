@@ -1,0 +1,17 @@
+{
+  "name": "three",
+  "projectType": "library",
+  "sourceRoot": "packages/three/src",
+  "tags": [
+    "scope:ui",
+    "runtime:webgl"
+  ],
+  "targets": {
+    "test": {
+      "command": "vitest run packages/three --passWithNoTests"
+    },
+    "lint": {
+      "command": "tsc --noEmit -p packages/three/tsconfig.json"
+    }
+  }
+}

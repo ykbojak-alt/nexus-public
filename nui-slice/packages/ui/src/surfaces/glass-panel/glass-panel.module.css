@@ -1,0 +1,59 @@
+/* Perf XXV: backdrop-filter снят с базовой поверхности — 17+ одновременных
+   blur-слоёв на /home и крупные панели /runtime давали растр-пересчёт на
+   каждый repaint (runtime падал до 1–3 fps в software raster). «Стекло»
+   сохраняется полупрозрачной заливкой depth-*-bg + edge/border/shadow. */
+.root {
+  border-radius: var(--nexus-glass-panel-radius, 12px);
+  border: 1px solid var(--nexus-glass-panel-border, rgba(246, 240, 228, 0.06));
+  padding: var(--nexus-glass-panel-padding, 24px);
+  /* W3 structural-contrast (variant B): panel ink follows the glassPanel.text
+     role. Default {text.primary} (dark themes: light on obsidian, unchanged);
+     light shells (alice) override glassPanel.text to dark ink so re-themed
+     dark-persona screens don't paint light-on-light over the light substrate. */
+  color: var(--nexus-glass-panel-text, var(--nexus-text-primary, #F6F0E4));
+  transition: box-shadow var(--nexus-duration-normal, 240ms) var(--nexus-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+}
+
+.panel {
+  background: var(--nexus-depth-panel-bg);
+  box-shadow: var(--nexus-glass-panel-edge, inset 0 1px 0 rgba(246, 240, 228, 0.08)),
+    var(--nexus-depth-panel-shadow, 0 4px 16px rgba(0, 0, 0, 0.38));
+}
+
+.elevated {
+  background: var(--nexus-depth-elevated-bg);
+  box-shadow: var(--nexus-glass-panel-edge, inset 0 1px 0 rgba(246, 240, 228, 0.08)),
+    var(--nexus-depth-elevated-shadow, 0 8px 32px rgba(0, 0, 0, 0.44));
+}
+
+.overlay {
+  background: var(--nexus-depth-overlay-bg);
+  box-shadow: var(--nexus-glass-panel-edge, inset 0 1px 0 rgba(246, 240, 228, 0.08)),
+    var(--nexus-depth-overlay-shadow, 0 16px 56px rgba(0, 0, 0, 0.52));
+}
+
+.glowSoft {
+  box-shadow: var(--nexus-glow-soft), var(--nexus-depth-panel-shadow);
+}
+
+.glowActive {
+  box-shadow: var(--nexus-glow-active), var(--nexus-depth-panel-shadow);
+}
+
+.glowCore {
+  box-shadow: var(--nexus-glow-core);
+}
+
+/* Reduced transparency: blur off; the fill itself collapses to an opaque
+   composite via the generated token override (see tokens.css media block). */
+@media (prefers-reduced-transparency: reduce) {
+  .root {
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
+}

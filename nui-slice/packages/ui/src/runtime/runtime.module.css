@@ -1,0 +1,1229 @@
+/* Runtime family — managed external window launcher. */
+.launcher {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-3, 12px);
+  padding: var(--nexus-space-3, 12px) var(--nexus-space-4, 16px);
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-md, 8px);
+  background: var(--nexus-surface-panel, #1A1A21);
+}
+
+.launcherIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--nexus-radius-sm, 4px);
+  background: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 12%, transparent);
+  color: var(--nexus-accent-primary, #C9A45C);
+  flex-shrink: 0;
+}
+
+.launcherBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.launcherHead {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+}
+
+.launcherName {
+  font-weight: 600;
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.launcherReason {
+  margin: var(--nexus-space-1, 4px) 0 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.launcherActions {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  flex-shrink: 0;
+}
+
+/* workspace picker */
+.workspacePicker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-2, 8px);
+}
+
+.workspaceEmpty {
+  margin: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.workspaceList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-1, 4px);
+}
+
+.workspaceRow {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-3, 12px);
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-sm, 4px);
+  background: var(--nexus-surface-panel, #1A1A21);
+}
+
+.workspaceRow[data-state='revoked'],
+.workspaceRow[data-state='unavailable'] {
+  border-style: dashed;
+}
+
+.workspacePath {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--nexus-font-mono, ui-monospace, monospace);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+/* permission mode */
+.permissionMode {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--nexus-space-1, 4px);
+}
+
+.permissionDescription {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+/* readiness */
+.readinessRow {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  padding: var(--nexus-space-1, 4px) 0;
+}
+
+.readinessName {
+  font-weight: 500;
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.readinessDetail {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+/* context item */
+.contextRow {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-3, 12px);
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-sm, 4px);
+  background: var(--nexus-surface-panel, #1A1A21);
+}
+
+.contextIcon {
+  display: inline-flex;
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.contextLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.contextKind {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  padding: 0 var(--nexus-space-1, 4px);
+  border-radius: var(--nexus-radius-sm, 4px);
+  background: color-mix(in srgb, var(--nexus-text-tertiary, #8E97A5) 14%, transparent);
+  color: var(--nexus-text-secondary, #B8BEC9);
+}
+
+.contextMeta {
+  flex: 1;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+  text-align: right;
+}
+
+/* event row */
+.eventRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nexus-space-2, 8px);
+  padding: var(--nexus-space-2, 8px) 0;
+  border-bottom: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+}
+
+.eventTime {
+  font-family: var(--nexus-font-mono, ui-monospace, monospace);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+
+.eventBody {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.eventMeta {
+  display: flex;
+  gap: var(--nexus-space-2, 8px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.eventSource {
+  font-family: var(--nexus-font-mono, ui-monospace, monospace);
+}
+
+/* file diff row */
+.diffRow {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-3, 12px);
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-sm, 4px);
+  background: var(--nexus-surface-panel, #1A1A21);
+}
+
+.diffPath {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+  font-family: var(--nexus-font-mono, ui-monospace, monospace);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-primary, #F6F0E4);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.diffPath:disabled {
+  cursor: default;
+}
+
+.diffPath {
+  transition: color var(--nexus-duration-fast, 140ms) ease;
+}
+
+.diffPath:not(:disabled):hover {
+  color: var(--nexus-accent-primary, #C9A45C);
+}
+
+.diffCounts {
+  display: inline-flex;
+  gap: var(--nexus-space-1, 4px);
+  font-family: var(--nexus-font-mono, ui-monospace, monospace);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  flex-shrink: 0;
+}
+
+.diffAdd {
+  color: var(--nexus-state-complete, #36BE79);
+}
+
+.diffDel {
+  color: var(--nexus-state-error, #F97F66);
+}
+
+.diffActions {
+  display: inline-flex;
+  gap: var(--nexus-space-1, 4px);
+}
+
+/* source link */
+.sourceLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nexus-space-1, 4px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-link-color, var(--nexus-text-link, #C9A45C));
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.sourceLink:visited {
+  color: var(--nexus-link-visited, var(--nexus-text-accent, #D8BC76));
+}
+
+.sourceLink {
+  transition: color var(--nexus-duration-fast, 140ms) ease;
+}
+
+.sourceLink:hover {
+  color: var(--nexus-link-hover, var(--nexus-text-link, #C9A45C));
+  text-decoration: underline;
+}
+
+.sourceLink:focus-visible {
+  outline: 2px solid var(--nexus-link-focus-ring, var(--nexus-focus-ring, #539EFF));
+  outline-offset: 2px;
+  border-radius: var(--nexus-radius-xs, 2px);
+}
+
+.sourceLink[aria-disabled='true'] {
+  color: var(--nexus-link-disabled, var(--nexus-text-tertiary, #8E97A5));
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.sourceIcon {
+  display: inline-flex;
+  color: var(--nexus-link-icon, var(--nexus-link-color, #C9A45C));
+}
+
+.sourceLink[aria-disabled='true'] .sourceIcon {
+  color: var(--nexus-link-icon-disabled, var(--nexus-text-tertiary, #8E97A5));
+}
+
+.sourceLabel {
+  min-width: 0;
+}
+
+.sourceOrigin {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+/* plan summary */
+.planSummary {
+  padding: var(--nexus-space-3, 12px);
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-md, 8px);
+  background: var(--nexus-surface-panel, #1A1A21);
+}
+
+.planTitle {
+  font-weight: 600;
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.planGoal {
+  margin-top: var(--nexus-space-1, 4px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-secondary, #B8BEC9);
+}
+
+.planProgress {
+  margin-top: var(--nexus-space-2, 8px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.planSteps {
+  list-style: none;
+  margin: var(--nexus-space-2, 8px) 0 0;
+  padding: 0;
+  counter-reset: plan-step;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-1, 4px);
+}
+
+.planStep {
+  counter-increment: plan-step;
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+}
+
+.planStep::before {
+  content: counter(plan-step);
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--nexus-text-tertiary, #8E97A5) 14%, transparent);
+  color: var(--nexus-text-secondary, #B8BEC9);
+  flex-shrink: 0;
+}
+
+.planStep[data-state='done']::before {
+  background: color-mix(in srgb, var(--nexus-state-complete, #36BE79) 18%, transparent);
+  color: var(--nexus-state-complete, #36BE79);
+}
+
+.planStepLabel {
+  flex: 1;
+  min-width: 0;
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.planStepDetail {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+/* audio player */
+.audioPlayer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-2, 8px);
+  padding: var(--nexus-space-3, 12px);
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-md, 8px);
+  background: var(--nexus-surface-panel, #1A1A21);
+}
+
+.audioNow {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+}
+
+.audioTrackName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.audioReason {
+  margin: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-state-warning, #F5A63B);
+}
+
+.audioControls {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  flex-wrap: wrap;
+}
+
+.audioFlip {
+  transform: scaleX(-1);
+}
+
+.audioTime {
+  flex: 1;
+  min-width: min(200px, 40vw);
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  font-family: var(--nexus-font-mono, ui-monospace, monospace);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.audioSeek {
+  flex: 1;
+}
+
+.audioVolume {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-1, 4px);
+}
+
+.audioVolumeSlider {
+  width: 80px;
+}
+
+.audioQueue {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-1, 4px);
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.audioQueueRow {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  width: 100%;
+  padding: var(--nexus-space-2, 8px);
+  border: 1px solid transparent;
+  border-radius: var(--nexus-radius-sm, 4px);
+  /* NQ-075: явный opaque-bg делает контраст вычислимым для axe
+     (elmPartiallyObscured blind-zone) — визуально без изменений,
+     ряд лежит на .audioPlayer panel */
+  background: var(--nexus-surface-panel, #1A1A21);
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: var(--nexus-text-secondary, #B8BEC9);
+}
+
+.audioQueueRow {
+  transition: background-color var(--nexus-duration-fast, 140ms) ease;
+}
+
+.audioQueueRow:hover {
+  background: color-mix(in srgb, var(--nexus-text-primary, #F6F0E4) 6%, transparent);
+}
+
+.audioQueueRow[data-current] {
+  border-color: var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  background: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 8%, transparent);
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.audioQueueName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* provider embed */
+.providerEmbed {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-md, 8px);
+  background: var(--nexus-surface-panel, #1A1A21);
+  overflow: hidden;
+}
+
+.providerHead {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-3, 12px);
+  border-bottom: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+}
+
+.providerName {
+  flex: 1;
+  font-weight: 600;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.providerBody {
+  min-height: 120px;
+  display: flex;
+}
+
+.providerBody>* {
+  flex: 1;
+}
+
+.providerFallback {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nexus-space-2, 8px);
+  padding: var(--nexus-space-4, 16px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+  text-align: center;
+}
+
+.providerReason {
+  margin: 0;
+}
+
+/* service card — Runtime integrations catalog */
+.serviceCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-2, 8px);
+  padding: var(--nexus-space-3, 12px) var(--nexus-space-4, 16px);
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-md, 8px);
+  background: var(--nexus-surface-panel, #1A1A21);
+}
+
+.serviceCard[data-state='mock'] {
+  border-style: dashed;
+}
+
+.serviceHead {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+}
+
+.serviceIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--nexus-radius-sm, 4px);
+  background: color-mix(in srgb, var(--nexus-text-tertiary, #8E97A5) 12%, transparent);
+  color: var(--nexus-text-secondary, #B8BEC9);
+  flex-shrink: 0;
+}
+
+.serviceName {
+  font-weight: 600;
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.serviceMode {
+  flex: 1;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.serviceReason {
+  margin: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-state-warning, #F5A63B);
+}
+
+.serviceSummary {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-secondary, #B8BEC9);
+}
+
+.serviceScopes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nexus-space-1, 4px);
+}
+
+.serviceScopes li {
+  font-family: var(--nexus-font-mono, ui-monospace, monospace);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  padding: 1px var(--nexus-space-1, 4px);
+  border-radius: var(--nexus-radius-sm, 4px);
+  background: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 10%, transparent);
+  color: var(--nexus-text-secondary, #B8BEC9);
+}
+
+.serviceActions {
+  display: flex;
+  gap: var(--nexus-space-2, 8px);
+}
+
+/* Offline-path cards get a tinted border — the badge still carries the
+ * state; this is a secondary cue, never a substitute for the reason text. */
+.serviceCard[data-state='region-unavailable'],
+.serviceCard[data-state='revoked'],
+.serviceCard[data-state='unavailable'],
+.serviceCard[data-state='not-installed'] {
+  border-color: color-mix(in srgb, var(--nexus-state-warning, #F5A63B) 45%, transparent);
+}
+
+.serviceCard[data-state='error'] {
+  border-color: color-mix(in srgb, var(--nexus-state-error, #F97F66) 55%, transparent);
+}
+
+/* client catalog — grouped Runtime Clients grid (wave C) */
+.clientCatalog {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-4, 16px);
+}
+
+.clientGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-2, 8px);
+}
+
+.clientGroupTitle {
+  margin: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.clientList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17.5rem, 1fr));
+  gap: var(--nexus-space-3, 12px);
+}
+
+.clientItem {
+  min-width: 0;
+  display: flex;
+}
+
+.clientItem>* {
+  flex: 1;
+}
+
+/* agentic client card (Qwen Code) — version chip + subsystem rows */
+.clientVersion {
+  font-family: var(--nexus-font-mono, ui-monospace, monospace);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+  padding: 1px var(--nexus-space-1, 4px);
+  border-radius: var(--nexus-radius-sm, 4px);
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+}
+
+.clientSubsys {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-1, 4px);
+}
+
+.clientSubsysRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--nexus-space-2, 8px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.clientSubsysLabel {
+  min-width: 6.5em;
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.clientSubsysDetail {
+  color: var(--nexus-text-secondary, #B8BEC9);
+  min-width: 0;
+}
+
+/* agenda row — calendar events with honest privacy states */
+.agendaRow {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  padding: var(--nexus-space-2, 8px) 0;
+  border-bottom: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+}
+
+.agendaBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--nexus-space-2, 8px);
+}
+
+.agendaTitle {
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.agendaMeta {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.agendaSource {
+  margin-left: auto;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+/* docs item — picker/preview/save states */
+.docsRow {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-3, 12px);
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-sm, 4px);
+  background: var(--nexus-surface-panel, #1A1A21);
+}
+
+.docsName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.docsMeta {
+  flex: 1;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.docsActions {
+  display: inline-flex;
+  gap: var(--nexus-space-1, 4px);
+}
+
+/* provider search results — attributed, honest-state */
+.searchResults {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-2, 8px);
+  min-width: 0;
+}
+
+.searchSource {
+  margin: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: var(--nexus-type-caption-line-height, 18px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+  overflow-wrap: anywhere;
+}
+
+.searchStatus {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nexus-space-2, 8px);
+  min-width: 0;
+}
+
+.searchStatusIcon {
+  flex: 0 0 18px;
+  margin-top: 2px;
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+.searchStatusText {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.searchStatusTitle {
+  display: block;
+  color: var(--nexus-text-primary, #F6F0E4);
+  font-size: var(--nexus-type-body-font-size, 15px);
+  line-height: var(--nexus-type-body-line-height, 24px);
+  font-weight: var(--nexus-type-panel-title-font-weight, 500);
+}
+
+.searchStatusReason {
+  margin: var(--nexus-space-1, 4px) 0 0;
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: var(--nexus-type-caption-line-height, 18px);
+  overflow-wrap: anywhere;
+}
+
+.searchStatus_loading .searchStatusIcon {
+  color: var(--nexus-state-syncing, #539EFF);
+}
+
+.searchStatus_empty .searchStatusIcon {
+  color: var(--nexus-state-info, #539EFF);
+}
+
+.searchStatus_error .searchStatusIcon {
+  color: var(--nexus-state-error, #F97F66);
+}
+
+.searchStatus_unavailable .searchStatusIcon {
+  color: var(--nexus-state-offline, #B0B7C2);
+}
+
+.searchSkeletons {
+  display: grid;
+  gap: var(--nexus-space-2, 8px);
+  width: min(100%, 360px);
+}
+
+.searchList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-1, 4px);
+}
+
+.searchRow {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  padding: var(--nexus-space-2, 8px);
+  border: 1px solid transparent;
+  border-radius: var(--nexus-radius-sm, 4px);
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: var(--nexus-text-secondary, #B8BEC9);
+}
+
+.searchRow {
+  transition: background-color var(--nexus-duration-fast, 140ms) ease;
+}
+
+.searchRow:hover {
+  background: color-mix(in srgb, var(--nexus-text-primary, #F6F0E4) 6%, transparent);
+}
+
+.searchRow[data-selected] {
+  border-color: var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  background: color-mix(in srgb, var(--nexus-accent-primary, #C9A45C) 8%, transparent);
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.searchRowTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.searchRowMeta {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+/* messaging — provider chat/comment surfaces (Telegram, Instagram DM) */
+
+.msgRow {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 80%;
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-3, 12px);
+  border: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.06));
+  border-radius: var(--nexus-radius-md, 8px);
+  background: var(--nexus-surface-elevated, #232329);
+  color: var(--nexus-text-primary, #F6F0E4);
+  font-size: 14px;
+}
+
+.msgRow[data-direction='outgoing'] {
+  align-self: flex-end;
+  border-color: var(--nexus-accent-primary-dim, rgba(201, 164, 92, 0.35));
+  background: var(--nexus-accent-primary-soft, rgba(201, 164, 92, 0.16));
+}
+
+.msgMeta {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+/* Outgoing bubble sits on the accent-soft tint — tertiary dips below AA
+   there (NQ-036/042 class); secondary keeps ≥4.5:1 on the tinted surface. */
+.msgRow[data-direction='outgoing'] .msgMeta {
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+.msgRow[data-state='failed'] {
+  border-color: var(--nexus-state-error, #F97F66);
+}
+
+.msgFailed {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-state-error, #F97F66);
+}
+
+/* Raw state-error on the outgoing accent-tint dips below AA on warm themes
+   (forge: #f97f66 on #44392b = 4.42:1). Mixing toward text-primary keeps the
+   error hue while holding ≥4.5:1 across themes — token-derived, not literal. */
+.msgRow[data-direction='outgoing'] .msgFailed {
+  color: color-mix(in srgb, var(--nexus-state-error, #F97F66) 55%, var(--nexus-text-primary, #F6F0E4));
+}
+
+.threadRow,
+.commentRow {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-3, 12px);
+  width: 100%;
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-3, 12px);
+  border: 1px solid transparent;
+  border-radius: var(--nexus-radius-md, 8px);
+  background: transparent;
+  color: var(--nexus-text-primary, #F6F0E4);
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+}
+
+button.threadRow {
+  cursor: pointer;
+}
+
+.threadRow {
+  transition: background-color var(--nexus-duration-fast, 140ms) ease;
+}
+
+.threadRow:hover {
+  background: var(--nexus-nav-item-bg-hover, rgba(246, 240, 228, 0.04));
+}
+
+.threadRow[data-selected='true'] {
+  border-color: var(--nexus-accent-primary, #C9A45C);
+  background: var(--nexus-nav-item-bg-active, rgba(201, 164, 92, 0.08));
+}
+
+/* Selected-row tint darkens the bg — tertiary dips below AA there (NQ-036
+   class); secondary keeps ≥4.5:1 on the tinted surface. */
+.threadRow[data-selected='true'] .rowSub {
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+.rowMain {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rowMain>span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rowSub {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.composer {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--nexus-space-3, 12px);
+}
+
+.composerInput {
+  flex: 1;
+  height: 36px;
+  padding: 0 var(--nexus-space-3, 12px);
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-md, 8px);
+  background: var(--nexus-surface-panel, #1A1A21);
+  color: var(--nexus-text-primary, #F6F0E4);
+  font: inherit;
+}
+
+.composerInput:focus {
+  border-color: var(--nexus-border-focus, #539EFF);
+}
+
+.composerInput:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Job Control — selected run: status + progress + capability-gated actions. */
+.jobControl {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-2, 8px);
+  padding: var(--nexus-space-3, 12px);
+  background: var(--nexus-surface-elevated, #232329);
+  border: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.06));
+  border-radius: var(--nexus-radius-lg, 12px);
+}
+
+.jobHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nexus-space-2, 8px);
+}
+
+.jobLabel {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-primary, #F6F0E4);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jobProgressNote {
+  margin: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+  font-style: italic;
+}
+
+.jobActions {
+  display: flex;
+  gap: var(--nexus-space-2, 8px);
+}
+
+/* RunTrajectory (wave-XI W4) — шкала вызовов с вложенностью.
+ * Раскрытие: grid-template-rows 0fr→1fr — layout-анимация без JS-меры,
+ * под prefers-reduced-motion мгновенна. */
+.traj {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-1, 4px);
+}
+
+.trajItem {
+  border: 1px solid var(--nexus-tool-call-border, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-tool-call-radius, 8px);
+  background: var(--nexus-tool-call-bg, #232329);
+}
+
+.trajItem[data-depth='0'] {
+  border-left: 2px solid color-mix(in srgb,
+      var(--nexus-accent-glow-color, rgba(201, 164, 92, 1)) 55%, transparent);
+}
+
+.trajHead {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  width: 100%;
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-3, 12px);
+  background: none;
+  border: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+}
+
+.trajHead:not(:disabled) {
+  cursor: pointer;
+}
+
+.trajChevron {
+  width: 12px;
+  flex-shrink: 0;
+  display: inline-block;
+  color: var(--nexus-text-tertiary, #8E97A5);
+  transition: transform var(--nexus-duration-fast, 140ms) cubic-bezier(0.0, 0.0, 0.2, 1.0);
+}
+
+.trajChevron[data-open] {
+  transform: rotate(90deg);
+}
+
+.trajName {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--nexus-tool-call-font-mono, ui-monospace, monospace);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-primary, #F6F0E4);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trajDuration {
+  font-family: var(--nexus-tool-call-font-mono, ui-monospace, monospace);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-tool-call-meta, #8E97A5);
+  flex-shrink: 0;
+}
+
+.trajOrphan {
+  margin: 0;
+  padding: 0 var(--nexus-space-3, 12px) var(--nexus-space-2, 8px) 32px;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+  font-style: italic;
+}
+
+.trajBodyInner {
+  overflow: hidden;
+  min-height: 0;
+  padding: 0 var(--nexus-space-3, 12px) var(--nexus-space-2, 8px);
+}
+
+.trajPayload {
+  margin-top: var(--nexus-space-1, 4px);
+}
+
+.trajPayloadLabel {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+.trajPayloadText {
+  margin: var(--nexus-space-1, 4px) 0 0;
+  padding: var(--nexus-space-2, 8px);
+  border-radius: var(--nexus-radius-sm, 4px);
+  background: var(--nexus-tool-call-code-bg, #141419);
+  font-family: var(--nexus-tool-call-font-mono, ui-monospace, monospace);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: 1.5;
+  color: var(--nexus-text-secondary, #B8BEC9);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 220px;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.trajChildren {
+  list-style: none;
+  margin: var(--nexus-space-2, 8px) 0 0;
+  padding: 0 0 0 var(--nexus-tool-call-nest-indent, 16px);
+  border-left: 1px solid var(--nexus-tool-call-nest-edge, rgba(201, 164, 92, 0.4));
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-1, 4px);
+}
+
+.trajEmpty {
+  margin: 0;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .diffPath,
+  .sourceLink,
+  .audioQueueRow,
+  .searchRow,
+  .threadRow,
+  .trajChevron {
+    transition: none;
+  }
+}

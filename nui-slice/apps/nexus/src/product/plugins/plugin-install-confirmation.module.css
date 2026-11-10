@@ -1,0 +1,107 @@
+.card {
+  margin-block: var(--nexus-space-3, 12px);
+  padding: var(--nexus-space-4, 16px);
+  border-color: var(--nexus-border-active, #c9a45c);
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nexus-space-3, 12px);
+  margin-bottom: var(--nexus-space-3, 12px);
+}
+
+.heading h3 {
+  margin: 0;
+  font: var(--nexus-type-panel-title-font-weight, 600) var(--nexus-type-body-font-size, 14px)/1.35 var(--nexus-type-body-font-family, sans-serif);
+  color: var(--nexus-text-primary, #f6f0e4);
+}
+
+.details {
+  min-width: 0;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--nexus-space-1, 4px) var(--nexus-space-3, 12px);
+  margin: 0 0 var(--nexus-space-3, 12px);
+  overflow-wrap: anywhere;
+}
+
+.facts dt,
+.muted {
+  color: var(--nexus-text-tertiary, #9299a5);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.facts dd {
+  margin: 0;
+  color: var(--nexus-text-primary, #f6f0e4);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.scripts {
+  display: grid;
+  gap: var(--nexus-space-2, 8px);
+  padding: var(--nexus-space-3, 12px);
+  border: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-md, 8px);
+}
+
+.scripts strong {
+  color: var(--nexus-state-warning, #c9a45c);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.package {
+  display: grid;
+  gap: var(--nexus-space-1, 4px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.package code,
+.hash {
+  overflow-wrap: anywhere;
+  color: var(--nexus-text-secondary, #b0b7c2);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.muted {
+  margin: var(--nexus-space-2, 8px) 0 0;
+}
+
+.hash,
+.message {
+  margin: var(--nexus-space-2, 8px) 0 0;
+}
+
+.deferRow,
+.enableRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--nexus-space-2, 8px);
+  margin-top: var(--nexus-space-2, 8px);
+}
+
+.enableRow {
+  justify-content: flex-start;
+  padding-top: var(--nexus-space-3, 12px);
+  border-top: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.12));
+}
+
+.enableRow p {
+  flex: 1 1 100%;
+  margin: 0;
+  color: var(--nexus-text-secondary, #b0b7c2);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.error {
+  margin: var(--nexus-space-2, 8px) 0 0;
+  color: var(--nexus-state-error, #ee5b3f);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}

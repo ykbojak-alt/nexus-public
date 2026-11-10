@@ -1,0 +1,112 @@
+{
+  "$description": "Motion primitives from spec §10: durations instant 80 / fast 140 / normal 240 / slow 420 / cinematic 700 ms and shared easing curves. Components consume presets, not raw values.",
+  "duration": {
+    "$type": "duration",
+    "instant": {
+      "$value": "80ms"
+    },
+    "fast": {
+      "$value": "140ms"
+    },
+    "normal": {
+      "$value": "240ms"
+    },
+    "slow": {
+      "$value": "420ms"
+    },
+    "cinematic": {
+      "$value": "700ms"
+    }
+  },
+  "easing": {
+    "$type": "cubicBezier",
+    "standard": {
+      "$value": [
+        0.2,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "enter": {
+      "$value": [
+        0.0,
+        0.0,
+        0.2,
+        1.0
+      ]
+    },
+    "exit": {
+      "$value": [
+        0.4,
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    "spring": {
+      "$value": [
+        0.34,
+        1.3,
+        0.4,
+        1.0
+      ]
+    },
+    "symmetric": {
+      "$value": [
+        0.42,
+        0.0,
+        0.58,
+        1.0
+      ]
+    },
+    "launch": {
+      "$value": [
+        0.22,
+        0.9,
+        0.35,
+        1.0
+      ]
+    },
+    "arc": {
+      "$value": [
+        0.3,
+        0.85,
+        0.35,
+        1.0
+      ]
+    },
+    "drift": {
+      "$value": [
+        0.2,
+        0.75,
+        0.3,
+        1.0
+      ]
+    },
+    "glide": {
+      "$value": [
+        0.25,
+        0.7,
+        0.3,
+        1.0
+      ]
+    },
+    "dissolve": {
+      "$value": [
+        0.35,
+        0.6,
+        0.4,
+        1.0
+      ]
+    },
+    "pop": {
+      "$value": [
+        0.3,
+        0.9,
+        0.3,
+        1.15
+      ]
+    }
+  }
+}

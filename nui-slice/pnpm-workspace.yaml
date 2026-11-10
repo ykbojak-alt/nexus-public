@@ -1,0 +1,11 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+
+# esbuild postinstall is a no-op on this stack (binary ships via the
+# platform-specific optional dep @esbuild/win32-x64). Approval unblocks
+# `pnpm install` under pnpm 12's ERR_PNPM_IGNORED_BUILDS policy.
+allowBuilds:
+  esbuild: true
+  esbuild@0.25.12: true
+  nx: true

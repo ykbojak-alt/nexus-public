@@ -1,0 +1,111 @@
+/* S5–S6 motion only; all state and content remain owned by the host/UI. */
+
+.confirmation {
+  position: relative;
+  animation: confirmationIn 180ms cubic-bezier(0, 0, 0.2, 1) both;
+}
+
+.confirmation::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid transparent;
+  border-radius: var(--nexus-radius-lg, 12px);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.confirmation[data-confirm-state='allow']::after,
+.confirmation[data-confirm-state='allowed']::after {
+  border-color: var(--nexus-state-active, #36BE79);
+  animation: decisionFlash 240ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+.confirmation[data-confirm-state='deny']::after,
+.confirmation[data-confirm-state='denied']::after {
+  border-color: var(--nexus-state-error, #F97F66);
+  animation: decisionFlash 240ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+.confirmation[data-confirm-state='timeout']::after {
+  border-color: var(--nexus-state-warning, #F5A63B);
+  animation: decisionFlash 240ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+.diffReview {
+  animation: reviewIn 240ms cubic-bezier(0, 0, 0.2, 1) both;
+}
+
+.diffReview [data-testid='diff-review-card'] > ul > li {
+  animation: diffRowIn 240ms cubic-bezier(0, 0, 0.2, 1) both;
+}
+
+.diffReview [data-testid='diff-review-card'] > ul > li:nth-child(1) { animation-delay: 0ms; }
+.diffReview [data-testid='diff-review-card'] > ul > li:nth-child(2) { animation-delay: 40ms; }
+.diffReview [data-testid='diff-review-card'] > ul > li:nth-child(3) { animation-delay: 80ms; }
+.diffReview [data-testid='diff-review-card'] > ul > li:nth-child(4) { animation-delay: 120ms; }
+.diffReview [data-testid='diff-review-card'] > ul > li:nth-child(5) { animation-delay: 160ms; }
+.diffReview [data-testid='diff-review-card'] > ul > li:nth-child(n + 6) { animation-delay: 200ms; }
+
+.checkpoint {
+  position: relative;
+}
+
+.checkpoint[data-checkpoint-state='restoring']::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border: 1px solid var(--nexus-state-warning, #F5A63B);
+  border-radius: inherit;
+  pointer-events: none;
+  animation: restorePulse 900ms cubic-bezier(0.2, 0, 0, 1) infinite;
+}
+
+.checkpoint[data-checkpoint-state='restored'] {
+  animation: restoreDone 240ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+.checkpoint[data-checkpoint-state='unavailable'] {
+  animation: none;
+}
+
+@keyframes confirmationIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes decisionFlash {
+  0% { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+
+@keyframes reviewIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes diffRowIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes restorePulse {
+  0%, 100% { opacity: 0.25; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.015); }
+}
+
+@keyframes restoreDone {
+  from { opacity: 0.7; transform: scale(0.99); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confirmation,
+  .confirmation::after,
+  .diffReview,
+  .diffReview [data-testid='diff-review-card'] > ul > li,
+  .checkpoint[data-checkpoint-state='restored'],
+  .checkpoint[data-checkpoint-state='restoring']::after {
+    animation: none;
+  }
+}

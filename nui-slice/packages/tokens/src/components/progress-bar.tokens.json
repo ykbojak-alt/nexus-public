@@ -1,0 +1,39 @@
+{
+  "$description": "Progress-bar contract (wave-XIV W2): thin run/boot strip — track, fill, indeterminate slide, error/success tones. Fill color by assistant reuses personaAccent.* (start-screen wave-XIII) — binding via [data-persona] in component css, not per-persona duplicates.",
+  "progress": {
+    "height": {
+      "$type": "dimension",
+      "$value": "4px",
+      "$description": "Track height — spec range 4–6px; 4px is the shipped canon."
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.sm}",
+      "$description": "Track/fill radius — 2px matches existing strip."
+    },
+    "track": {
+      "$type": "color",
+      "$value": "{border.subtle}",
+      "$description": "Track ground — one step under the fill, theme-aware."
+    },
+    "fill": {
+      "$type": "color",
+      "$value": "{accent.primary}",
+      "$description": "Determinate fill — accent of the active theme; per-assistant override via personaAccent.* on [data-persona]."
+    },
+    "fillSuccess": {
+      "$type": "color",
+      "$value": "{state.success}"
+    },
+    "fillError": {
+      "$type": "color",
+      "$value": "{state.error}",
+      "$description": "Error tone — failed boot/warm run, per status dictionary."
+    },
+    "indeterminateDuration": {
+      "$type": "duration",
+      "$value": "{duration.slow}",
+      "$description": "Slide cycle of the indeterminate fill — reduced-motion freezes it."
+    }
+  }
+}

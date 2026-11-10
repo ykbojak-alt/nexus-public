@@ -1,0 +1,119 @@
+/* Boot-motion (волна XIV W4). Длительности дублируют
+ * packages/motion/src/boot-motion.ts — CSS не читает TS-пакет
+ * (конвенция ui/src/motion/motion.module.css). */
+
+@keyframes bootEmblemIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes bootFigureIn {
+  from { opacity: 0; transform: scale(1.045); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes bootShimmer {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(300%); }
+}
+
+@keyframes bootVeilOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+.emblem {
+  animation: bootEmblemIn 700ms cubic-bezier(0.22, 0.9, 0.35, 1) both;
+}
+
+.figure {
+  display: block;
+  animation: bootFigureIn 900ms cubic-bezier(0.25, 0.7, 0.3, 1) 120ms both;
+}
+
+/* Полоса: fill подрастает к наблюдаемой доле (240ms); неизвестная доля
+ * показывается движущимся маркером на пустой базе. */
+.track {
+  position: relative;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--nexus-surface-inset, rgba(246, 240, 228, 0.08));
+}
+
+.fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    var(--nexus-accent-primary, #C9A45C),
+    var(--nexus-accent-secondary, #E5C988)
+  );
+  transition: width 240ms cubic-bezier(0.22, 0.9, 0.35, 1);
+}
+
+/* Indeterminate marker sweeps over an always-visible empty track. The
+ * accent occupies only a short segment, never the full progress width. */
+.shimmer {
+  width: 34%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--nexus-accent-primary, #C9A45C) 45%,
+    var(--nexus-accent-primary, #C9A45C) 55%,
+    transparent
+  );
+  animation: bootShimmer 1400ms cubic-bezier(0.35, 0.6, 0.4, 1) infinite;
+}
+
+/* Вейл прибытия: стекло (blur + тёмная подложка) + золотая кромка
+ * снизу — мягкий кроссфейд boot → целевой экран. */
+.veil {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  background: rgba(15, 15, 19, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  animation: bootVeilOut 700ms cubic-bezier(0.35, 0.6, 0.4, 1) forwards;
+}
+
+.veil::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--nexus-accent-primary, #C9A45C) 30%,
+    var(--nexus-accent-secondary, #E5C988) 50%,
+    var(--nexus-accent-primary, #C9A45C) 70%,
+    transparent
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .emblem,
+  .figure {
+    animation: none;
+  }
+
+  .fill {
+    transition: none;
+  }
+
+  .shimmer {
+    animation: none;
+    transform: none;
+  }
+
+  .veil {
+    animation: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}

@@ -1,0 +1,1021 @@
+/* Здесь ТОЛЬКО program-специфичные P-варианты (MACHINA-gold),
+   installer/launch-панель и program-лэйаут. Базовые tile/frame стили
+   переиспользуются из games.module.css напрямую в screen.tsx (две
+   CSS-модули складываются в className). @media-структура и @keyframes
+   сохранены из бандла 0m12rx5-27wjt.css (YfHjmq_* → семантические). */
+
+/* ── program-специфичные P-варианты: MACHINA-gold overlay ───────────────── */
+
+.tileMediaP {
+  transition: box-shadow var(--nexus-duration-fast, .14s) ease,
+              border-color var(--nexus-duration-fast, .14s) ease;
+  border-color: #e8b45ca6;
+  box-shadow:
+    0 0 8px #e8b45c59,
+    0 0 24px #e8b45c2e,
+    0 0 64px #e8b45c1a,
+    inset 0 0 24px #e8b45c0f;
+}
+
+.tile[data-selected] .tileMediaP,
+.tileMain:hover .tileMediaP {
+  border-color: #f4c95de6;
+  box-shadow:
+    0 0 10px #e8b45c8c,
+    0 0 32px #e8b45c4d,
+    0 0 72px #e8b45c29,
+    inset 0 0 28px #e8b45c1a;
+}
+
+.tileMediaP::before {
+  background-color: #0000;
+  background-image:
+    linear-gradient(#e8b45c, #e8b45c),
+    linear-gradient(#e8b45c, #e8b45c),
+    linear-gradient(#e8b45c, #e8b45c),
+    linear-gradient(#e8b45c, #e8b45c),
+    linear-gradient(#e8b45c, #e8b45c),
+    linear-gradient(#e8b45c, #e8b45c),
+    linear-gradient(#e8b45c, #e8b45c),
+    linear-gradient(#e8b45c, #e8b45c);
+  background-position: 0 0, 100% 0, 0 100%, 100% 100%,
+                       0 0, 100% 0, 0 100%, 100% 100%;
+  background-repeat: no-repeat;
+  background-size: 14px 2px, 14px 2px, 14px 2px, 14px 2px,
+                   2px 14px, 2px 14px, 2px 14px, 2px 14px;
+  background-attachment: scroll, scroll, scroll, scroll,
+                         scroll, scroll, scroll, scroll;
+  background-origin: padding-box, padding-box, padding-box, padding-box,
+                     padding-box, padding-box, padding-box, padding-box;
+  background-clip: border-box, border-box, border-box, border-box,
+                   border-box, border-box, border-box, border-box;
+}
+
+.tileMediaP .tileTitleP {
+  box-sizing: border-box;
+  color: #f6e7c4;
+  text-shadow:
+    0 0 10px #e8b45c8c,
+    0 0 26px #e8b45c47,
+    0 2px 6px #000000f2;
+  background-color: #0a0804d1;
+  background-image:
+    radial-gradient(at 50% 0, #e8b45c29, #0000 60%),
+    linear-gradient(#0e0b05eb, #0806039e);
+  border: 1px solid #e8b45c61;
+  border-radius: 10px;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 9px 16px 10px;
+  animation: none;
+  position: static;
+  inset: auto;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.tileOverlayP {
+  background: linear-gradient(
+    #05080ee0 0%,
+    #05080eb3 22%,
+    #05080e1f 55%,
+    #05080e75 100%
+  );
+  justify-content: flex-start;
+  gap: 0;
+  padding: 12px 14px 14px;
+  position: absolute;
+  inset: 0;
+}
+
+.tileOverlayP .tileMetaP {
+  gap: 6px;
+  margin: 10px 0 0;
+}
+
+.tileFootP {
+  margin: auto 0 0 auto;
+  padding-top: 12px;
+  position: static;
+}
+
+.tileChipP {
+  background: linear-gradient(#e8b45c24, #070b11eb 55%), #070c14;
+  border-color: #e8b45c8c;
+  box-shadow:
+    inset 0 0 10px #e8b45c1f,
+    0 0 8px #e8b45c4d;
+}
+
+.tileStatusP {
+  color: #fff3da;
+  text-shadow:
+    0 0 8px #e8b45ccc,
+    0 0 20px #e8b45c80,
+    0 2px 4px #000c;
+  background:
+    radial-gradient(120% 120% at 25% 12%, #fff4d638, #fff0 45%),
+    linear-gradient(#3a2e18 0%, #241b0e 45%, #120d06 100%);
+  border-color: #e8b45cd9;
+  box-shadow:
+    inset 0 2px 3px #fff4d62e,
+    inset 0 -4px 8px #00000080,
+    inset 0 0 14px #e8b45c33,
+    0 0 10px #e8b45c80,
+    0 0 26px #e8b45c4d,
+    0 8px 18px #0009;
+}
+
+.tileStatusP::before {
+  color: #e8b45c;
+  text-shadow: 0 0 8px #e8b45c, 0 0 18px #e8b45ccc;
+}
+
+.tileStatusSoonP {
+  --neon: #a8894e;
+  opacity: .85;
+}
+
+.tileMediaStatic {
+  aspect-ratio: 16 / 10;
+  min-height: 200px;
+}
+
+/* ── program-специфичная selection-лэйаут ──────────────────────────────── */
+
+.programSelection {
+  max-width: none;
+}
+
+.programSelection[data-program-selection='active'] .programList {
+  display: none;
+}
+
+.programList {
+  display: grid;
+  gap: 0;
+  align-content: start;
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 760px) {
+  .programList {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .programList {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.programTile {
+  --neon: #e8b45c;
+}
+
+/* ── tile media-варианты (P-суффиксы, MACHINA-gold) ───────────────────── */
+
+.tileMediaImg {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: absolute;
+  inset: 0;
+}
+
+.tileMediaVideoP {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* ── tile (базовый, без P) — только program-окраска ───────────────────── */
+
+.tileMainButton {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform var(--nexus-duration-fast, 140ms)
+              cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1));
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+}
+
+.tileMainButton:hover {
+  transform: translateY(-3px);
+}
+
+.tileMainButton:focus-visible {
+  outline: 2px solid var(--nexus-accent-primary, #c9a45c);
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+
+/* ── Launch-panel: header + media + meta-chips ────────────────────────── */
+
+.launchPanel {
+  min-width: 0;
+  animation: launchReveal var(--nexus-duration-fast, .14s)
+             cubic-bezier(var(--nexus-easing-standard, 0.2, 0, 0, 1)) both;
+  background:
+    radial-gradient(at 50% 0, #e8b45c1a, #0000 55%),
+    linear-gradient(165deg, #0e121af0, #06090eeb);
+  border: 1px solid #e8b45c8c;
+  border-radius: 16px;
+  flex-direction: column;
+  gap: 18px;
+  padding: 20px 22px 18px;
+  display: flex;
+  position: relative;
+  overflow: hidden auto;
+  box-shadow:
+    0 0 10px #e8b45c2e,
+    0 0 36px #e8b45c1a,
+    inset 0 0 30px #e8b45c0d;
+}
+
+@supports (scrollbar-width: thin) {
+  .launchPanel {
+    scrollbar-width: thin;
+    scrollbar-color: #e8b45c73 transparent;
+  }
+}
+
+.launchPanel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.launchPanel::-webkit-scrollbar-track {
+  background: 0 0;
+}
+
+.launchPanel::-webkit-scrollbar-thumb {
+  background: #e8b45c4d;
+  border-radius: 4px;
+}
+
+.launchPanel::-webkit-scrollbar-thumb:hover {
+  background: #e8b45c80;
+}
+
+.launchPanel::after {
+  content: '';
+  background-image:
+    linear-gradient(160deg, #05070bc7, #05070b8c 45%, #05070bd1),
+    var(--launch-bg, none);
+  pointer-events: none;
+  z-index: 0;
+  background-position: 50%;
+  background-size: cover;
+  border-radius: 15px;
+  position: absolute;
+  inset: 0;
+}
+
+.launchPanel::before {
+  content: '';
+  opacity: .75;
+  pointer-events: none;
+  z-index: 1;
+  background-color: #0000;
+  background-image:
+    linear-gradient(#e8b45c, #e8b45c),
+    linear-gradient(#e8b45c, #e8b45c),
+    linear-gradient(#e8b45c, #e8b45c),
+    linear-gradient(#e8b45c, #e8b45c),
+    linear-gradient(#e8b45c, #e8b45c),
+    linear-gradient(#e8b45c, #e8b45c),
+    linear-gradient(#e8b45c, #e8b45c),
+    linear-gradient(#e8b45c, #e8b45c);
+  background-position: 0 0, 100% 0, 0 100%, 100% 100%,
+                       0 0, 100% 0, 0 100%, 100% 100%;
+  background-repeat: no-repeat;
+  background-size: 16px 2px, 16px 2px, 16px 2px, 16px 2px,
+                   2px 16px, 2px 16px, 2px 16px, 2px 16px;
+  background-attachment: scroll, scroll, scroll, scroll,
+                         scroll, scroll, scroll, scroll;
+  background-origin: padding-box, padding-box, padding-box, padding-box,
+                     padding-box, padding-box, padding-box, padding-box;
+  background-clip: border-box, border-box, border-box, border-box,
+                   border-box, border-box, border-box, border-box;
+  border-radius: 9px;
+  position: absolute;
+  inset: 7px;
+}
+
+.launchPanel > * {
+  z-index: 2;
+  position: relative;
+}
+
+@keyframes launchReveal {
+  0%   { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.launchHeader {
+  border-bottom: 1px solid #e8b45c29;
+  align-items: flex-start;
+  gap: 18px;
+  padding-bottom: 18px;
+  display: flex;
+}
+
+.launchMedia {
+  aspect-ratio: 3 / 2;
+  background:
+    radial-gradient(at 50% 0, #e8b45c14, #0000 60%),
+    #05070b;
+  border: 1px solid #e8b45c66;
+  border-radius: 10px;
+  flex: 0 0 168px;
+  width: 168px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 18px #e8b45c24;
+}
+
+.launchMedia::after {
+  content: '';
+  pointer-events: none;
+  border: 1px solid #f6e7c41a;
+  border-radius: 9px;
+  position: absolute;
+  inset: 0;
+  box-shadow:
+    inset 0 0 22px #00000080,
+    inset 0 1px #f6e7c414;
+}
+
+.launchMediaFill {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.launchHeadText {
+  flex-direction: column;
+  flex: 1;
+  gap: 6px;
+  min-width: 0;
+  display: flex;
+}
+
+.launchKicker {
+  font-family: 'IBM Plex Mono', 'Inter Tight', monospace;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: #e8b45cb8;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  display: inline-flex;
+}
+
+.launchKicker::before {
+  content: '';
+  background: linear-gradient(90deg, #0000, #e8b45c);
+  width: 20px;
+  height: 1px;
+  box-shadow: 0 0 6px #e8b45ccc;
+}
+
+.launchTitle {
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: #f6e7c4;
+  text-shadow: 0 0 12px #e8b45c66, 0 0 28px #e8b45c29;
+  margin: 0;
+  font-family: 'IBM Plex Mono', 'Inter Tight', monospace;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.launchDesc {
+  color: #cfc6b2b8;
+  max-width: 68ch;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  margin: 0;
+  line-height: 1.55;
+}
+
+.launchMeta {
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+  display: flex;
+}
+
+.launchChip {
+  color: #cfc6b2d9;
+  font-family: 'IBM Plex Mono', 'Inter Tight', monospace;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: .06em;
+  white-space: nowrap;
+  background: #070b118c;
+  border: 1px solid #e8b45c47;
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+.launchChip[data-kind='version'] {
+  color: #f4c95d;
+  background: #e8b45c1a;
+  border-color: #e8b45c99;
+}
+
+.launchChip[data-kind='pinned'] {
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: 0.06em;
+  color: var(--nexus-text-secondary, #B0B7C2);
+  background: #070b118c;
+}
+
+.launchChip[data-kind='pinned'][aria-pressed='true'] {
+  color: var(--nexus-text-accent, #C9A45C);
+  border-color: var(--nexus-accent-primary, #C9A45C);
+}
+
+.launchChip[data-kind='kind'] {
+  color: #a8c47ae6;
+  border-style: dashed;
+}
+
+.launchClose {
+  min-height: 34px;
+  font-family: 'IBM Plex Mono', 'Inter Tight', monospace;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #f0d6a0;
+  cursor: pointer;
+  background:
+    radial-gradient(at 50% -40%, #e8b45c29, #0000 65%),
+    linear-gradient(#e8b45c1a, #e8b45c05);
+  border: 1px solid #e8b45c6b;
+  border-radius: 999px;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 15px;
+  font-weight: 600;
+  transition: border-color .14s, box-shadow .14s, color .14s, transform .14s;
+  display: inline-flex;
+  box-shadow: inset 0 1px #f6e7c41a, 0 0 10px #e8b45c1f;
+}
+
+.launchCloseIcon {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: #e8b45c;
+  text-shadow: 0 0 8px #e8b45ce6;
+  transition: transform .14s;
+}
+
+.launchClose:hover {
+  color: #fff3da;
+  border-color: #e8b45cd9;
+  transform: translateY(-1px);
+  box-shadow: inset 0 0 14px #e8b45c24, 0 0 16px #e8b45c47;
+}
+
+.launchClose:hover .launchCloseIcon {
+  transform: translate(-2px);
+}
+
+.launchClose:active {
+  transform: translateY(0);
+}
+
+.launchPanel :focus-visible {
+  outline-offset: 3px;
+  outline: 2px solid #e8b45cd9;
+}
+
+/* ── Launch-panel: body sections ──────────────────────────────────────── */
+
+.launchSection {
+  border-top: 1px solid #e8b45c29;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 14px;
+  display: flex;
+}
+
+.launchSectionTitle {
+  font-family: 'IBM Plex Mono', 'Inter Tight', monospace;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: #e8b45c99;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-weight: 700;
+  display: flex;
+}
+
+.launchSectionTitle::before {
+  content: '';
+  border: 1px solid #e8b45cbf;
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  transform: rotate(45deg);
+  box-shadow: 0 0 6px #e8b45c80;
+}
+
+.launchSectionTitle::after {
+  content: '';
+  background: linear-gradient(90deg, #e8b45c59, #0000);
+  flex: 1;
+  height: 1px;
+}
+
+.launchBody {
+  min-width: 0;
+}
+
+.launchNote {
+  color: var(--nexus-text-tertiary, #8d8471);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  margin: 0;
+}
+
+/* ── Launch-panel: specs dl ──────────────────────────────────────────── */
+
+.launchSpecs {
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  display: flex;
+}
+
+.launchSpec {
+  font-family: 'IBM Plex Mono', 'Inter Tight', monospace;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  background: linear-gradient(#e8b45c0d, #0000), #070b118c;
+  border: 1px solid #e8b45c33;
+  border-radius: 8px;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 12px;
+  display: flex;
+}
+
+.launchSpec dt {
+  color: var(--nexus-text-tertiary, #8d8471);
+  letter-spacing: .04em;
+}
+
+.launchSpec dd {
+  color: var(--nexus-text-primary, #f2ede0);
+  margin: 0;
+}
+
+/* ── Launch-panel: actions ───────────────────────────────────────────── */
+
+.launchActions {
+  border-top: 1px solid #e8b45c29;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 16px;
+  display: flex;
+}
+
+.launchLink {
+  color: #f4c95d;
+  min-height: 36px;
+  font-family: 'IBM Plex Mono', 'Inter Tight', monospace;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  background:
+    radial-gradient(at 50% -40%, #e8b45c24, #0000 65%),
+    linear-gradient(#e8b45c1a, #e8b45c05);
+  border: 1px solid #e8b45c73;
+  border-radius: 999px;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color .14s, box-shadow .14s, color .14s, transform .14s;
+  display: inline-flex;
+}
+
+.launchLink::after {
+  content: '\2192';
+  color: #e8b45c;
+  transition: transform .14s;
+}
+
+.launchLink:hover {
+  color: #fff3da;
+  border-color: #e8b45ccc;
+  transform: translateY(-1px);
+  box-shadow: inset 0 0 12px #e8b45c1f, 0 0 16px #e8b45c42;
+}
+
+.launchLink:hover::after {
+  transform: translate(3px);
+}
+
+.launchLink:active {
+  transform: translateY(0);
+}
+
+/* ── Installer ───────────────────────────────────────────────────────── */
+
+.installer {
+  gap: var(--nexus-space-2, 8px);
+  flex-direction: column;
+  min-width: 0;
+  display: flex;
+}
+
+.installerRow {
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  flex-wrap: wrap;
+  display: flex;
+}
+
+.installerAction {
+  font-family: 'IBM Plex Mono', 'Inter Tight', monospace;
+  font-size: calc(var(--nexus-type-caption-font-size, 13px) * 1.1);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #f6e7c4;
+  cursor: pointer;
+  transition:
+    box-shadow var(--nexus-duration-fast, .14s) ease,
+    border-color var(--nexus-duration-fast, .14s) ease,
+    color var(--nexus-duration-fast, .14s) ease,
+    transform var(--nexus-duration-fast, .14s) ease;
+  background:
+    radial-gradient(at 50% -30%, #f4c95d47, #0000 60%),
+    linear-gradient(#3a2e18 0%, #241b0e 45%, #120d06 100%);
+  border: 1px solid #e8b45c;
+  border-radius: 999px;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px 9px;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  box-shadow:
+    inset 0 1px #f6e7c42e,
+    inset 0 0 14px #e8b45c38,
+    0 0 10px #e8b45c73,
+    0 2px 8px #00000073;
+}
+
+.installerAction:hover {
+  color: #fff3da;
+  border-color: #f4c95d;
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px #f6e7c43d,
+    inset 0 0 18px #e8b45c4d,
+    0 0 18px #e8b45c8c,
+    0 4px 12px #00000080;
+}
+
+.installerAction:active {
+  transform: translateY(0);
+  box-shadow: inset 0 0 10px #e8b45c47, 0 0 8px #e8b45c59;
+}
+
+.installerAction:focus-visible {
+  outline: 2px solid var(--nexus-accent-primary, #c9a45c);
+  outline-offset: 2px;
+}
+
+.installerAction:disabled {
+  cursor: default;
+  opacity: .7;
+  transform: none;
+}
+
+.installerSecondary {
+  font-family: 'IBM Plex Mono', 'Inter Tight', monospace;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--nexus-text-secondary, #b0b7c2);
+  border: 1px solid var(--nexus-border-subtle, #c9a45c40);
+  cursor: pointer;
+  transition:
+    color var(--nexus-duration-fast, .14s) ease,
+    border-color var(--nexus-duration-fast, .14s) ease,
+    background var(--nexus-duration-fast, .14s) ease;
+  background: 0 0;
+  border-radius: 999px;
+  padding: 6px 14px;
+}
+
+.installerSecondary:hover {
+  color: #f0d6a0;
+  background: #e8b45c12;
+  border-color: #e8b45c8c;
+}
+
+.installerSecondary:focus-visible {
+  outline: 2px solid var(--nexus-accent-primary, #c9a45c);
+  outline-offset: 2px;
+}
+
+/* ── Progress bar ─────────────────────────────────────────────────────── */
+
+.progress {
+  background:
+    radial-gradient(at 50% 0, #e8b45c1a, #0000 70%),
+    #05080ccc;
+  border: 1px solid #e8b45c59;
+  border-radius: 999px;
+  flex: 140px;
+  min-width: 120px;
+  height: 12px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px #0009;
+}
+
+.progressFill {
+  width: 0%;
+  height: 100%;
+  transition: width var(--nexus-duration-fast, .14s) linear;
+  background: linear-gradient(90deg, #8f6a2c, #e8b45c 60%, #f4c95d);
+  border-radius: 999px;
+  position: relative;
+  box-shadow: 0 0 8px #e8b45c99, 0 0 2px #f4c95dcc;
+}
+
+.progressFill::after {
+  content: '';
+  border-radius: inherit;
+  background: repeating-linear-gradient(
+    115deg,
+    #0000 0 8px,
+    #fff4d629 8px 14px
+  );
+  animation: progressSlide .9s linear infinite;
+  position: absolute;
+  inset: 0;
+}
+
+@keyframes progressSlide {
+  0%   { background-position: 0 0; }
+  100% { background-position: 20px 0; }
+}
+
+.progressLabel {
+  font-family: 'IBM Plex Mono', 'Inter Tight', monospace;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: .08em;
+  color: #f0d6a0e6;
+  white-space: nowrap;
+}
+
+/* ── Installer stage chip ────────────────────────────────────────────── */
+
+.installerStage {
+  font-family: 'IBM Plex Mono', 'Inter Tight', monospace;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #f0d6a0;
+  background:
+    radial-gradient(at 50% -40%, #e8b45c29, #0000 65%),
+    #070b11b8;
+  border: 1px solid #e8b45c6b;
+  border-radius: 999px;
+  align-self: flex-start;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 14px;
+  font-weight: 700;
+  display: inline-flex;
+  box-shadow: inset 0 0 10px #e8b45c14, 0 0 12px #e8b45c1a;
+}
+
+.installerStage::before {
+  content: '';
+  background: #e8b45c;
+  border-radius: 50%;
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  box-shadow: 0 0 6px #e8b45ce6, 0 0 14px #e8b45c73;
+}
+
+/* ── Target chips (КУДА) ─────────────────────────────────────────────── */
+
+.installerRow[data-part='target'] {
+  background: #05080ca8;
+  border: 1px solid #e8b45c47;
+  border-radius: 999px;
+  align-self: flex-start;
+  align-items: center;
+  gap: 3px;
+  padding: 4px;
+  display: inline-flex;
+  box-shadow: inset 0 1px 4px #00000080;
+}
+
+.targetLabel {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: .18em;
+  color: #e8b45c8c;
+  padding: 0 9px 0 11px;
+  font-weight: 700;
+}
+
+.targetChip {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: .08em;
+  color: var(--nexus-text-secondary, #b0b7c2);
+  cursor: pointer;
+  transition:
+    color var(--nexus-duration-fast, .14s) ease,
+    background var(--nexus-duration-fast, .14s) ease,
+    box-shadow var(--nexus-duration-fast, .14s) ease;
+  background: 0 0;
+  border: 1px solid #0000;
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-weight: 600;
+}
+
+.targetChip:hover {
+  color: var(--nexus-text-primary, #f6f0e4);
+  background: #e8b45c14;
+}
+
+.targetChip:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, #c9a45c);
+  outline-offset: 1px;
+}
+
+.targetChip[data-active] {
+  color: #1a1206;
+  background: linear-gradient(#f4c95d, #c9973f);
+  font-weight: 700;
+  box-shadow: inset 0 1px #fff4d680, 0 0 10px #e8b45c73;
+}
+
+/* ── Installer error / hint ──────────────────────────────────────────── */
+
+.installerError {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: #ff9db4;
+  background: #ff7a9c0f;
+  border: 1px solid #ff7a9c59;
+  border-radius: 8px;
+  align-self: flex-start;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 7px 13px;
+  display: inline-flex;
+}
+
+.installerError::before {
+  content: '\25C6';
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: #ff7a9c;
+  text-shadow: 0 0 8px #ff7a9cb3;
+}
+
+.installerHint {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8e97a5);
+  letter-spacing: .04em;
+  border-left: 2px solid #e8b45c59;
+  margin: 0;
+  padding-left: 10px;
+}
+
+/* ── Reduced motion ──────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .progressFill {
+    transition: none;
+  }
+  .progressFill::after {
+    animation: none;
+  }
+  .launchPanel {
+    animation: none;
+  }
+}
+
+/* ── Responsive: narrow panels ───────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .launchHeader {
+    flex-wrap: wrap;
+  }
+  .launchMedia {
+    aspect-ratio: 16 / 7;
+    flex-basis: 100%;
+    width: 100%;
+  }
+}
+
+/* ── UI-3: каталог — поиск/фильтр/пин ────────────────────────────────── */
+
+.catalogToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nexus-space-3, 12px);
+}
+
+.catalogToolbar[data-state='hidden'] {
+  display: none;
+}
+
+.catalogSearch {
+  flex: 1 1 220px;
+  min-width: 0;
+  max-width: 360px;
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-3, 12px);
+  background: var(--nexus-surface-elevated, #232329);
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-md, 8px);
+  color: var(--nexus-text-primary, #F6F0E4);
+  font: inherit;
+  font-size: var(--nexus-type-body-font-size, 15px);
+}
+
+.catalogSearch:focus-visible {
+  outline: none;
+  border-color: var(--nexus-accent-primary, #C9A45C);
+  box-shadow: 0 0 0 2px var(--nexus-accent-primary-dim, rgba(201, 164, 92, 0.25));
+}
+
+.catalogFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nexus-space-2, 8px);
+}
+
+.catalogFilter {
+  padding: var(--nexus-space-1, 4px) var(--nexus-space-3, 12px);
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-full, 999px);
+  background: transparent;
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+
+.catalogFilter[data-active] {
+  border-color: var(--nexus-accent-primary, #C9A45C);
+  color: var(--nexus-text-accent, #C9A45C);
+}
+
+.catalogNote {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8A93A3);
+}
+
+.pinBtn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.18));
+  border-radius: var(--nexus-radius-full, 999px);
+  background: var(--nexus-surface-overlay, rgba(10, 10, 12, 0.6));
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.pinBtn[aria-pressed='true'] {
+  border-color: var(--nexus-accent-primary, #C9A45C);
+  color: var(--nexus-text-accent, #C9A45C);
+}

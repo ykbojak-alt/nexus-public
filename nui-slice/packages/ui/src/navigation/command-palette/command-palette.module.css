@@ -1,0 +1,59 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  padding-top: 15vh;
+  background: var(--nexus-surface-overlay, rgba(10,10,12,0.6));
+  backdrop-filter: blur(var(--nexus-blur-sm, 8px));
+  z-index: var(--nexus-layer-overlay, 110);
+}
+.dialog {
+  background: var(--nexus-depth-elevated-bg, #232329);
+  border: 1px solid var(--nexus-border-default, rgba(246,240,228,0.12));
+  border-radius: var(--nexus-radius-lg, 12px);
+  box-shadow: var(--nexus-depth-overlay-shadow, 0 16px 56px rgba(0,0,0,0.52));
+  width: min(560px, calc(100vw - 2 * var(--nexus-layout-safe-area, 32px)));
+  height: fit-content;
+  overflow: hidden;
+}
+.input {
+  width: 100%;
+  height: 48px;
+  padding: 0 var(--nexus-space-4, 16px);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--nexus-border-subtle, rgba(246,240,228,0.06));
+  color: var(--nexus-text-primary, #F6F0E4);
+  font: inherit;
+  outline: none;
+}
+/* W2-131: the base `outline: none` ties the global :where() ring at 0,2,0 —
+   re-assert the keyboard ring here so palette input focus never depends on
+   css bundle order. */
+.input:focus-visible {
+  outline: var(--nexus-focus-ring-width, 2px) solid var(--nexus-focus-ring, #539EFF);
+  outline-offset: var(--nexus-focus-ring-offset, 2px);
+}
+.input::placeholder { color: var(--nexus-text-tertiary, #8E97A5); }
+.list { max-height: 320px; overflow: auto; padding: var(--nexus-space-2, 8px); }
+.option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 36px;
+  padding: 0 var(--nexus-space-3, 12px);
+  border-radius: var(--nexus-radius-md, 8px);
+  color: var(--nexus-text-secondary, #B0B7C2);
+  cursor: pointer;
+}
+.option[data-active] {
+  background: var(--nexus-accent-primary-soft, rgba(201,164,92,0.16));
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+.hint { font-size: var(--nexus-type-caption-font-size, 13px); color: var(--nexus-text-tertiary, #8E97A5); }
+.empty { padding: var(--nexus-space-4, 16px); color: var(--nexus-text-tertiary, #8E97A5); font-size: var(--nexus-type-caption-font-size, 13px); }
+
+@media (prefers-reduced-transparency: reduce) {
+  .backdrop { backdrop-filter: none; }
+}

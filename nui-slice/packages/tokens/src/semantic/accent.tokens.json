@@ -1,0 +1,50 @@
+{
+  "$description": "Semantic accent roles — nexus defaults are champagne gold primary + quantum blue energy + aurora violet. Theme overrides swap these to forge amber/bronze, archive violet etc.",
+  "accent": {
+    "$type": "color",
+    "primary": {
+      "$value": "{color.gold.500}"
+    },
+    "primaryHover": {
+      "$value": "{color.gold.400}"
+    },
+    "primaryActive": {
+      "$value": "{color.gold.600}"
+    },
+    "primarySoft": {
+      "$value": "color-mix(in srgb, {color.gold.500} 16%, transparent)"
+    },
+    "primaryDim": {
+      "$value": "color-mix(in srgb, {accent.primary} 25%, transparent)"
+    },
+    "onPrimary": {
+      "$value": "{color.obsidian.950}"
+    },
+    "energy": {
+      "$value": "{color.blue.400}"
+    },
+    "energySoft": {
+      "$value": "color-mix(in srgb, {color.blue.400} 16%, transparent)"
+    },
+    "energyDeep": {
+      "$value": "{color.blue.700}"
+    },
+    "violet": {
+      "$value": "{color.violet.400}"
+    },
+    "violetSoft": {
+      "$value": "color-mix(in srgb, {color.violet.400} 16%, transparent)"
+    },
+    "metal": {
+      "$type": "color",
+      "$value": "{color.titanium.400}"
+    },
+    "glowColor": {
+      "$value": "color-mix(in srgb, {color.gold.500} 45%, transparent)"
+    },
+    "onArt": {
+      "$value": "{color.gold.500}",
+      "$description": "Accent text pinned to the authored gold — for always-dark authored surfaces (games) where accent.primary flips dark under light themes and collapses contrast."
+    }
+  }
+}

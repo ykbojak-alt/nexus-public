@@ -1,0 +1,13 @@
+{
+  "$description": "Hologram / AI-core component contract — restrained bloom, inner emission, sparse particles, thin orbital lines, depth haze (spec §10). Acid neon / glitch / Matrix-green are prohibited.",
+  "hologram": {
+    "coreGlow":    { "$type": "shadow", "$value": "{glow.core}" },
+    "emission":    { "$type": "color", "$value": "{accent.energy}" },
+    "emissionSoft":{ "$type": "color", "$value": "{accent.energySoft}" },
+    "particle":    { "$type": "color", "$value": "color-mix(in srgb, {color.blue.300} 70%, transparent)" },
+    "orbitLine":   { "$type": "color", "$value": "color-mix(in srgb, {color.blue.400} 30%, transparent)" },
+    "orbitWidth":  { "$type": "dimension", "$value": "1px" },
+    "haze":        { "$type": "color", "$value": "color-mix(in srgb, {color.blue.400} 8%, transparent)" },
+    "surfaceTint": { "$type": "color", "$value": "color-mix(in srgb, {color.blue.400} 4%, transparent)" }
+  }
+}

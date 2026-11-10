@@ -1,0 +1,42 @@
+.root {
+  display: inline-flex;
+  gap: var(--nexus-space-1, 4px);
+  padding: var(--nexus-space-1, 4px);
+  background: var(--nexus-surface-base, #141419);
+  border: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.06));
+  border-radius: var(--nexus-radius-md, 8px);
+}
+
+.tab {
+  height: 32px;
+  padding: 0 var(--nexus-space-3, 12px);
+  border: 1px solid transparent;
+  border-radius: var(--nexus-radius-sm, 4px);
+  background: transparent;
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font-family: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-weight: 500;
+  cursor: pointer;
+  transition: color var(--nexus-duration-fast, 140ms) ease;
+}
+
+.tab:hover:not(:disabled) {
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.tab[aria-selected='true'] {
+  background: var(--nexus-accent-primary-soft, rgba(201, 164, 92, 0.16));
+  color: var(--nexus-text-accent, #D8BC76);
+}
+
+.tab:disabled {
+  opacity: var(--nexus-disabled-opacity, 0.45);
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab {
+    transition: none;
+  }
+}

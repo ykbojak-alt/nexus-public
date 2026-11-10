@@ -1,0 +1,55 @@
+{
+  "$description": "Elevation shadows, glass blur levels and controlled glow (spec §9: glow levels none|soft|active|core — luxury first, technology second).",
+  "shadow": {
+    "$type": "shadow",
+    "xs": {
+      "$value": "0 1px 2px 0 rgba(0,0,0,0.30)"
+    },
+    "sm": {
+      "$value": "0 2px 6px 0 rgba(0,0,0,0.32)"
+    },
+    "md": {
+      "$value": "0 4px 16px 0 rgba(0,0,0,0.38)"
+    },
+    "lg": {
+      "$value": "0 8px 32px 0 rgba(0,0,0,0.44)"
+    },
+    "xl": {
+      "$value": "0 16px 56px 0 rgba(0,0,0,0.52)"
+    }
+  },
+  "blur": {
+    "$type": "dimension",
+    "none": {
+      "$value": "0px"
+    },
+    "sm": {
+      "$value": "6px"
+    },
+    "md": {
+      "$value": "12px"
+    },
+    "lg": {
+      "$value": "20px"
+    },
+    "xl": {
+      "$value": "32px"
+    }
+  },
+  "glow": {
+    "$type": "shadow",
+    "$description": "Glow color comes from theme accent/energy roles; primitives fix geometry only.",
+    "none": {
+      "$value": "0 0 0 0 rgba(0,0,0,0)"
+    },
+    "soft": {
+      "$value": "0 0 16px 0 var(--nexus-glow-color, rgba(201,164,92,0.18))"
+    },
+    "active": {
+      "$value": "0 0 24px 0 var(--nexus-glow-color, rgba(201,164,92,0.30))"
+    },
+    "core": {
+      "$value": "0 0 48px 0 var(--nexus-glow-color, rgba(201,164,92,0.45))"
+    }
+  }
+}

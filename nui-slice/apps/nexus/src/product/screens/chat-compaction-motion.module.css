@@ -1,0 +1,252 @@
+.root {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--nexus-border-subtle);
+  border-radius: 10px;
+  background: var(--nexus-surface-elevated);
+  color: var(--nexus-text-primary);
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 100%;
+  min-height: 36px;
+  padding: 7px 12px;
+  border: 0;
+  border-bottom: 1px solid var(--nexus-border-subtle);
+  background: transparent;
+  color: var(--nexus-text-accent);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.toggleTime {
+  flex: none;
+  color: var(--nexus-text-tertiary, var(--nexus-text-secondary));
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.toggle:focus-visible,
+.referencesToggle:focus-visible,
+.references a:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring);
+  outline-offset: -2px;
+}
+
+.content {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) minmax(0, 0fr);
+  min-width: 0;
+  transition:
+    grid-template-rows var(--compaction-out-duration, var(--nexus-duration-normal, 240ms))
+      var(--compaction-out-easing, cubic-bezier(var(--nexus-easing-exit, 0.4, 0, 1, 1)));
+}
+
+.root[data-state='collapsed'] .content {
+  grid-template-rows: minmax(0, 0fr) minmax(0, 1fr);
+}
+
+.historyTrack {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  transition:
+    opacity var(--compaction-out-duration, var(--nexus-duration-normal, 240ms))
+      var(--compaction-out-easing, cubic-bezier(var(--nexus-easing-exit, 0.4, 0, 1, 1))),
+    transform var(--compaction-out-duration, var(--nexus-duration-normal, 240ms))
+      var(--compaction-out-easing, cubic-bezier(var(--nexus-easing-exit, 0.4, 0, 1, 1)));
+}
+
+.compactTrack {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  transition:
+    opacity var(--compaction-in-duration, var(--nexus-duration-normal, 240ms))
+      var(--compaction-in-easing, cubic-bezier(var(--nexus-easing-enter, 0, 0, 0.2, 1))),
+    transform var(--compaction-in-duration, var(--nexus-duration-normal, 240ms))
+      var(--compaction-in-easing, cubic-bezier(var(--nexus-easing-enter, 0, 0, 0.2, 1)));
+}
+
+.historyTrack {
+  opacity: 1;
+}
+
+.root[data-state='collapsed'] .historyTrack {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+.compactTrack {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+.root[data-state='collapsed'] .compactTrack {
+  opacity: 1;
+  transform: none;
+}
+
+.history {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 12px;
+  list-style: none;
+}
+
+.message {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  min-width: 0;
+  overflow: hidden;
+  opacity: 1;
+  transform: none;
+  transition:
+    grid-template-rows var(--compaction-out-duration, var(--nexus-duration-normal, 240ms))
+      var(--compaction-out-easing, cubic-bezier(var(--nexus-easing-exit, 0.4, 0, 1, 1))),
+    opacity var(--compaction-out-duration, var(--nexus-duration-normal, 240ms))
+      var(--compaction-out-easing, cubic-bezier(var(--nexus-easing-exit, 0.4, 0, 1, 1))),
+    transform var(--compaction-out-duration, var(--nexus-duration-normal, 240ms))
+      var(--compaction-out-easing, cubic-bezier(var(--nexus-easing-exit, 0.4, 0, 1, 1)));
+  /* Height tracks expand together; only the content reveal is staggered. */
+  transition-delay:
+    0ms,
+    var(--compaction-row-delay, 0ms),
+    var(--compaction-row-delay, 0ms);
+}
+
+.messageBody {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.root[data-state='collapsed'] .message {
+  grid-template-rows: minmax(0, 0fr);
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+.root[data-state='expanded'] .message {
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.compact {
+  min-width: 0;
+  padding: 10px 12px;
+}
+
+.countBadge {
+  display: inline-flex;
+  max-width: 100%;
+  margin-bottom: 8px;
+  padding: 2px 8px;
+  border: 1px solid var(--nexus-compact-block-border, var(--nexus-glass-card-border));
+  border-radius: var(--nexus-compact-block-radius, 12px);
+  background: var(--nexus-compact-block-bg, var(--nexus-glass-card-bg));
+  color: var(--nexus-text-accent);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: var(--nexus-type-caption-line-height, 18px);
+  overflow-wrap: anywhere;
+}
+
+@keyframes compactionBadgePop {
+  from { transform: scale(0.9); }
+  to { transform: scale(1); }
+}
+
+.root[data-state='collapsed'] .countBadge {
+  animation: compactionBadgePop
+    var(--compaction-badge-duration, var(--nexus-duration-fast, 140ms))
+    var(--compaction-badge-easing, cubic-bezier(var(--nexus-easing-pop, 0.3, 0.9, 0.3, 1.15)))
+    both;
+}
+
+.createdAt {
+  margin: 0 0 8px;
+  color: var(--nexus-text-tertiary, var(--nexus-text-secondary));
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  overflow-wrap: anywhere;
+}
+
+.summary {
+  margin: 0;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.references {
+  min-width: 0;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--nexus-border-subtle);
+}
+
+.referencesToggle {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--nexus-text-accent);
+  font: inherit;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.busyNote {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 0;
+  color: var(--nexus-text-tertiary, var(--nexus-text-secondary));
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+
+.references ul {
+  display: grid;
+  gap: 4px;
+  max-height: 160px;
+  margin: 8px 0 0;
+  padding: 0 0 0 18px;
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
+.references a {
+  color: var(--nexus-text-link);
+  overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content,
+  .historyTrack,
+  .compactTrack,
+  .message {
+    transition: none;
+    transition-delay: 0ms;
+  }
+
+  .countBadge {
+    animation: none;
+  }
+}
+
+.root[data-reduced-motion='true'] .content,
+.root[data-reduced-motion='true'] .historyTrack,
+.root[data-reduced-motion='true'] .compactTrack,
+.root[data-reduced-motion='true'] .message {
+  transition: none;
+  transition-delay: 0ms;
+}
+
+.root[data-reduced-motion='true'] .countBadge {
+  animation: none;
+}

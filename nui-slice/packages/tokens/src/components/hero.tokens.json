@@ -1,0 +1,70 @@
+{
+  "$description": "AssistantHero component contract (wave-IX IX.2) — the authored hero window on MAIN and assistant screens. Pinned: substrate and palette derive from always-dark authored roles (surface.art / accent.onArt) so the hero reads identically on light and dark themes — the image is part of the artwork, not a themed card.",
+  "hero": {
+    "substrate": {
+      "$type": "color",
+      "$value": "{surface.art}",
+      "$description": "Hero window ground — always-dark authored stage, theme-invariant."
+    },
+    "gold": {
+      "$type": "color",
+      "$value": "{accent.onArt}",
+      "$description": "Hero accent gold — pinned authored gold (#C9A45C family), replaces the hardcoded --gold in alice-hero.module.css."
+    },
+    "goldSoft": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {accent.onArt} 40%, transparent)",
+      "$description": "Portrait rings / subtle gold strokes (was rgba(201,164,92,0.4))."
+    },
+    "goldStrong": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {accent.onArt} 66%, transparent)",
+      "$description": "Portrait image frame stroke (was rgba(201,164,92,0.66))."
+    },
+    "wash": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {accent.onArt} 7%, transparent)",
+      "$description": "Warm top wash over the substrate (was rgba(237,221,196,0.04))."
+    },
+    "glowRadial": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {accent.onArt} 20%, transparent)",
+      "$description": "Radial bloom at the portrait well (was rgba(218,175,102,0.2))."
+    },
+    "halo": {
+      "$type": "shadow",
+      "$value": "0 0 42px 0 color-mix(in srgb, {accent.onArt} 16%, transparent)",
+      "$description": "Outer halo around the hero window (was 0 0 42px rgba(201,164,92,.16))."
+    },
+    "haloInner": {
+      "$type": "shadow",
+      "$value": "inset 0 0 35px 0 color-mix(in srgb, {accent.onArt} 12%, transparent)",
+      "$description": "Inner vignette glow inside the hero window."
+    },
+    "portraitGlow": {
+      "$type": "shadow",
+      "$value": "0 0 34px 0 color-mix(in srgb, {accent.onArt} 28%, transparent)",
+      "$description": "Glow behind the circular portrait image (was 0 0 34px rgba(201,164,92,.28))."
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.xl}",
+      "$description": "Hero window corner — 16px, generous feature-panel radius (was 18px literal)."
+    },
+    "radiusChip": {
+      "$type": "dimension",
+      "$value": "{radius.full}",
+      "$description": "Quick-action chip radius."
+    },
+    "portraitSize": {
+      "$type": "dimension",
+      "$value": "148px",
+      "$description": "Circular portrait diameter in the circle variant."
+    },
+    "portraitWell": {
+      "$type": "dimension",
+      "$value": "212px",
+      "$description": "Portrait well height (circle variant)."
+    }
+  }
+}

@@ -1,0 +1,101 @@
+.route {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  gap: var(--nexus-space-4, 16px);
+  /* Один вертикальный скролл-owner — WindowFrame main (.frameMain). */
+}
+
+.templateStage {
+  height: max(680px, calc(100vh - 144px));
+  /* owner decision B2 (2026-10-29): canonical mount 850-880px -> cap at 880 */
+  max-height: 880px;
+  min-height: 680px;
+  flex: 0 0 auto;
+}
+
+.routeState {
+  display: grid;
+  min-height: 100%;
+  place-items: center;
+  padding: var(--nexus-space-6, 24px);
+  color: var(--nexus-text-primary, #f6f0e4);
+}
+
+.stateCard {
+  display: grid;
+  justify-items: center;
+  gap: var(--nexus-space-3, 12px);
+  width: min(100%, 520px);
+  padding: var(--nexus-space-8, 32px);
+  border: 1px solid var(--nexus-border-subtle, rgba(255, 255, 255, .14));
+  border-radius: var(--nexus-radius-2xl, 24px);
+  background: var(--nexus-surface-panel, rgba(20, 24, 27, .82));
+  text-align: center;
+}
+
+.stateCard h1,
+.stateCard p {
+  margin: 0;
+}
+
+.stateCard h1 {
+  font-size: var(--nexus-type-heading-font-size, 24px);
+}
+
+.stateCard p {
+  color: var(--nexus-text-secondary, rgba(246, 243, 236, .74));
+  font-size: var(--nexus-type-body-font-size, 15px);
+}
+
+.stateMark {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--nexus-border-subtle, rgba(255, 255, 255, .2));
+  border-top-color: var(--nexus-accent-secondary, #5ce2ee);
+  border-radius: 50%;
+  animation: aliceRouteSpin 900ms linear infinite;
+}
+
+.retryButton {
+  min-height: 44px;
+  margin-top: var(--nexus-space-2, 8px);
+  padding: 0 var(--nexus-space-5, 20px);
+  border: 1px solid var(--nexus-border-active, rgba(229, 196, 123, .66));
+  border-radius: var(--nexus-radius-full, 9999px);
+  background: var(--nexus-surface-panel-elevated, rgba(239, 234, 224, .18));
+  color: inherit;
+  font: inherit;
+  font-size: var(--nexus-type-body-font-size, 15px);
+  cursor: pointer;
+}
+
+.retryButton:hover {
+  border-color: var(--nexus-accent-primary, #c9a45c);
+}
+
+.retryButton:focus-visible {
+  outline: 2px solid var(--nexus-border-focus, #5ce2ee);
+  outline-offset: 3px;
+}
+
+@keyframes aliceRouteSpin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 1000px) {
+  .templateStage {
+    /* Тот же брейкпоинт, что у стека шаблона (.root в 2 строки): сцена
+       обязана расти по контенту, иначе фикс-высота обрезает root. Скроллит
+       WindowFrame main. */
+    height: auto;
+    max-height: none;
+    min-height: 680px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stateMark {
+    animation: none;
+  }
+}

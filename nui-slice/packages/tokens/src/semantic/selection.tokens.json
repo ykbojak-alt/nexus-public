@@ -1,0 +1,15 @@
+{
+  "$description": "Selection state tokens for multi-select UI (W2-154): background fill and border for selected items.",
+  "selection": {
+    "$type": "color",
+    "bg": {
+      "$value": "color-mix(in srgb, {color.gold.400} 16%, transparent)"
+    },
+    "border": {
+      "$value": "{accent.primary}"
+    },
+    "fg": {
+      "$value": "{text.accent}"
+    }
+  }
+}

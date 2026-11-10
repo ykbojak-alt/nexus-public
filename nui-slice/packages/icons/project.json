@@ -1,0 +1,17 @@
+{
+  "name": "icons",
+  "projectType": "library",
+  "sourceRoot": "packages/icons/src",
+  "tags": [
+    "scope:foundation",
+    "runtime:dom"
+  ],
+  "targets": {
+    "test": {
+      "command": "vitest run packages/icons --passWithNoTests"
+    },
+    "lint": {
+      "command": "tsc --noEmit -p packages/icons/tsconfig.json"
+    }
+  }
+}

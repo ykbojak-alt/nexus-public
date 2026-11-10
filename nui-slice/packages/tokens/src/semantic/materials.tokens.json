@@ -1,0 +1,68 @@
+{
+  "$description": "Scene material parameters (MI-layer) for the Unreal bridge pack — wave-XIV W2 → V0. Scalars mirror the canonical start-scene MI contract (docs/product/unreal-start-scenes-contract.md): gold recipe = MI_Alice_GoldWire/GoldTrim (Metal 1.0, Rough 0.22, EmissiveStrength 0.4); translucent recipe = MI_Alice_Organza (Opacity 0.32+, Rough 0.6). One value, one source — UE reads resolved numbers, never hand literals.",
+  "material": {
+    "glass": {
+      "color": {
+        "$type": "color",
+        "$value": "{color.obsidian.800}",
+        "$comment": "Base tint of the scene glass — same obsidian.800 that glassPanel.bg mixes at 55%."
+      },
+      "opacity": {
+        "$type": "number",
+        "$value": 0.55,
+        "$comment": "glassPanel.bg = obsidian.800 @55% — the MI Opacity param is that same alpha, kept as a scalar because UE takes color and opacity separately."
+      },
+      "roughness": {
+        "$type": "number",
+        "$value": 0.6,
+        "$comment": "Translucent recipe — MI_Alice_Organza canon (Rough 0.6)."
+      },
+      "metallic": {
+        "$type": "number",
+        "$value": 0
+      },
+      "emissive": {
+        "$type": "color",
+        "$value": "{surface.glass}",
+        "$comment": "Glass wash tint (ivory 6%, alpha-carrying) — translucent blend; emissive accent comes from the theme glow instead."
+      },
+      "fresnel": {
+        "$type": "number",
+        "$value": "{scene.fresnelStrength}",
+        "$comment": "Rim on glass edges reuses the scene fresnel scalar — one knob for all silhouette light."
+      }
+    },
+    "gold": {
+      "color": {
+        "$type": "color",
+        "$value": "{color.gold.500}",
+        "$comment": "Champagne gold base — nexus/alice accent primitive (#C9A45C)."
+      },
+      "metallic": {
+        "$type": "number",
+        "$value": 1.0,
+        "$comment": "MI_Alice_GoldWire/GoldTrim canon — full metal."
+      },
+      "roughness": {
+        "$type": "number",
+        "$value": 0.22,
+        "$comment": "MI_Alice_GoldWire canon (Rough 0.22; trim variant 0.3 lives in the scene-asset layer)."
+      },
+      "emissive": {
+        "$type": "color",
+        "$value": "{accent.glowColor}",
+        "$comment": "Per-theme emissive tint — nexus/alice gold, mech blue, forge amber, codex gold, arch violet."
+      },
+      "emissiveStrength": {
+        "$type": "number",
+        "$value": 0.4,
+        "$comment": "MI_Alice_GoldWire canon (0.4 mid of the 0.2–0.6 window)."
+      },
+      "fresnel": {
+        "$type": "number",
+        "$value": 0,
+        "$comment": "Gold rim comes from metal specular, not a fresnel term — 0 is the authored value, not a default."
+      }
+    }
+  }
+}

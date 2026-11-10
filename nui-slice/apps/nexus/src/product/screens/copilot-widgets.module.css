@@ -1,0 +1,164 @@
+/* Волна XI W3 — Copilot-виджеты по токенам W2 (session-delegation,
+ * composer-controls). Все значения — ссылки на токены с фолбэками,
+ * литералов палитры нет. */
+
+/* ModeSwitch — сегментированный контрол (modeSwitch.*). */
+.modeSwitch {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--nexus-mode-switch-border, rgba(201, 164, 92, 0.2));
+  border-radius: var(--nexus-mode-switch-radius, 999px);
+  background: var(--nexus-mode-switch-bg, rgba(255, 255, 255, 0.04));
+}
+.modeSeg {
+  padding: var(--nexus-space-1, 4px) var(--nexus-space-3, 12px);
+  border: 0;
+  border-radius: var(--nexus-mode-switch-radius, 999px);
+  background: transparent;
+  color: var(--nexus-mode-switch-idle-text, #b0b7c2);
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  cursor: pointer;
+}
+.modeSeg[data-active] {
+  background: var(--nexus-mode-switch-active-bg, color-mix(in srgb, var(--nexus-accent-primary, #c9a45c) 18%, transparent));
+  color: var(--nexus-mode-switch-active-text, var(--nexus-accent-primary, #c9a45c));
+}
+.modeSeg:disabled {
+  opacity: var(--nexus-disabled-opacity, 0.45);
+  cursor: default;
+}
+.modeSeg:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, var(--nexus-accent-primary, #c9a45c));
+  outline-offset: 1px;
+}
+
+/* SessionList — строки сессий (sessionList.*). */
+.sessionList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-2, 8px);
+}
+.sessionRow {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-3, 12px);
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-3, 12px);
+  background: var(--nexus-session-list-row-bg, rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--nexus-session-list-row-border, rgba(201, 164, 92, 0.16));
+  border-radius: var(--nexus-session-list-radius, 10px);
+}
+.sessionRow:hover {
+  background: var(--nexus-session-list-row-hover, rgba(255, 255, 255, 0.05));
+}
+.sessionRow[data-status="locked"] {
+  border-left: 2px solid var(--nexus-delegation-locked-edge, color-mix(in srgb, var(--nexus-state-warning, #d9a441) 55%, transparent));
+}
+.sessionMain {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.sessionName {
+  color: var(--nexus-text-primary, #f6f0e4);
+  font-size: var(--nexus-type-body-font-size, 14px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sessionMeta {
+  display: flex;
+  gap: var(--nexus-space-2, 8px);
+  color: var(--nexus-session-list-meta, #8a8f98);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}
+.sessionKind {
+  font-family: var(--nexus-delegation-font-mono, 'IBM Plex Mono', monospace);
+}
+.sessionActions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+}
+.sendBtn {
+  padding: var(--nexus-space-1, 4px) var(--nexus-space-3, 12px);
+  border: 1px solid color-mix(in srgb, var(--nexus-accent-primary, #c9a45c) 45%, transparent);
+  border-radius: var(--nexus-radius-md, 10px);
+  background: color-mix(in srgb, var(--nexus-accent-primary, #c9a45c) 10%, transparent);
+  color: var(--nexus-accent-primary, #c9a45c);
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  cursor: pointer;
+}
+.sendBtn:disabled {
+  opacity: var(--nexus-disabled-opacity, 0.45);
+  cursor: default;
+}
+
+/* DelegationChip — пилюля состояния (delegation.*). */
+.delegChip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nexus-space-1, 4px);
+  padding: 2px var(--nexus-space-2, 8px);
+  border: 1px solid var(--nexus-delegation-chip-border, rgba(201, 164, 92, 0.3));
+  border-radius: var(--nexus-delegation-chip-radius, 999px);
+  background: var(--nexus-delegation-chip-bg, rgba(255, 255, 255, 0.04));
+}
+.delegChip[data-state="locked"] {
+  border-left: 2px solid var(--nexus-delegation-locked-edge, color-mix(in srgb, var(--nexus-state-warning, #d9a441) 55%, transparent));
+}
+.chipRetry {
+  border: 0;
+  background: transparent;
+  color: var(--nexus-accent-primary, #c9a45c);
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  cursor: pointer;
+  text-decoration: underline;
+  /* WCAG 2.2 target ≥24px: текстовая кнопка без паддинга была ~19px. */
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 var(--nexus-space-1, 4px);
+}
+
+/* HandoffBar — ghost-кнопки продолжения (handoffBar.*). */
+.handoffBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nexus-handoff-bar-gap, 8px);
+}
+.handoffBtn {
+  padding: var(--nexus-space-1, 4px) var(--nexus-space-3, 12px);
+  border: 1px solid var(--nexus-handoff-bar-button-border, color-mix(in srgb, var(--nexus-accent-primary, #c9a45c) 45%, transparent));
+  border-radius: var(--nexus-handoff-bar-radius, 999px);
+  background: var(--nexus-handoff-bar-button-bg, color-mix(in srgb, var(--nexus-accent-primary, #c9a45c) 10%, transparent));
+  color: var(--nexus-handoff-bar-button-text, var(--nexus-accent-primary, #c9a45c));
+  font: inherit;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  cursor: pointer;
+}
+.handoffBtn:hover {
+  background: var(--nexus-mode-switch-active-bg, color-mix(in srgb, var(--nexus-accent-primary, #c9a45c) 18%, transparent));
+}
+.handoffBtn:disabled {
+  opacity: var(--nexus-disabled-opacity, 0.45);
+  cursor: default;
+}
+.handoffBtn:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, var(--nexus-accent-primary, #c9a45c));
+  outline-offset: 1px;
+}
+
+.empty {
+  margin: 0;
+  color: var(--nexus-text-tertiary, #8a8f98);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+}

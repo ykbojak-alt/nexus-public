@@ -1,0 +1,17 @@
+{
+  "name": "templates",
+  "projectType": "library",
+  "sourceRoot": "packages/templates/src",
+  "tags": [
+    "scope:template",
+    "runtime:dom"
+  ],
+  "targets": {
+    "test": {
+      "command": "vitest run packages/templates --passWithNoTests"
+    },
+    "lint": {
+      "command": "tsc --noEmit -p packages/templates/tsconfig.json"
+    }
+  }
+}

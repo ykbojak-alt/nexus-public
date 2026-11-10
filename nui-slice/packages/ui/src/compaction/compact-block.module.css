@@ -1,0 +1,182 @@
+.root {
+  --compact-state: var(--nexus-compact-normal, var(--nexus-state-offline));
+  position: relative;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 1px solid var(--nexus-compact-block-border, var(--nexus-glass-card-border));
+  border-radius: var(--nexus-compact-block-radius, 12px);
+  color: var(--nexus-text-primary);
+  background: var(--nexus-compact-block-bg, var(--nexus-glass-card-bg));
+  box-shadow: var(--nexus-compact-block-shadow, var(--nexus-glass-card-shadow));
+}
+
+.root::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  content: '';
+  background: var(--nexus-compact-block-edge, var(--nexus-persona-edge-nexus));
+}
+
+.root[data-state='warning'] {
+  --compact-state: var(--nexus-compact-warning, var(--nexus-state-warning));
+}
+
+.root[data-state='active'] {
+  --compact-state: var(--nexus-compact-active, var(--nexus-state-active));
+}
+
+.toggle {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 8px;
+  align-items: center;
+  gap: 8px 12px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: var(--nexus-compact-block-padding, 12px);
+  padding-left: calc(var(--nexus-compact-block-padding, 12px) + 3px);
+  border: 0;
+  color: inherit;
+  text-align: left;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring);
+  outline-offset: -3px;
+}
+
+.heading {
+  min-width: 0;
+  margin: 0;
+  color: var(--nexus-text-primary);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: var(--nexus-type-caption-line-height, 18px);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.root[data-expanded='false'] .heading {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.root[data-expanded='true'] .heading {
+  display: block;
+  overflow: visible;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  color: var(--compact-state);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: var(--nexus-type-caption-line-height, 18px);
+  white-space: nowrap;
+}
+
+.indicator {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 3px;
+  height: 12px;
+}
+
+.indicator i {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--compact-state);
+}
+
+.bar {
+  width: 24px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--nexus-compact-block-indicator-track, var(--nexus-chart-grid));
+}
+
+.bar i {
+  width: 50%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--compact-state);
+}
+
+.bar[data-state='warning'] i { width: 75%; }
+.bar[data-state='active'] i { width: 100%; }
+
+.dots[data-state='warning'] i:nth-child(-n + 2),
+.dots[data-state='active'] i {
+  width: 6px;
+  height: 6px;
+}
+
+.chevron {
+  grid-column: 3;
+  grid-row: 1;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform var(--nexus-duration-fast, 140ms) ease;
+}
+
+.toggle[aria-expanded='true'] .chevron {
+  transform: rotate(225deg);
+}
+
+.content {
+  min-width: 0;
+  padding: 0 var(--nexus-compact-block-padding, 12px) var(--nexus-compact-block-padding, 12px);
+  padding-left: calc(var(--nexus-compact-block-padding, 12px) + 3px);
+  color: var(--nexus-text-secondary);
+  line-height: var(--nexus-type-body-line-height, 1.5);
+  overflow-wrap: anywhere;
+}
+
+.content > :first-child { margin-top: 0; }
+.content > :last-child { margin-bottom: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron { transition: none; }
+}
+
+@media (max-width: 420px) {
+  .toggle { grid-template-columns: minmax(0, 1fr) 8px; }
+  .status {
+    grid-column: 1;
+    grid-row: 2;
+    white-space: normal;
+  }
+  .chevron { grid-column: 2; }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .root { background: var(--nexus-compact-block-bg-opaque, var(--nexus-glass-card-bg-opaque)); }
+}
+
+@media (forced-colors: active) {
+  .root {
+    border-color: CanvasText;
+    background: Canvas;
+    box-shadow: none;
+  }
+  .root::before { background: Highlight; }
+  .toggle { color: CanvasText; }
+.status { color: CanvasText; }
+ .indicator i { background: Highlight; }
+.bar { background: Canvas; outline: 1px solid CanvasText; }
+}

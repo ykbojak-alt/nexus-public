@@ -1,0 +1,31 @@
+{
+  "$description": "AssistantCard component contract (visual-3 V2, agent-select canon) — chamfered portrait card; accent-driven border/glow follow the active assistant palette via accent.* roles, no per-assistant literals.",
+  "assistantCard": {
+    "bg": {
+      "$type": "color",
+      "$value": "{surface.panel}"
+    },
+    "border": {
+      "$type": "color",
+      "$value": "{border.subtle}"
+    },
+    "borderActive": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {accent.primary} 72%, transparent)"
+    },
+    "borderHover": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {accent.primary} 40%, transparent)",
+      "$description": "Hover hairline on interactive cards — a step toward the selected accent, per wave-XIII start-screen spec."
+    },
+    "glow": {
+      "$type": "shadow",
+      "$value": "{glow.active}"
+    },
+    "chamfer": {
+      "$type": "dimension",
+      "$value": "14px",
+      "$comment": "canon corner cut — same geometry for every assistant style"
+    }
+  }
+}

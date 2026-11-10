@@ -1,0 +1,14 @@
+{
+  "$description": "Semantic border roles — glass lines stay subtle; active/focus carry the theme accent.",
+  "border": {
+    "$type": "color",
+    "subtle":   { "$value": "color-mix(in srgb, {color.ivory.100} 6%, transparent)" },
+    "default":  { "$value": "color-mix(in srgb, {color.ivory.100} 12%, transparent)" },
+    "strong":   { "$value": "color-mix(in srgb, {color.ivory.100} 20%, transparent)" },
+    "active":   { "$value": "{color.gold.500}" },
+    "focus":    { "$value": "{color.blue.400}" },
+    "error":    { "$value": "{color.red.400}" },
+    "warning":  { "$value": "{color.amber.400}" },
+    "success":  { "$value": "{color.green.400}" }
+  }
+}

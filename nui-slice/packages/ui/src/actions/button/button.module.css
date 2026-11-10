@@ -1,0 +1,64 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nexus-space-2, 8px);
+  font-family: var(--nexus-type-body-font-family, 'Inter Tight', system-ui, sans-serif);
+  font-weight: 500;
+  border-radius: var(--nexus-radius-md, 8px);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    background var(--nexus-duration-fast, 140ms) var(--nexus-easing-standard, cubic-bezier(0.2,0,0,1)),
+    border-color var(--nexus-duration-fast, 140ms) var(--nexus-easing-standard, cubic-bezier(0.2,0,0,1)),
+    box-shadow var(--nexus-duration-fast, 140ms) var(--nexus-easing-standard, cubic-bezier(0.2,0,0,1));
+}
+.root:disabled { cursor: not-allowed; opacity: var(--nexus-disabled-opacity, 0.45); }
+
+.sm { height: 28px; padding: 0 var(--nexus-space-3, 12px); font-size: var(--nexus-type-caption-font-size, 13px); }
+.md { height: 36px; padding: 0 var(--nexus-space-4, 16px); font-size: 14px; }
+.lg { height: 44px; padding: 0 var(--nexus-space-6, 24px); font-size: var(--nexus-type-body-font-size, 15px); }
+
+.primary {
+  background: var(--nexus-accent-primary, #C9A45C);
+  color: var(--nexus-accent-on-primary, #0A0A0C);
+}
+.primary:hover:not(:disabled) { background: var(--nexus-accent-primary-hover, #D0B169); }
+.primary:active:not(:disabled) { background: var(--nexus-accent-primary-active, #A98848); }
+
+.secondary {
+  background: var(--nexus-surface-elevated, #232329);
+  /* W3 #7: ink follows glassPanel.text — the secondary button sits on a
+     surface/glass substrate, so on a light shell (alice) it must read dark.
+     Dark themes: glassPanel.text = text.primary (light), unchanged. */
+  color: var(--nexus-glass-panel-text, var(--nexus-text-primary, #F6F0E4));
+  border-color: var(--nexus-border-default, rgba(246,240,228,0.12));
+}
+.secondary:hover:not(:disabled) { border-color: var(--nexus-border-strong, rgba(246,240,228,0.2)); }
+
+.ghost {
+  background: transparent;
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+.ghost:hover:not(:disabled) { background: var(--nexus-nav-item-bg-hover, rgba(246,240,228,0.04)); color: var(--nexus-text-primary, #F6F0E4); }
+
+.danger {
+  background: transparent;
+  color: var(--nexus-state-error, #F97F66);
+  border-color: var(--nexus-border-error, #EE5B3F);
+}
+.danger:hover:not(:disabled) { background: var(--nexus-state-surface-error, rgba(238,91,63,0.14)); }
+
+.spinner {
+  width: 12px; height: 12px;
+  border-radius: var(--nexus-radius-full, 9999px);
+  border: 1.5px solid currentColor;
+  border-top-color: transparent;
+  animation: nexus-spin var(--nexus-duration-slow, 420ms) linear infinite;
+}
+@keyframes nexus-spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation: none; }
+  .root { transition: none; }
+}

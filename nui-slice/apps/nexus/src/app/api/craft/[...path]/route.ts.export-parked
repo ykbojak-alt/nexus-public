@@ -1,0 +1,142 @@
+/**
+ * /api/craft/* — same-origin proxy к craft-bridge (packages/bridge/craft-bridge.mjs).
+ * Браузер вызывает /api/craft/<endpoint> без креденшелов; Bearer-токен моста
+ * живёт только здесь, в server env (CRAFT_BRIDGE_TOKEN), и никогда не
+ * уходит в клиентский bundle (без NEXT_PUBLIC_). Upstream — строго loopback.
+ *
+ * Контракт ошибок зеркалит bridge: {ok:false,error} + status.
+ * Тело и ответ передаются потоково; обрыв клиента → abort upstream.
+ */
+import type { NextRequest } from 'next/server';
+
+export const runtime = 'nodejs';
+
+// Этот route — dev/standalone only. При экспортной сборке (`output: 'export'`,
+// nx-цель nexus:build → scripts/build-export.mjs) каталог src/app/api
+// временно выносится из дерева — статический бандл API не содержит.
+export const dynamic = 'force-dynamic';
+
+/** Публичная поверхность MVP (см. packages/bridge/MVP_PLAN.md §1). */
+const ALLOWED_PATHS = new Set([
+  'health',
+  'commands',
+  'inspect',
+  'pending',
+  'status',
+  'execute',
+  'export',
+  'design/new',
+]);
+
+/** Ранняя отсечка по заявленному размеру; точный лимит enforce-ит bridge (16 KiB). */
+const MAX_BODY_BYTES = 64 * 1024;
+
+/** Hop-by-hop и чувствительные заголовки не проксируются ни в одну сторону. */
+const DROP_REQUEST_HEADERS = new Set([
+  'connection', 'host', 'content-length', 'transfer-encoding',
+  'authorization', 'cookie', 'accept-encoding',
+]);
+const DROP_RESPONSE_HEADERS = new Set([
+  'connection', 'content-length', 'transfer-encoding', 'keep-alive', 'set-cookie',
+]);
+
+/** SEC-03: upstream строго http://loopback — иначе Bearer может утечь наружу. */
+function isAllowedUpstream(raw: string): boolean {
+  let u: URL;
+  try {
+    u = new URL(raw);
+  } catch {
+    return false;
+  }
+  return u.protocol === 'http:' && (u.hostname === '127.0.0.1' || u.hostname === 'localhost' || u.hostname === '::1' || u.hostname === '[::1]');
+}
+
+function bridgeConfig(): { url: string; token: string; timeoutMs: number } | 'forbidden' | null {
+  const token = process.env.CRAFT_BRIDGE_TOKEN ?? '';
+  if (!token) return null;
+  const url = (process.env.CRAFT_BRIDGE_URL ?? 'http://127.0.0.1:47878').replace(/\/+$/, '');
+  if (!isAllowedUpstream(url)) return 'forbidden';
+  const timeoutMs = Number(process.env.CRAFT_PROXY_TIMEOUT_MS ?? 70_000); // > back-stop bridge 65s
+  return { url, token, timeoutMs: Number.isFinite(timeoutMs) && timeoutMs > 0 ? timeoutMs : 70_000 };
+}
+
+function jsonError(status: number, error: string, extra?: Record<string, unknown>): Response {
+  return Response.json({ ok: false, error, ...extra }, { status });
+}
+
+async function proxy(
+  request: NextRequest,
+  ctx: { params: Promise<{ path: string[] }> },
+): Promise<Response> {
+  const { path = [] } = await ctx.params;
+  const joined = path.join('/');
+  if (!ALLOWED_PATHS.has(joined)) return jsonError(404, 'not_found');
+
+  const config = bridgeConfig();
+  if (!config) return jsonError(503, 'bridge_not_configured');
+  if (config === 'forbidden') return jsonError(403, 'upstream_forbidden');
+
+  const declared = Number(request.headers.get('content-length') ?? 0);
+  if (declared > MAX_BODY_BYTES) return jsonError(413, 'body_too_large');
+
+  const headers = new Headers();
+  for (const [key, value] of request.headers) {
+    if (!DROP_REQUEST_HEADERS.has(key.toLowerCase())) headers.set(key, value);
+  }
+  headers.set('authorization', `Bearer ${config.token}`);
+  headers.set('accept', 'application/json');
+
+  const upstream = `${config.url}/${path.map(encodeURIComponent).join('/')}${request.nextUrl.search}`;
+
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), config.timeoutMs);
+  const onClientAbort = () => ctrl.abort();
+  request.signal.addEventListener('abort', onClientAbort, { once: true });
+
+  const hasBody = request.method !== 'GET' && request.method !== 'HEAD';
+  const init: RequestInit & { duplex?: 'half' } = {
+    method: request.method,
+    headers,
+    body: hasBody ? (request.body ?? undefined) : undefined,
+    signal: ctrl.signal,
+    cache: 'no-store',
+    redirect: 'manual',
+    duplex: 'half',
+  };
+
+  try {
+    const upstream_res = await fetch(upstream, init);
+    const responseHeaders = new Headers();
+    for (const [key, value] of upstream_res.headers) {
+      if (!DROP_RESPONSE_HEADERS.has(key.toLowerCase())) responseHeaders.set(key, value);
+    }
+    return new Response(upstream_res.body, {
+      status: upstream_res.status,
+      statusText: upstream_res.statusText,
+      headers: responseHeaders,
+    });
+  } catch {
+    // Таймаут прокси — не обрыв клиента: upstream отвечал дольше лимита.
+    const timedOut = ctrl.signal.aborted && !request.signal.aborted;
+    return timedOut
+      ? jsonError(504, 'gateway_timeout', { running: true })
+      : jsonError(502, 'bridge_unreachable');
+  } finally {
+    clearTimeout(timer);
+    request.signal.removeEventListener('abort', onClientAbort);
+  }
+}
+
+export function GET(
+  request: NextRequest,
+  ctx: { params: Promise<{ path: string[] }> },
+): Promise<Response> {
+  return proxy(request, ctx);
+}
+
+export function POST(
+  request: NextRequest,
+  ctx: { params: Promise<{ path: string[] }> },
+): Promise<Response> {
+  return proxy(request, ctx);
+}

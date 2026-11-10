@@ -1,0 +1,16 @@
+{
+  "$description": "AgentCard / AgentSelector component contract.",
+  "agentCard": {
+    "bg":            { "$type": "color", "$value": "{surface.panel}" },
+    "bgHover":       { "$type": "color", "$value": "{surface.elevated}" },
+    "border":        { "$type": "color", "$value": "{border.default}" },
+    "borderActive":  { "$type": "color", "$value": "{border.active}" },
+    "radius":        { "$type": "dimension", "$value": "{radius.xl}" },
+    "padding":       { "$type": "dimension", "$value": "{space.6}" },
+    "gap":           { "$type": "dimension", "$value": "{space.4}" },
+    "glow":          { "$type": "shadow", "$value": "{glow.active}" },
+    "avatarSize":    { "$type": "dimension", "$value": "40px" },
+    "avatarRadius":  { "$type": "dimension", "$value": "{radius.full}" },
+    "statusDot":     { "$type": "dimension", "$value": "8px" }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "$description": "WindowFrame component contract (runtime-2 A0 / visual-3 V2 / wave-XV reference reconciliation): rounded 24px corners + accent hairline, matching MAIN/NUE1; identical geometry across assistant styles, palette via accent.* / personaEdge.*. Rail states: full → iconRail.width, strip → iconStrip.width (56px), hidden → 0.",
+  "windowFrame": {
+    "radius":       { "$type": "dimension", "$value": "{radius.2xl}", "$description": "Measured reference corner radius: 24px; one geometry for all assistant palettes." },
+    "headerHeight": { "$type": "dimension", "$value": "{layout.topbar}", "$description": "Header uses the canonical 72px topbar band from the reference layout." },
+    "headerHeight": { "$type": "dimension", "$value": "{layout.topbar}", "$description": "Header uses the canonical 72px topbar band from the reference layout." },
+    "hairline":     { "$type": "color", "$value": "{accent.primary}" },
+    "hairlineSoft": { "$type": "color", "$value": "color-mix(in srgb, {accent.primary} 34%, transparent)" },
+    "glow":         { "$type": "shadow", "$value": "{glow.soft}" },
+    "railWidth":    { "$type": "dimension", "$value": "{sidebar.width}", "$description": "Full rail column width — same token the rail consumes." },
+    "stripWidth":   { "$type": "dimension", "$value": "{iconStrip.width}", "$description": "Icon-strip column width — 56px, same token as the strip." },
+    "focusEdge":    { "$type": "color", "$value": "color-mix(in srgb, {accent.primary} 55%, transparent)", "$description": "Active-window cue: focus-within raises the hairline to this — a stronger line, not a second border." }
+  }
+}

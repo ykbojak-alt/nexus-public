@@ -1,0 +1,54 @@
+{
+  "$description": "SessionList + DelegationChip contract (wave-XI W2.1) — bus windows and send-to-window pills. All statuses map to the closed state.* vocabulary (statusVar); no per-status literal colors.",
+  "sessionList": {
+    "rowBg": {
+      "$type": "color",
+      "$value": "{surface.panel}"
+    },
+    "rowHover": {
+      "$type": "color",
+      "$value": "{surface.elevated}"
+    },
+    "rowBorder": {
+      "$type": "color",
+      "$value": "{border.subtle}"
+    },
+    "rowSelected": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {accent.primary} 14%, transparent)",
+      "$description": "Selected session row — accent wash, gold on nexus/dark themes."
+    },
+    "meta": {
+      "$type": "color",
+      "$value": "{text.tertiary}",
+      "$description": "lastActivityAt / window id / kind — meta row tone."
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.md}"
+    }
+  },
+  "delegation": {
+    "chipRadius": {
+      "$type": "dimension",
+      "$value": "{radius.full}"
+    },
+    "chipBg": {
+      "$type": "color",
+      "$value": "{surface.elevated}"
+    },
+    "chipBorder": {
+      "$type": "color",
+      "$value": "{border.default}"
+    },
+    "lockedEdge": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {state.paused} 55%, transparent)",
+      "$description": "Left edge stripe when the target window answered session_locked — paused tone, never the red selection frame (VIII contract)."
+    },
+    "fontMono": {
+      "$type": "fontFamily",
+      "$value": "{font.mono}"
+    }
+  }
+}

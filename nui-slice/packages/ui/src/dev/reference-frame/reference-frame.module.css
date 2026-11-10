@@ -1,0 +1,27 @@
+.frame {
+  position: relative;
+  overflow: hidden;
+  background: var(--nexus-surface-root, #0A0A0C);
+  border: 1px solid var(--nexus-border-subtle, rgba(246,240,228,0.06));
+  border-radius: var(--nexus-radius-md, 8px);
+}
+
+.ref {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.liveLayer { position: absolute; inset: 0; z-index: 2; }
+
+/* diff mode: invert-coded UI against the reference so equal pixels cancel. */
+.diffLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  mix-blend-mode: difference;
+}

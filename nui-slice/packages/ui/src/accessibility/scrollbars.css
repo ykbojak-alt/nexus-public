@@ -1,0 +1,55 @@
+/* W2-134 · единый скроллбар NUE на --nexus-scrollbar-* токенах.
+   Scoped на [data-nexus-root]: глобальный chrome.css остаётся fallback для
+   не-темизированного контента; внутри темы эти правила побеждают по
+   специфичности (0,1,0 > 0,0,x). */
+
+[data-nexus-root],
+[data-nexus-root] * {
+  scrollbar-width: thin;
+  scrollbar-color: var(--nexus-scrollbar-thumb, rgba(142, 151, 165, 0.35)) var(--nexus-scrollbar-track, transparent);
+}
+
+[data-nexus-root] ::-webkit-scrollbar {
+  inline-size: var(--nexus-scrollbar-width, 10px);
+  block-size: var(--nexus-scrollbar-width, 10px);
+}
+
+[data-nexus-root] ::-webkit-scrollbar-track {
+  background: var(--nexus-scrollbar-track, transparent);
+}
+
+[data-nexus-root] ::-webkit-scrollbar-thumb {
+  border: var(--nexus-scrollbar-border-inset, 3px) solid transparent;
+  border-radius: var(--nexus-scrollbar-radius, 999px);
+  background: var(--nexus-scrollbar-thumb, rgba(142, 151, 165, 0.35));
+  background-clip: content-box;
+}
+
+[data-nexus-root] ::-webkit-scrollbar-thumb:hover {
+  background-color: var(--nexus-scrollbar-thumb-hover, rgba(176, 183, 194, 0.55));
+}
+
+[data-nexus-root] ::-webkit-scrollbar-thumb:active {
+  background-color: var(--nexus-scrollbar-thumb-active, rgba(201, 164, 92, 0.55));
+}
+
+[data-nexus-root] ::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Декоративные/без-скролла списки: [data-scrollbars='hidden'] на контейнере. */
+[data-scrollbars='hidden'] {
+  scrollbar-width: none;
+}
+[data-scrollbars='hidden']::-webkit-scrollbar {
+  display: none;
+}
+
+/* Forced colors: UA рисует системный скроллбар — токены не применяются. */
+@media (forced-colors: active) {
+  [data-nexus-root],
+  [data-nexus-root] * {
+    scrollbar-width: auto;
+    scrollbar-color: auto;
+  }
+}

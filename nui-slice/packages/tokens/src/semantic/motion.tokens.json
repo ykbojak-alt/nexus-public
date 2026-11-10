@@ -1,0 +1,54 @@
+{
+  "$description": "Game-motion semantic layer (wave-5 W2-4; boundary clarified W4-1007): nominal pacing for authored choreography — game motion on /chess /durak /oracle /games, plus deliberate authored UI moments (ambient loops, entrances, emphasis) anywhere. Values are authored rhythm — like authored-art colors they are fixed across themes. Boundary rule: interaction feedback uses duration.* (80/140/240/420/700); motion.* is for authored pacing only — a UI chrome transition must not borrow motion.* just because a literal happened to land off-scale. ±jitter and tempo multipliers stay caller-side. UI chrome on game screens keeps duration.* presets.",
+  "motion": {
+    "$type": "duration",
+    "snappy": {
+      "$value": "180ms"
+    },
+    "fly": {
+      "$value": "280ms"
+    },
+    "promote": {
+      "$value": "320ms"
+    },
+    "move": {
+      "$value": "340ms"
+    },
+    "reveal": {
+      "$value": "400ms"
+    },
+    "capture": {
+      "$value": "420ms"
+    },
+    "beat": {
+      "$value": "480ms"
+    },
+    "ring": {
+      "$value": "560ms"
+    },
+    "ghost": {
+      "$value": "620ms"
+    },
+    "deal": {
+      "$value": "660ms"
+    },
+    "attack": {
+      "$value": "720ms"
+    },
+    "flip": {
+      "$value": "1040ms"
+    },
+    "pulse": {
+      "$value": "1100ms"
+    },
+    "seek": {
+      "$value": "1400ms"
+    },
+    "glow": {
+      "$value": "1600ms"
+    },
+    "breathe": {
+      "$value": "1800ms"
+    }
+  }
+}

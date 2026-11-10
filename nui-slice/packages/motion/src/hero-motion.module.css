@@ -1,0 +1,67 @@
+/**
+ * Герой и KPI-полоса главной (волна XVII, W4).
+ * Одноразовые входные анимации (forwards) + единственная медленная петля
+ * «дыхание» на opacity. Быстрых циклов нет. Всё гасится под
+ * prefers-reduced-motion, при этом конечное состояние видно сразу
+ * (анимации forwards не зависят от отмены).
+ */
+
+.heroIn {
+  animation: nexus-hero-in var(--nexus-hero-in-ms, 640ms)
+    cubic-bezier(0.22, 0.9, 0.35, 1) both;
+}
+
+@keyframes nexus-hero-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* «Дыхание» света — только opacity, 9.6s; слой-подсветка поверх арта,
+   не трогает layout. */
+.breathe {
+  animation: nexus-hero-breathe var(--nexus-hero-breathe-ms, 9600ms)
+    ease-in-out infinite alternate;
+}
+
+@keyframes nexus-hero-breathe {
+  from { opacity: 0.22; }
+  to { opacity: 0.5; }
+}
+
+.kpiIn {
+  animation: nexus-kpi-in var(--nexus-kpi-in-ms, 420ms)
+    cubic-bezier(0.22, 0.9, 0.35, 1) both;
+}
+
+@keyframes nexus-kpi-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Столбец значения: один раз scaleX 0→1; конечное значение — в ширине,
+   анимация только визуальный рост, данных не добавляет. */
+.kpiBar {
+  transform-origin: left center;
+  animation: nexus-kpi-bar var(--nexus-kpi-bar-ms, 700ms)
+    cubic-bezier(0.22, 0.9, 0.35, 1) both;
+}
+
+/* Конечная ширина — данные (--nexus-kpi-ratio), не 1: анимация forwards
+   перекрывает inline-transform, поэтому доля идёт в кейфрейм переменной. */
+@keyframes nexus-kpi-bar {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(var(--nexus-kpi-ratio, 1)); }
+}
+
+/* ── prefers-reduced-motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .heroIn,
+  .kpiIn,
+  .kpiBar {
+    animation: none;
+  }
+  .breathe {
+    animation: none;
+    opacity: 0.3; /* статичная подсветка вместо петли */
+  }
+}

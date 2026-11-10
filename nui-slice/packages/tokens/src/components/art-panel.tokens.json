@@ -1,0 +1,9 @@
+{
+  "$description": "ArtPanel component contract (visual-3 V2) — art background under a theme-invariant dark scrim so text-on-art stays legible on every shell theme. Scrim colors use the pinned `surface.art` role: art surfaces are authored-dark, the panel never trusts themed surfaces under artwork.",
+  "artPanel": {
+    "scrim":        { "$type": "color", "$value": "color-mix(in srgb, {surface.art} 78%, transparent)", "$comment": "deep scrim stop — toward the content edge" },
+    "scrimSoft":    { "$type": "color", "$value": "color-mix(in srgb, {surface.art} 34%, transparent)", "$comment": "light scrim stop — keeps art visible" },
+    "edge":         { "$type": "shadow", "$value": "inset 0 1px 0 color-mix(in srgb, {color.ivory.100} 10%, transparent)", "$comment": "inner top highlight — glass edge on art" },
+    "radius":       { "$type": "dimension", "$value": "{radius.lg}" }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "@nexus/tokens",
+  "version": 1,
+  "tokenCount": 749,
+  "layers": [
+    "primitives",
+    "semantic",
+    "components"
+  ],
+  "themes": [
+    "nexus",
+    "alice",
+    "mech",
+    "forge",
+    "codex",
+    "arch",
+    "aurum-dark"
+  ]
+}

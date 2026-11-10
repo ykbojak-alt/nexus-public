@@ -1,0 +1,160 @@
+/* AssistantCard — chamfered portrait card (visual-3 V2, agent-select canon).
+   Double-layer clip-path like WindowFrame: .edge paints the hairline,
+   .card insets 1px inside it. Selected → accent hairline + glow.active.
+   Palette follows accent.* — no per-assistant literals. */
+
+.edge {
+  --ac-chamfer: var(--nexus-assistant-card-chamfer, 14px);
+  /* Интерактивный вариант — нативный <button>: сброс UA-стилей, блок на
+     всю колонку, как у div-варианта. */
+  display: block;
+  width: 100%;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  appearance: none;
+  padding: 1px;
+  background: var(--nexus-assistant-card-border, rgba(246, 240, 228, 0.12));
+  clip-path: polygon(var(--ac-chamfer) 0, 100% 0,
+      100% calc(100% - var(--ac-chamfer)), calc(100% - var(--ac-chamfer)) 100%,
+      0 100%, 0 var(--ac-chamfer));
+}
+
+button.edge {
+  cursor: pointer;
+  transition: background-color var(--nexus-duration-fast, 140ms) ease,
+    box-shadow var(--nexus-duration-fast, 140ms) ease;
+}
+
+.edge[data-selected] {
+  background: var(--nexus-assistant-card-border-active, rgba(201, 164, 92, 0.72));
+  box-shadow: var(--nexus-assistant-card-glow, 0 0 24px rgba(201, 164, 92, 0.3));
+}
+
+/* Волна XIII / start-screen-spec: акцент выбранной карточки — по ассистенту
+   (data-persona ставит экран), а не по оболочке. Только акцентные роли —
+   поверхности карточки остаются chrome оболочки (ант-NQ-081). */
+.edge[data-persona='alice'] {
+  --nexus-assistant-card-border-active: color-mix(in srgb, var(--nexus-persona-accent-alice, #876D38) 72%, transparent);
+  --nexus-assistant-card-glow: var(--nexus-persona-glow-alice, 0 0 24px rgba(135, 109, 56, 0.3));
+}
+
+.edge[data-persona='mech'] {
+  --nexus-assistant-card-border-active: color-mix(in srgb, var(--nexus-persona-accent-mech, #2E82F6) 72%, transparent);
+  --nexus-assistant-card-glow: var(--nexus-persona-glow-mech, 0 0 24px rgba(46, 130, 246, 0.3));
+}
+
+.edge[data-persona='forge'] {
+  --nexus-assistant-card-border-active: color-mix(in srgb, var(--nexus-persona-accent-forge, #E08A1E) 72%, transparent);
+  --nexus-assistant-card-glow: var(--nexus-persona-glow-forge, 0 0 24px rgba(224, 138, 30, 0.3));
+}
+
+.edge[data-persona='codex'] {
+  --nexus-assistant-card-border-active: color-mix(in srgb, var(--nexus-persona-accent-codex, #A98848) 72%, transparent);
+  --nexus-assistant-card-glow: var(--nexus-persona-glow-codex, 0 0 24px rgba(169, 136, 72, 0.3));
+}
+
+.edge[data-persona='arch'] {
+  --nexus-assistant-card-border-active: color-mix(in srgb, var(--nexus-persona-accent-arch, #9A82E8) 72%, transparent);
+  --nexus-assistant-card-glow: var(--nexus-persona-glow-arch, 0 0 24px rgba(154, 130, 232, 0.3));
+}
+
+.edge[data-persona='nexus'] {
+  --nexus-assistant-card-border-active: color-mix(in srgb, var(--nexus-persona-accent-nexus, #C9A45C) 72%, transparent);
+  --nexus-assistant-card-glow: var(--nexus-persona-glow-nexus, 0 0 24px rgba(201, 164, 92, 0.3));
+}
+
+button.edge:hover {
+  background: var(--nexus-assistant-card-border-hover, rgba(201, 164, 92, 0.4));
+}
+
+button.edge[data-selected]:hover {
+  /* Выбранная карточка держит свой акцент на hover — не возвращается к 40%. */
+  background: var(--nexus-assistant-card-border-active, rgba(201, 164, 92, 0.72));
+}
+
+.edge:focus-visible {
+  outline: 2px solid var(--nexus-focus-ring, #539EFF);
+  outline-offset: 2px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--nexus-assistant-card-bg, #1a1a21);
+  clip-path: polygon(var(--ac-chamfer) 0, 100% 0,
+      100% calc(100% - var(--ac-chamfer)), calc(100% - var(--ac-chamfer)) 100%,
+      0 100%, 0 var(--ac-chamfer));
+}
+
+.art {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+}
+
+.artFallback {
+  aspect-ratio: 4 / 5;
+  display: grid;
+  place-items: center;
+  background: var(--nexus-surface-elevated, #232329);
+  color: var(--nexus-text-tertiary, #8e97a5);
+  font-family: var(--nexus-font-display, serif);
+  font-size: 44px;
+}
+
+.meta {
+  display: grid;
+  gap: var(--nexus-space-2, 8px);
+  min-width: 0;
+  padding: var(--nexus-space-4, 16px);
+  justify-items: center;
+  text-align: center;
+}
+
+.name {
+  font-family: var(--nexus-font-display, serif);
+  font-size: var(--nexus-type-body-font-size, 15px);
+  letter-spacing: 0.08em;
+  color: var(--nexus-text-primary, #f6f0e4);
+}
+
+.subtitle {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-secondary, #b0b7c2);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--nexus-space-1, 4px);
+  min-width: 0;
+  max-width: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tag {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: 0.08em;
+  line-height: 1.35;
+  max-width: 100%;
+  min-width: 0;
+  padding: 3px 8px;
+  border: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.12));
+  border-radius: 999px;
+  color: var(--nexus-text-tertiary, #8e97a5);
+  overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button.edge {
+    transition: none;
+  }
+}

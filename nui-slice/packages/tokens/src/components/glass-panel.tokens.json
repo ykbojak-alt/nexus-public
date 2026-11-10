@@ -1,0 +1,65 @@
+{
+  "$description": "GlassPanel component contract — Obsidian Glass recipe (spec §9).",
+  "glassPanel": {
+    "bg": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {color.obsidian.800} 55%, transparent)"
+    },
+    "bgElevated": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {color.obsidian.700} 65%, transparent)"
+    },
+    "text": {
+      "$type": "color",
+      "$value": "{text.primary}",
+      "$description": "Ink for text that lands on a GlassPanel surface. Defaults to text.primary (dark canon: light ink on obsidian glass). Light shells (alice) override to dark ink so re-themed dark-persona screens (which flip text.primary light) do not paint light-on-light over the light glass substrate. This is the W3 structural-contrast role token (NEXUS W3-structural-contrast, variant B)."
+    },
+    "border": {
+      "$type": "color",
+      "$value": "{border.subtle}"
+    },
+    "borderStrong": {
+      "$type": "color",
+      "$value": "{border.default}"
+    },
+    "blur": {
+      "$type": "dimension",
+      "$value": "{blur.md}"
+    },
+    "blurReduced": {
+      "$type": "dimension",
+      "$value": "{blur.none}"
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.lg}"
+    },
+    "shadow": {
+      "$type": "shadow",
+      "$value": "{shadow.lg}"
+    },
+    "glow": {
+      "$type": "shadow",
+      "$value": "{glow.soft}"
+    },
+    "edge": {
+      "$type": "shadow",
+      "$value": "inset 0 1px 0 color-mix(in srgb, {color.ivory.100} 8%, transparent)",
+      "$comment": "inner top highlight — glass edge catch-light (visual-3)"
+    },
+    "padding": {
+      "$type": "dimension",
+      "$value": "{space.6}"
+    },
+    "topbarText": {
+      "$type": "color",
+      "$value": "{text.primary}",
+      "$description": "Ink for topbar search-pill and opacity-control labels (topSearch/opacityLabel). Defaults to text.primary (dark canon: ivory ink on obsidian glass). Light shells (alice) override to dark ink so the labels read on the light topbar glass. REAL-BUGS (alice contrast, topSearch 1.11:1 / opacityLabel 1.29:1) — token-level close per 0930ba29 pattern, no scoped-CSS override, no hardcode."
+    },
+    "topbarTextDim": {
+      "$type": "color",
+      "$value": "{text.tertiary}",
+      "$description": "Muted ink for topbar value chips / kbd hints. Follows the text ramp so a light shell re-points the muted step without a second override."
+    }
+  }
+}

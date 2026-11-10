@@ -1,0 +1,78 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "preserve",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@nexus/icons": [
+        "../../packages/icons/src/index.ts"
+      ],
+      "@nexus/icons/*": [
+        "../../packages/icons/src/*"
+      ],
+      "@nexus/mock-data": [
+        "../../packages/mock-data/src/index.ts"
+      ],
+      "@nexus/mock-data/*": [
+        "../../packages/mock-data/src/*"
+      ],
+      "@nexus/motion": [
+        "../../packages/motion/src/index.ts"
+      ],
+      "@nexus/motion/*": [
+        "../../packages/motion/src/*"
+      ],
+      "@nexus/patterns": [
+        "../../packages/patterns/src/index.ts"
+      ],
+      "@nexus/patterns/*": [
+        "../../packages/patterns/src/*"
+      ],
+      "@nexus/themes": [
+        "../../packages/themes/src/index.ts"
+      ],
+      "@nexus/themes/*": [
+        "../../packages/themes/src/*"
+      ],
+      "@nexus/templates": [
+        "../../packages/templates/src/index.ts"
+      ],
+      "@nexus/templates/*": [
+        "../../packages/templates/src/*"
+      ],
+      "@nexus/three": [
+        "../../packages/three/src/index.ts"
+      ],
+      "@nexus/three/*": [
+        "../../packages/three/src/*"
+      ],
+      "@nexus/tokens": [
+        "../../packages/tokens/src/index.ts"
+      ],
+      "@nexus/tokens/*": [
+        "../../packages/tokens/src/*"
+      ],
+      "@nexus/ui": [
+        "../../packages/ui/src/index.ts"
+      ],
+      "@nexus/ui/*": [
+        "../../packages/ui/src/*"
+      ]
+    }
+  },
+  "include": [
+    "src",
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
+    "../../packages/ui/src/css-modules.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

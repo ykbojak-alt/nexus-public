@@ -1,0 +1,47 @@
+{
+  "name": "nexus",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.11.2",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "nx": "nx",
+    "build": "nx run-many -t build",
+    "test": "nx run-many -t test",
+    "lint": "nx run-many -t lint",
+    "sync:ai2-static": "node scripts/sync-ai2-static.mjs",
+    "verify:rc": "node tools/verify-rc.mjs",
+    "doctor": "node tools/doctor.mjs",
+    "verify": "node tools/verify.mjs",
+    "gen:openapi": "node tools/gen-openapi.mjs",
+    "test:openapi": "node --test tools/gen-openapi.test.mjs",
+    "test:ship": "pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/ship.test.ps1",
+    "lint:tokens": "tsx packages/tokens/scripts/token-lint.ts"
+  },
+  "dependencies": {
+    "next": "^16.4.3",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.64.0",
+    "@storybook/addon-a11y": "^10.6.1",
+    "@storybook/react-vite": "^10.6.1",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "axe-core": "^4.14.0",
+    "jest-axe": "^11.0.0",
+    "jsdom": "^25.0.1",
+    "nx": "~23.2.1",
+    "storybook": "^10.6.1",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.7"
+  }
+}

@@ -1,0 +1,224 @@
+/* R-W3.0 / wave-IX IX.3: AssistantHero — единый герой всех пяти
+   ассистентов (alice/arch/codex/forge/mech): рамка окна, портрет/фигура
+   слева, режим-пилюля + quick-chips + контент владельца справа.
+   Палитра — только hero.*-токены (pinned на authored-dark): образ
+   выглядит одинаково на светлой и тёмной теме у всех ассистентов. */
+.hero {
+  /* Authored-dark окно: семантика внутри героя переназначена на onArt-*,
+     чтобы контент владельца (приветствие, motto, starter-чипы) читался
+     одинаково на светлой и тёмной теме — кастомные свойства наследуются. */
+  --nexus-text-primary: var(--nexus-text-on-art);
+  --nexus-text-secondary: var(--nexus-text-on-art-dim);
+  --nexus-text-tertiary: var(--nexus-text-on-art-muted);
+  --nexus-border-subtle: var(--nexus-hero-gold-soft);
+  min-height: 220px;
+  display: grid;
+  grid-template-columns: minmax(180px, 34%) 1fr;
+  align-items: center;
+  gap: var(--nexus-space-5, 20px);
+  padding: var(--nexus-space-3, 12px) var(--nexus-space-6, 24px);
+  background:
+    radial-gradient(ellipse at 20% 54%, var(--nexus-hero-glow-radial), transparent 40%),
+    linear-gradient(110deg, var(--nexus-hero-wash), transparent 62%),
+    var(--nexus-hero-substrate);
+  border: 1px solid var(--nexus-hero-gold-soft);
+  border-radius: var(--nexus-hero-radius);
+  overflow: hidden;
+}
+
+.portrait {
+  height: var(--nexus-hero-portrait-well);
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.portrait:before,
+.portrait:after {
+  content: "";
+  position: absolute;
+  border: 1px solid var(--nexus-hero-gold-soft);
+  border-radius: 50%;
+  width: 190px;
+  height: 190px;
+  box-shadow: var(--nexus-hero-halo), var(--nexus-hero-halo-inner);
+}
+
+.portrait:after {
+  width: 155px;
+  height: 155px;
+  border-style: dashed;
+  opacity: .6;
+}
+
+.portrait img {
+  position: relative;
+  z-index: 1;
+  width: var(--nexus-hero-portrait-size);
+  height: var(--nexus-hero-portrait-size);
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid var(--nexus-hero-gold-strong);
+  box-shadow: var(--nexus-hero-portrait-glow);
+}
+
+.portrait[data-portrait='empty'] p {
+  position: relative;
+  z-index: 1;
+  max-width: 150px;
+  text-align: center;
+  color: var(--nexus-text-on-art-dim);
+}
+
+.body {
+  min-width: 0;
+  /* Потомкам без собственного color (h1 наследует resolved-значение
+     .home, а не var()) — явный onArt-цвет на самом контейнере. */
+  color: var(--nexus-text-on-art);
+}
+
+.modePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  padding: var(--nexus-space-1, 4px) var(--nexus-space-3, 12px);
+  border-radius: var(--nexus-hero-radius-chip);
+  border: 1px solid color-mix(in srgb, var(--nexus-hero-gold) 45%, transparent);
+  background: color-mix(in srgb, var(--nexus-hero-gold) 12%, transparent);
+  color: var(--nexus-hero-gold);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  letter-spacing: .17em;
+  font-weight: 700;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nexus-space-2, 8px);
+  margin-top: 14px;
+}
+
+.chip {
+  padding: 6px 11px;
+  border-radius: var(--nexus-hero-radius-chip);
+  border: 1px solid var(--nexus-hero-gold-soft);
+  background: transparent;
+  color: var(--nexus-text-on-art-dim);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  cursor: pointer;
+  text-align: left;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chip:hover {
+  border-color: var(--nexus-hero-gold-strong);
+  color: var(--nexus-text-on-art);
+}
+
+.chip:focus-visible {
+  outline: 2px solid var(--nexus-hero-gold);
+  outline-offset: 2px;
+}
+
+@media (max-width: 700px) {
+  .hero {
+    grid-template-columns: 120px 1fr;
+    gap: var(--nexus-space-3, 12px);
+    padding: var(--nexus-space-3, 12px);
+  }
+
+  .portrait {
+    height: 150px;
+  }
+
+  .portrait:before {
+    width: 130px;
+    height: 130px;
+  }
+
+  .portrait:after {
+    width: 108px;
+    height: 108px;
+  }
+
+  .portrait img {
+    width: 98px;
+    height: 98px;
+  }
+}
+
+/* Полный образ героини вместо круглого иллюминатора. */
+.hero[data-variant='figure'] {
+  grid-template-columns: minmax(240px, 38%) 1fr;
+  min-height: 340px;
+  padding: 0 var(--nexus-space-6, 24px) 0 0;
+}
+
+.hero[data-variant='figure'] .portrait {
+  height: 340px;
+  align-self: stretch;
+}
+
+.hero[data-variant='figure'] .portrait:before,
+.hero[data-variant='figure'] .portrait:after {
+  display: none;
+}
+
+.hero[data-variant='figure'] .portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 74% 40%;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 14%, #000 82%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 14%, #000 82%, transparent 100%);
+}
+/* Живой поток владельца (эхо рантайма): контент на всю ширину карточки,
+   портрет — полупрозрачный фон. Нужен, когда текста больше, чем образа. */
+.hero[data-full-width='true'] {
+  grid-template-columns: 1fr;
+  align-items: start;
+  position: relative;
+  min-height: 340px;
+  padding: 14px var(--nexus-space-6, 24px) var(--nexus-space-4, 16px);
+}
+
+.hero[data-full-width='true'] .portrait {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 46%;
+  height: 100%;
+  opacity: .22;
+  pointer-events: none;
+}
+
+.hero[data-full-width='true'] .portrait:before,
+.hero[data-full-width='true'] .portrait:after {
+  display: none;
+}
+
+.hero[data-full-width='true'] .portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 70% 35%;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 45%, #000 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 45%, #000 100%);
+}
+
+.hero[data-full-width='true'] .body {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}

@@ -1,0 +1,97 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-2, 8px);
+  font-family: var(--nexus-type-body-font-family, 'Inter Tight', system-ui, sans-serif);
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+.title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--nexus-text-tertiary, #8A93A3);
+}
+.list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--nexus-space-1, 4px); }
+
+.head { display: flex; align-items: center; justify-content: space-between; gap: var(--nexus-space-2, 8px); }
+.missionTitle { font-size: 15px; font-weight: 600; }
+
+.facts { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: var(--nexus-space-1, 4px) var(--nexus-space-3, 12px); font-size: 13px; }
+.facts dt { color: var(--nexus-text-tertiary, #8A93A3); }
+.facts dd { margin: 0; }
+
+.capabilities { display: flex; flex-wrap: wrap; gap: var(--nexus-space-1, 4px); }
+.cap {
+  padding: 1px var(--nexus-space-2, 8px);
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-full, 9999px);
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-secondary, #B0B7C2);
+}
+
+.timeline { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.step {
+  display: flex;
+  align-items: center;
+  gap: var(--nexus-space-3, 12px);
+  padding: var(--nexus-space-2, 8px) 0;
+}
+.step + .step { border-top: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.08)); }
+
+.rowMain { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.rowName { font-weight: 500; font-size: 14px; }
+.rowSub {
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8A93A3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.progressLine { margin: 0; font-size: 14px; }
+.bar {
+  display: flex;
+  height: 6px;
+  border-radius: var(--nexus-radius-full, 9999px);
+  overflow: hidden;
+  background: var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+}
+.seg { display: block; height: 100%; }
+.seg[data-step-state='done'] { background: var(--nexus-state-online, #36BE79); }
+.seg[data-step-state='active'] { background: var(--nexus-state-executing, #F5A63B); }
+.seg[data-step-state='pending'] { background: var(--nexus-state-waiting, #B0B7C2); }
+.seg[data-step-state='failed'] { background: var(--nexus-state-error, #F97F66); }
+.seg[data-step-state='skipped'] { background: var(--nexus-state-paused, #B0B7C2); }
+
+.output { display: flex; align-items: center; gap: var(--nexus-space-2, 8px); }
+.outputLink {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 14px;
+  color: var(--nexus-accent-primary, #C9A45C);
+  cursor: pointer;
+  text-align: left;
+}
+.outputLink:hover { text-decoration: underline; }
+.outputLink:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--nexus-accent-primary-dim, rgba(201, 164, 92, 0.35));
+  border-radius: var(--nexus-radius-sm, 4px);
+}
+
+/* W14-W4: tertiary-текст на GlassPanel над светлым содержимым замерялся 4.16:1.
+   Полупрозрачная тёмная подложка + гало под глифами держат контраст на любом
+   стекле; причина — подложка, поэтому решается затемнением, не сменой токена. */
+.muted {
+  color: var(--nexus-text-tertiary, #8A93A3);
+  font-size: 13px;
+  margin: 0 -6px;
+  padding: 1px 6px;
+  background: rgba(9, 9, 13, .32); /* tokenlint-ignore: тёмная подложка-подчёрк — затемнение, а не токен */
+  border-radius: 5px; /* tokenlint-ignore: подчёркивание-подложка, не карточка — радиус не по шкале */
+  text-shadow: 0 1px 2px rgba(6, 6, 10, .55); /* tokenlint-ignore: гало под подложкой, цвет тени фиксирован */
+}

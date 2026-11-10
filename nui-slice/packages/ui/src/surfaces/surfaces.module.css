@@ -1,0 +1,287 @@
+/* Surface family — card/section/divider/toolbar/floating-panel/drawer.
+   backdrop-filter снят (perf XXV): 17 одновременных blur-слоёв на /home
+   давали растр-пересчёт на каждый repaint; полупрозрачная заливка
+   glass-*-bg сохраняет «стекло» без слоя. Края — канонический glass-card
+   рецепт (edge-аудит W2-127): border/highlight/radius по glass-card-*. */
+.card {
+  background: var(--nexus-glass-card-bg, color-mix(in srgb, #232329 60%, transparent));
+  border: 1px solid var(--nexus-glass-card-border, color-mix(in srgb, #F6F0E4 18%, transparent));
+  border-radius: var(--nexus-glass-card-radius, 16px);
+  box-shadow: var(--nexus-glass-card-shadow, 0 8px 32px rgba(0, 0, 0, 0.34)),
+    inset 0 1px 0 var(--nexus-glass-card-highlight, color-mix(in srgb, #F6F0E4 12%, transparent));
+}
+
+.card[data-interactive] {
+  cursor: pointer;
+  transition: border-color var(--nexus-duration-fast, 140ms) var(--nexus-easing-standard, cubic-bezier(0.2, 0, 0, 1));
+}
+
+.card[data-interactive]:hover {
+  border-color: var(--nexus-border-strong, rgba(246, 240, 228, 0.2));
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nexus-space-4, 16px);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--nexus-space-4, 16px);
+  padding-bottom: var(--nexus-space-3, 12px);
+  border-bottom: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+}
+
+.sectionTitle {
+  margin: 0;
+  font: var(--nexus-type-panel-title-font-weight, 500) var(--nexus-type-panel-title-font-size, 18px)/var(--nexus-type-panel-title-line-height, 24px) var(--nexus-type-panel-title-font-family, 'Inter Tight', system-ui, sans-serif);
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.divider {
+  border: none;
+  margin: 0;
+}
+
+.divider[data-orientation='horizontal'] {
+  border-top: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  width: 100%;
+}
+
+.divider[data-orientation='vertical'] {
+  border-left: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  align-self: stretch;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  min-width: 0;
+  max-width: 100%;
+  align-items: center;
+  gap: var(--nexus-space-2, 8px);
+  padding: var(--nexus-space-2, 8px) var(--nexus-space-3, 12px);
+  background: var(--nexus-surface-panel, #1A1A21);
+  border: 1px solid var(--nexus-border-subtle, rgba(246, 240, 228, 0.06));
+  border-radius: var(--nexus-radius-md, 8px);
+}
+
+.toolbarGroup {
+  display: flex;
+  flex-wrap: wrap;
+  min-width: 0;
+  max-width: 100%;
+  align-items: center;
+  gap: var(--nexus-space-1, 4px);
+}
+
+.toolbarSeparator {
+  width: 1px;
+  height: 20px;
+  background: var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  margin: 0 var(--nexus-space-2, 8px);
+}
+
+.toolbarSpacer {
+  flex: 1;
+}
+
+/* Vertical tool rail (FORGE workspace rail pattern). */
+.toolbar[data-orientation='vertical'] {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.toolbar[data-orientation='vertical'] .toolbarGroup {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.toolbar[data-orientation='vertical'] .toolbarSeparator {
+  width: auto;
+  height: 1px;
+  margin: var(--nexus-space-2, 8px) 0;
+}
+
+.floatingPanel {
+  position: fixed;
+  background: var(--nexus-depth-overlay-bg, rgba(10, 10, 12, 0.6));
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-lg, 12px);
+  box-shadow: var(--nexus-depth-overlay-shadow, 0 16px 56px rgba(0, 0, 0, 0.52));
+  padding: var(--nexus-space-4, 16px);
+  z-index: var(--nexus-layer-menu, 60);
+}
+
+.popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  background: var(--nexus-depth-overlay-bg, rgba(10, 10, 12, 0.6));
+  border: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  border-radius: var(--nexus-radius-md, 8px);
+  box-shadow: var(--nexus-depth-overlay-shadow, 0 16px 56px rgba(0, 0, 0, 0.52));
+  padding: var(--nexus-space-3, 12px);
+  z-index: var(--nexus-layer-dropdown, 50);
+  min-width: 180px;
+}
+
+.tooltip {
+  position: fixed;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nexus-space-1, 4px);
+  max-width: var(--nexus-tooltip-max-width, 280px);
+  overflow-wrap: break-word;
+  background: var(--nexus-tooltip-bg, var(--nexus-depth-overlay-bg, rgba(10, 10, 12, 0.6)));
+  border: 1px solid var(--nexus-tooltip-border, var(--nexus-border-default, rgba(246, 240, 228, 0.12)));
+  border-radius: var(--nexus-tooltip-radius, var(--nexus-radius-sm, 4px));
+  padding: var(--nexus-tooltip-padding-block, var(--nexus-space-1, 4px))
+    var(--nexus-tooltip-padding-inline, var(--nexus-space-2, 8px));
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  line-height: var(--nexus-type-caption-line-height, 1.4);
+  color: var(--nexus-tooltip-text, var(--nexus-text-primary, #F6F0E4));
+  pointer-events: none;
+  z-index: var(--nexus-layer-tooltip, 120);
+}
+
+/* W2-130: optional arrow — CSS triangle on the edge facing the trigger. */
+.tooltip[data-arrow]::after {
+  content: '';
+  position: absolute;
+  inline-size: var(--nexus-tooltip-arrow-size, 6px);
+  block-size: var(--nexus-tooltip-arrow-size, 6px);
+  background: var(--nexus-tooltip-bg, var(--nexus-depth-overlay-bg, rgba(10, 10, 12, 0.6)));
+  border: inherit;
+}
+.tooltip[data-arrow][data-placement='top']::after {
+  inset-inline-start: 50%;
+  inset-block-end: calc(var(--nexus-tooltip-arrow-size, 6px) / -2 - 1px);
+  transform: translateX(-50%) rotate(45deg);
+  border-inline-start: none;
+  border-block-start: none;
+}
+.tooltip[data-arrow][data-placement='bottom']::after {
+  inset-inline-start: 50%;
+  inset-block-start: calc(var(--nexus-tooltip-arrow-size, 6px) / -2 - 1px);
+  transform: translateX(-50%) rotate(45deg);
+  border-inline-end: none;
+  border-block-end: none;
+}
+.tooltip[data-arrow][data-placement='left']::after {
+  inset-block-start: 50%;
+  inset-inline-end: calc(var(--nexus-tooltip-arrow-size, 6px) / -2 - 1px);
+  transform: translateY(-50%) rotate(45deg);
+  border-inline-start: none;
+  border-block-end: none;
+}
+.tooltip[data-arrow][data-placement='right']::after {
+  inset-block-start: 50%;
+  inset-inline-start: calc(var(--nexus-tooltip-arrow-size, 6px) / -2 - 1px);
+  transform: translateY(-50%) rotate(45deg);
+  border-inline-end: none;
+  border-block-start: none;
+}
+
+@media (forced-colors: active) {
+  .tooltip { border-color: CanvasText; background: Canvas; color: CanvasText; }
+}
+
+.drawerWrap {
+  position: fixed;
+  inset: 0;
+  z-index: var(--nexus-layer-drawer, 70);
+}
+
+.drawerBackdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--nexus-surface-overlay, rgba(10, 10, 12, 0.6));
+}
+
+.drawer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: min(380px, 90vw);
+  background: var(--nexus-depth-overlay-bg, rgba(10, 10, 12, 0.6));
+  border-left: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+  box-shadow: var(--nexus-depth-overlay-shadow, 0 16px 56px rgba(0, 0, 0, 0.52));
+  display: flex;
+  flex-direction: column;
+}
+
+.drawer[data-side='left'] {
+  right: auto;
+  left: 0;
+  border-left: none;
+  border-right: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+}
+
+.drawerBody {
+  padding: var(--nexus-space-5, 20px);
+  overflow: auto;
+  scrollbar-gutter: stable;
+  flex: 1;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .card {
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card[data-interactive] {
+    transition: none;
+  }
+}
+
+/* See actions.module.css — trigger reset that keeps the global focus ring. */
+.unstyledTrigger {
+  all: unset;
+  cursor: pointer;
+  display: inline-flex;
+}
+
+/* Data table family (W2-08) — tokenized borders/typography; consumers keep
+   their row model. Empty/loading states live at panel level (StateHints). */
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-primary, #F6F0E4);
+}
+
+.dataTableCaption {
+  text-align: start;
+  font-size: var(--nexus-type-caption-font-size, 13px);
+  color: var(--nexus-text-tertiary, #8E97A5);
+  padding-bottom: var(--nexus-space-2, 8px);
+}
+
+.dataTableHead .dataHeadCell {
+  color: var(--nexus-text-secondary, #B0B7C2);
+  font-weight: var(--nexus-type-panel-title-font-weight, 500);
+  text-align: start;
+  padding: var(--nexus-space-1, 4px) var(--nexus-space-2, 8px);
+  border-bottom: 1px solid var(--nexus-border-default, rgba(246, 240, 228, 0.12));
+}
+
+.dataCell {
+  padding: var(--nexus-space-2, 8px);
+  border-top: 1px solid var(--nexus-nav-item-bg-hover, rgba(246, 240, 228, 0.08));
+}
+
+.dataCellNumeric {
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+.dataTable tbody tr[data-selected] .dataCell {
+  background: var(--nexus-accent-primary-soft, rgba(201, 164, 92, 0.16));
+}

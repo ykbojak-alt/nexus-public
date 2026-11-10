@@ -1,0 +1,33 @@
+/* VII V1.3 — обёртка data-theme персоны поверх общей геометрии home. */
+.assistantTheme {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    /* W3 structural-contrast (variant B): the nested sub-tree re-themes to a
+       dark persona, but on the light alice shell its GlassPanel/topbar stay
+       light (ivory). A light-on-light inherited <a> (tabs/shortcuts, #4/#5)
+       then reads 1.3–2.1:1. Anchor the subtree's base text to the glassPanel
+       ink role: dark ink on the light alice shell, light on dark themes
+       (glassPanel.text defaults to text.primary there). Token reference,
+       NOT a persona scoped-CSS override. */
+    color: var(--nexus-glass-panel-text, var(--nexus-text-primary, #F6F0E4));
+}
+
+.assistantTheme>.home {
+    flex: 1
+}
+
+.assistantRailPanel.assistantRailPanel {
+    --nexus-text-primary: var(--nexus-text-on-art, #F6F0E4);
+    --nexus-text-secondary: var(--nexus-text-on-art, #F6F0E4);
+    --nexus-text-tertiary: var(--nexus-text-on-art-dim, #B0B7C2)
+}
+
+.assistantModeSwitch {
+    display: contents
+}
+
+.assistantModeSwitch button[data-mode='agent'][data-active] {
+    color: var(--nexus-text-primary, #F6F0E4);
+    background: var(--nexus-surface-elevated, #232329)
+}
